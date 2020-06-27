@@ -1,9 +1,8 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
+/*  eslint-disable class-methods-use-this */
 // TODO https://jsdoc.app/tags-event.html
-
-/* eslint class-methods-use-this: ['error', { 'exceptMethods': ['onClickLabel', 'selectFocussedOption'] }] */
 
 /**
  * @class Label
@@ -77,21 +76,13 @@ class SingleSelect {
         case 'ArrowUp':
             console.log('ArrowUp');
             e.preventDefault(); // prevent the natural key action
+            this.focusPreviousOption();
             break;
         case 'Down': // IE/Edge
         case 'ArrowDown':
             console.log('ArrowDown');
             e.preventDefault(); // prevent the natural key action
-            break;
-        case 'Left': // IE/Edge
-        case 'ArrowLeft':
-            console.log('ArrowLeft');
-            e.preventDefault(); // prevent the natural key action
-            break;
-        case 'Right': // IE/Edge
-        case 'ArrowRight':
-            console.log('ArrowRight');
-            e.preventDefault(); // prevent the natural key action
+            this.focusNextOption();
             break;
         case 'Esc': // IE/Edge
         case 'Escape':
@@ -119,8 +110,6 @@ class SingleSelect {
      * @memberof SingleSelect
      *
      * @param {*} e - target of focus event
-     *
-     * @see https://keycode.info/
      */
     onFocusListbox(e) {
         const listbox = e.target;
@@ -133,14 +122,54 @@ class SingleSelect {
         if (!selectedOptions.length) {
             // focus the first option
             options[0].focus();
-
-            if (this.selectionFollowsFocus) {
-                // select the first option
-                this.selectFocussedOption();
-            }
         } else {
             // focus the first selected option
             selectedOptions[0].focus();
+        }
+    }
+
+    /**
+     * @function onFocusOption
+     * @summary React when an option is focussed
+     * @memberof SingleSelect
+     */
+    onFocusOption() {
+        if (this.selectionFollowsFocus) {
+            this.selectFocussedOption();
+        }
+    }
+
+    /**
+     * @function focusNextOption
+     * @summary Move the focus to the next option, if one exists
+     * @memberof SingleSelect
+     */
+    focusNextOption() {
+        const focussed = document.activeElement;
+
+        if (focussed.getAttribute('role') === 'option') {
+            const nextOption = focussed.nextElementSibling;
+
+            if (nextOption) {
+                nextOption.focus();
+            }
+        }
+    }
+
+    /**
+     * @function focusPreviousOption
+     * @summary Move the focus to the previous option, if one exists
+     * @memberof SingleSelect
+     */
+    focusPreviousOption() {
+        const focussed = document.activeElement;
+
+        if (focussed.getAttribute('role') === 'option') {
+            const previousOption = focussed.previousElementSibling;
+
+            if (previousOption) {
+                previousOption.focus();
+            }
         }
     }
 
@@ -183,6 +212,13 @@ class SingleSelect {
             // keydown events bubble up from the element with focus
             // so we can handle listbox and option interactions together
             listbox.onkeydown = (e) => this.onKeyDown(e);
+
+            const options = listbox.querySelectorAll(':scope [role="option"]');
+
+            // :scope - only match selectors on descendants of the base element:
+            options.forEach((option) => {
+                option.addEventListener('focus', this.onFocusOption.bind(this));
+            });
         });
     }
 }
@@ -194,7 +230,7 @@ document.onreadystatechange = () => {
         let label = new Label();
 
         let singleSelect = new SingleSelect({
-            selectionFollowsFocus: false
+            selectionFollowsFocus: true
         });
 
         label.init();
