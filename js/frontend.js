@@ -100,6 +100,16 @@ class SingleSelect {
             e.preventDefault(); // prevent the natural key action
             this.selectFocussedOption();
             break;
+        case 'Home': // macOS is Fn + ArrowLeft
+            console.log('Home');
+            e.preventDefault(); // prevent the natural key action
+            this.focusFirstOption();
+            break;
+        case 'End': // macOS is Fn + ArrowRight
+            console.log('End');
+            e.preventDefault(); // prevent the natural key action
+            this.focusLastOption();
+            break;
         default:
             console.log(e.key);
         }
@@ -136,6 +146,47 @@ class SingleSelect {
     onFocusOption() {
         if (this.selectionFollowsFocus) {
             this.selectFocussedOption();
+        }
+    }
+
+    /**
+     * @function focusFirstOption
+     * @summary Move the focus to the first option
+     * @memberof SingleSelect
+     */
+    focusFirstOption() {
+        if (!this.homeKeyToFirstOption) {
+            return;
+        }
+
+        const focussed = document.activeElement;
+
+        if (focussed.getAttribute('role') === 'option') {
+            const listbox = focussed.parentNode;
+            const options = listbox.querySelectorAll(':scope [role="option"]');
+
+            options[0].focus();
+        }
+    }
+
+    /**
+     * @function focusLastOption
+     * @summary Move the focus to the last option
+     * @memberof SingleSelect
+     */
+    focusLastOption() {
+        if (!this.endKeyToLastOption) {
+            return;
+        }
+
+        const focussed = document.activeElement;
+
+        if (focussed.getAttribute('role') === 'option') {
+            const listbox = focussed.parentNode;
+            const options = listbox.querySelectorAll(':scope [role="option"]');
+            const lastIndex = options.length - 1;
+
+            options[lastIndex].focus();
         }
     }
 
@@ -230,7 +281,9 @@ document.onreadystatechange = () => {
         let label = new Label();
 
         let singleSelect = new SingleSelect({
-            selectionFollowsFocus: true
+            endKeyToLastOption: true,
+            homeKeyToFirstOption: true,
+            selectionFollowsFocus: false
         });
 
         label.init();
