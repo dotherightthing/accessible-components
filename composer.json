@@ -1,5 +1,7 @@
 {
     "name": "dan/accessible-components",
+    "description": "Accessible components",
+    "license": "ISC",
     "authors": [
         {
             "name": "Dan Smith",
