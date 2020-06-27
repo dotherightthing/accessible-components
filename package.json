@@ -1,0 +1,38 @@
+{
+  "name": "accessible-components",
+  "version": "1.0.0",
+  "description": "",
+  "main": "postcss.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "wpdtrt-npm-scripts": "github:dotherightthing/wpdtrt-npm-scripts#semver:0.3.*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dotherightthing/accessible-components.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dotherightthing/accessible-components/issues"
+  },
+  "homepage": "https://github.com/dotherightthing/accessible-components#readme",
+  "config": {
+    "wpdtrt_base_url_local": "http://domain.local",
+    "wpdtrt_npm_scripts": "./node_modules/wpdtrt-npm-scripts"
+  },
+  "scripts": {
+    "changelog": "npm run changelog --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "compile": "npm run compile --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "docs": "npm run docs --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "lint": "npm run lint --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "release": "npm run release --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "scrape:wordpress_maintenance_page": "npm run scrape:wordpress_maintenance_page --prefix $npm_package_config_wpdtrt_npm_scripts -- $npm_package_config_wpdtrt_base_url_local",
+    "test": "npm run test --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "version": "npm run version --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "watch": "nodemon"
+  }
+}

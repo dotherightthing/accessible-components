@@ -1,0 +1,10 @@
+{
+    "name": "dan/accessible-components",
+    "authors": [
+        {
+            "name": "Dan Smith",
+            "email": "dev@dotherightthing.co.nz"
+        }
+    ],
+    "require": {}
+}
