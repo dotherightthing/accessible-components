@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 // TODO https://jsdoc.app/tags-event.html
 
-/* eslint class-methods-use-this: ['error', { 'exceptMethods': ['onClickLabel', 'selectOption'] }] */
+/* eslint class-methods-use-this: ['error', { 'exceptMethods': ['onClickLabel', 'selectFocussedOption'] }] */
 
 /**
  * @class Label
@@ -47,6 +47,8 @@ class Label {
  * @param {boolean} options.endKeyToLastOption - Pressing End will focus the last option in the listbox (TODO)
  * @param {boolean} options.homeKeyToFirstOption - Pressing Home will focus the first option in the listbox (TODO)
  * @param {boolean} options.selectionFollowsFocus - Select the focussed option, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
+ * @param {boolean} options.typeaheadSingleCharacter - Focus moves to the next item with a name that starts with the typed character (TODO)
+ * @param {boolean} options.typeaheadMultiCharacter - Focus moves to the next item with a name that starts with the string of characters typed (TODO)
  */
 class SingleSelect {
     constructor(options = {}) {
@@ -54,57 +56,62 @@ class SingleSelect {
         this.endKeyToLastOption = options.endKeyToLastOption || false;
         this.homeKeyToFirstOption = options.homeKeyToFirstOption || false;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
+        this.typeaheadSingleCharacter = options.typeaheadSingleCharacter || false;
+        this.typeaheadMultiCharacter = options.typeaheadMultiCharacter || false;
     }
 
     /**
      * @function onKeyDown
      * @memberof SingleSelect
      *
-     * @param {Array} keys - keyboard keys
-     * @param {*} element - target element
-     * @param {Function} callback - callback function
-     * @param {*} args - remaining arguments
+     * @param {*} e - target of focus event
      *
      * @see https://keycode.info/
      * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
      * @see https://stackoverflow.com/questions/24386354/execute-js-code-after-pressing-the-spacebar
      * @todo Ignore Shift+Tab
      */
-    onKeyDown(keys, element, callback, ...args) {
-        element.onkeydown = (e) => {
-            let pressed;
-
-            // convert IE/Edge value to regular value
-            switch (e.key) {
-            case 'Up':
-                pressed = 'ArrowUp';
-                break;
-            case 'Down':
-                pressed = 'ArrowDown';
-                break;
-            case 'Left':
-                pressed = 'ArrowLeft';
-                break;
-            case 'Right':
-                pressed = 'ArrowRight';
-                break;
-            case 'Esc':
-                pressed = 'Escape';
-                break;
-            case 'Spacebar':
-                pressed = ' ';
-                break;
-            default:
-                pressed = e.key;
-            }
-
-            keys.forEach((key) => {
-                if (pressed === key) {
-                    e.preventDefault(); // prevent the natural key action
-                    callback.call(this, ...args);
-                }
-            });
-        };
+    onKeyDown(e) {
+        switch (e.key) {
+        case 'Up': // IE/Edge
+        case 'ArrowUp':
+            console.log('ArrowUp');
+            e.preventDefault(); // prevent the natural key action
+            break;
+        case 'Down': // IE/Edge
+        case 'ArrowDown':
+            console.log('ArrowDown');
+            e.preventDefault(); // prevent the natural key action
+            break;
+        case 'Left': // IE/Edge
+        case 'ArrowLeft':
+            console.log('ArrowLeft');
+            e.preventDefault(); // prevent the natural key action
+            break;
+        case 'Right': // IE/Edge
+        case 'ArrowRight':
+            console.log('ArrowRight');
+            e.preventDefault(); // prevent the natural key action
+            break;
+        case 'Esc': // IE/Edge
+        case 'Escape':
+            console.log('Escape');
+            e.preventDefault(); // prevent the natural key action
+            break;
+        case 'Spacebar': // IE/Edge
+        case ' ':
+            console.log('Spacebar');
+            e.preventDefault(); // prevent the natural key action
+            this.selectFocussedOption();
+            break;
+        case 'Enter':
+            console.log('Enter');
+            e.preventDefault(); // prevent the natural key action
+            this.selectFocussedOption();
+            break;
+        default:
+            console.log(e.key);
+        }
     }
 
     /**
@@ -125,17 +132,11 @@ class SingleSelect {
         // if no options are selected yet
         if (!selectedOptions.length) {
             // focus the first option
-            const firstOption = options[0];
-
-            firstOption.focus();
-
-            // When selection does not follow focus, the user changes which element is selected
-            // by pressing the Enter or Space key.
-            this.onKeyDown([ 'Enter', ' ' ], firstOption, this.selectOption, options, 0);
+            options[0].focus();
 
             if (this.selectionFollowsFocus) {
                 // select the first option
-                this.selectOption(options, firstOption);
+                this.selectFocussedOption();
             }
         } else {
             // focus the first selected option
@@ -144,18 +145,23 @@ class SingleSelect {
     }
 
     /**
-     * @function selectOption
+     * @function selectFocussedOption
+     * @summary When selection does not follow focus, the user changes which element is selected by pressing the Enter or Space key.
      * @memberof SingleSelect
-     *
-     * @param {*} options - all options
-     * @param {number} index - option index to select
      */
-    selectOption(options, index) {
-        options.forEach((opt) => {
-            opt.removeAttribute('aria-selected');
-        });
+    selectFocussedOption() {
+        const focussed = document.activeElement;
 
-        options[index].setAttribute('aria-selected', true);
+        if (focussed.getAttribute('role') === 'option') {
+            const listbox = focussed.parentNode;
+            const options = listbox.querySelectorAll(':scope [role="option"]');
+
+            options.forEach((option) => {
+                option.removeAttribute('aria-selected');
+            });
+
+            focussed.setAttribute('aria-selected', true);
+        }
     }
 
     /**
@@ -173,6 +179,10 @@ class SingleSelect {
             // use .bind() to force the desired value of this
             // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
             listbox.addEventListener('focus', this.onFocusListbox.bind(this));
+
+            // keydown events bubble up from the element with focus
+            // so we can handle listbox and option interactions together
+            listbox.onkeydown = (e) => this.onKeyDown(e);
         });
     }
 }
