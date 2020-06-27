@@ -1,0 +1,77 @@
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 64px 32px 32px;
+}
+
+h1 {
+    font-size: 64px;
+    font-weight: bold;
+
+    &::after {
+        content: '.';
+    }
+}
+
+fieldset {
+    background-color: hsla(0, 0%, 93%, .7);
+    padding: 16px 16px 24px;
+    border-radius: 10px 0 0 0;
+    margin: 0 0 32px;
+}
+
+legend {
+    float: left;
+    width: 100%;
+    font-size: 32px;
+    font-weight: bold;
+    padding: 0;
+    margin: 0 0 8px 0;
+
+    &::after {
+        content: '.';
+    }
+
+    &::before {
+        content: '// ';
+    }
+}
+
+.label {
+    display: block;
+    font-size: 20px;
+    padding: 4px;
+    margin: 0 0 8px 0;
+
+    &:not(label) { // allow comparison
+        cursor: default;
+    }
+}
+
+.select {
+    font-size: 20px;
+}
+
+[role='listbox'] {
+    display: inline-block;
+    background-color: hsla(0, 0%, 100%, 1);
+    border: 1px solid hsla(0, 0%, 60%, 1);
+    border-radius: 2px;
+    cursor: default;
+}
+
+[role='option'] {
+    padding: 2px 4px;
+    border-top: 1px solid hsla(0, 0%, 60%, 1);
+
+    &:first-child {
+        border-top: 0;
+    }
+
+    // &:focus {
+    //     background-color: hsla(48, 100%, 50%, .5);
+    // }
+
+    &[aria-selected='true'] {
+        font-weight: bold;
+    }
+}
