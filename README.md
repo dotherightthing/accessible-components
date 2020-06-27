@@ -1,1 +1,3 @@
 # accessible-components
+
+[![GitHub release](https://img.shields.io/github/v/tag/dotherightthing/accessible-components)](https://github.com/dotherightthing/accessible-components/releases) [![Build Status](https://github.com/dotherightthing/accessible-components/workflows/Build%20and%20release%20if%20tagged/badge.svg)](https://github.com/dotherightthing/accessible-components/actions?query=workflow%3A%22Build+and+release+if+tagged%22) [![GitHub issues](https://img.shields.io/github/issues/dotherightthing/accessible-components.svg)](https://github.com/dotherightthing/accessible-components/issues)
