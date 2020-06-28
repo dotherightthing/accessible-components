@@ -43,8 +43,8 @@ class Label {
  *
  * @param {object} options - Module options
  * @param {boolean} options.autoSelectFirstOption - Select the first option in the listbox
- * @param {boolean} options.endKeyToLastOption - Pressing End will focus the last option in the listbox (TODO)
- * @param {boolean} options.homeKeyToFirstOption - Pressing Home will focus the first option in the listbox (TODO)
+ * @param {boolean} options.endKeyToLastOption - Pressing End will focus the last option in the listbox
+ * @param {boolean} options.homeKeyToFirstOption - Pressing Home will focus the first option in the listbox
  * @param {boolean} options.selectionFollowsFocus - Select the focussed option, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
  * @param {boolean} options.typeaheadSingleCharacter - Focus moves to the next item with a name that starts with the typed character (TODO)
  * @param {boolean} options.typeaheadMultiCharacter - Focus moves to the next item with a name that starts with the string of characters typed (TODO)
