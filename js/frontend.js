@@ -153,7 +153,7 @@ class SingleSelect {
                 listbox.focus();
             } else if (targetState === 'closed') {
                 listbox.setAttribute('hidden', true);
-                button.focus();
+                button.focus(); // TODO fails for Listbox C
             } else if (listbox.getAttribute('hidden')) {
                 listbox.removeAttribute('hidden');
                 listbox.focus();
