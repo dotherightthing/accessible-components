@@ -211,12 +211,24 @@ class SingleSelect {
         case ' ':
             console.log('Spacebar');
             e.preventDefault(); // prevent the natural key action
-            this.selectFocussedOption();
+
+            if (this.isButton(document.activeElement)) {
+                this.toggleListbox('open');
+            } else if (this.isOption(document.activeElement)) {
+                this.selectFocussedOption();
+            }
+
             break;
         case 'Enter':
             console.log('Enter');
             e.preventDefault(); // prevent the natural key action
-            this.selectFocussedOption();
+
+            if (this.isButton(document.activeElement)) {
+                this.toggleListbox('open');
+            } else if (this.isOption(document.activeElement)) {
+                this.selectFocussedOption();
+            }
+
             break;
         case 'Home': // macOS is Fn + ArrowLeft
             console.log('Home');
