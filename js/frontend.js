@@ -396,26 +396,28 @@ class SingleSelect {
         selects.forEach((select) => {
             const button = select.querySelector(`:scope ${this.selectors.button}`);
             const listbox = select.querySelector(`:scope ${this.selectors.listbox}:not([aria-multiselectable="true"])`);
-            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
 
-            // keydown events bubble up from the element with focus
-            // so we can handle keyboard interactions for
-            // button, listbox and option altogether
-            select.onkeydown = (e) => this.onKeyDown(e);
+            if (listbox) {
+                const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
 
-            // TODO: error
-            button.addEventListener('click', this.toggleListbox.bind(this));
+                // keydown events bubble up from the element with focus
+                // so we can handle keyboard interactions for
+                // button, listbox and option altogether
+                select.onkeydown = (e) => this.onKeyDown(e);
 
-            // .addEventListener() sets the this pointer to the DOM element that caught the event
-            // use .bind() to force the desired value of this
-            // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
-            listbox.addEventListener('focus', this.onFocusListbox.bind(this));
+                button.addEventListener('click', this.toggleListbox.bind(this));
 
-            // focus occurs on the focussed element only
-            // :scope - only match selectors on descendants of the base element:
-            options.forEach((option) => {
-                option.addEventListener('focus', this.onFocusOption.bind(this));
-            });
+                // .addEventListener() sets the this pointer to the DOM element that caught the event
+                // use .bind() to force the desired value of this
+                // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
+                listbox.addEventListener('focus', this.onFocusListbox.bind(this));
+
+                // focus occurs on the focussed element only
+                // :scope - only match selectors on descendants of the base element:
+                options.forEach((option) => {
+                    option.addEventListener('focus', this.onFocusOption.bind(this));
+                });
+            }
         });
     }
 }
