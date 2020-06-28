@@ -1,3 +1,6 @@
+* [80465a5] Document focus error
+* [43dfd18] Fix error on init of multiselect
+* [dbe9c5b] Generate changelog
 * [1f43cd6] Update wpdtrt-npm-scripts to remove composer.json dependency on release
 * [3860144] Update wpdtrt-npm-scripts to remove PHP dependency
 * [c33594c] Close listbox after an option is selected
