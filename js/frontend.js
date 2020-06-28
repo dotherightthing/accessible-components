@@ -51,12 +51,77 @@ class Label {
  */
 class SingleSelect {
     constructor(options = {}) {
+        // public options
         this.autoSelectFirstOption = options.autoSelectFirstOption || false;
         this.endKeyToLastOption = options.endKeyToLastOption || false;
         this.homeKeyToFirstOption = options.homeKeyToFirstOption || false;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
         this.typeaheadSingleCharacter = options.typeaheadSingleCharacter || false;
         this.typeaheadMultiCharacter = options.typeaheadMultiCharacter || false;
+
+        // private options
+        // Note: when using setAttribute, any non-string value specified is converted automatically into a string.
+        this.attributes = {
+            button: [ 'aria-haspopup', 'listbox' ],
+            listbox: [ 'role', 'listbox' ],
+            option: [ 'role', 'option' ],
+            optionSelected: [ 'aria-selected', 'true' ]
+        };
+
+        this.selectors = {
+            button: '[aria-haspopup="listbox"]',
+            listbox: '[role="listbox"]',
+            option: '[role="option"]',
+            optionSelected: '[role="option"][aria-selected="true"]'
+        };
+    }
+
+    /**
+     * @function isButton
+     * @summary Test whether an element is a button.
+     * @memberof SingleSelect
+     *
+     * @param {*} element - DOM Element
+     * @returns {boolean} - True if a match else false
+     */
+    isButton(element) {
+        if (element.getAttribute(this.attributes.button[0]) === this.attributes.button[1]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @function isListbox
+     * @summary Test whether an element is a listbox.
+     * @memberof SingleSelect
+     *
+     * @param {*} element - DOM Element
+     * @returns {boolean} - True if a match else false
+     */
+    isListbox(element) {
+        if (element.getAttribute(this.attributes.listbox[0]) === this.attributes.listbox[1]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @function isOption
+     * @summary Test whether an element is an option.
+     * @memberof SingleSelect
+     *
+     * @param {*} element - DOM Element
+     * @returns {boolean} - True if a match else false
+     */
+    isOption(element) {
+        if (element.getAttribute(this.attributes.option[0]) === this.attributes.option[1]) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -72,17 +137,17 @@ class SingleSelect {
         let wrapper;
         let button;
 
-        if (focussed.getAttribute('role') === 'option') {
-            listbox = focussed.parentNode;
-        } else if (focussed.getAttribute('role') === 'listbox') {
+        if (this.isButton(focussed)) {
+            listbox = focussed.parentNode.querySelector(`:scope ${this.selectors.listbox}`);
+        } else if (this.isListbox(focussed)) {
             listbox = focussed;
-        } else if (focussed.getAttribute('aria-haspopup') === 'listbox') {
-            listbox = focussed.parentNode.querySelector(':scope [role="listbox"]');
+        } else if (this.isOption(focussed)) {
+            listbox = focussed.parentNode;
         }
 
         if (listbox !== null) {
             wrapper = listbox.parentNode;
-            button = wrapper.querySelector('[aria-haspopup="listbox"]');
+            button = wrapper.querySelector(this.selectors.button);
 
             if (targetState === 'open') {
                 listbox.removeAttribute('hidden');
@@ -167,8 +232,8 @@ class SingleSelect {
         const listbox = e.target;
 
         // :scope - only match selectors on descendants of the base element:
-        const options = listbox.querySelectorAll(':scope [role="option"]');
-        const selectedOptions = listbox.querySelectorAll(':scope [role="option"][aria-selected="true"]');
+        const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
+        const selectedOptions = listbox.querySelectorAll(`:scope ${this.selectors.optionSelected}`);
 
         // if no options are selected yet
         if (!selectedOptions.length) {
@@ -203,9 +268,9 @@ class SingleSelect {
 
         const focussed = document.activeElement;
 
-        if (focussed.getAttribute('role') === 'option') {
+        if (this.isOption(focussed)) {
             const listbox = focussed.parentNode;
-            const options = listbox.querySelectorAll(':scope [role="option"]');
+            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
 
             options[0].focus();
         }
@@ -223,9 +288,9 @@ class SingleSelect {
 
         const focussed = document.activeElement;
 
-        if (focussed.getAttribute('role') === 'option') {
+        if (this.isOption(focussed)) {
             const listbox = focussed.parentNode;
-            const options = listbox.querySelectorAll(':scope [role="option"]');
+            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
             const lastIndex = options.length - 1;
 
             options[lastIndex].focus();
@@ -240,7 +305,7 @@ class SingleSelect {
     focusNextOption() {
         const focussed = document.activeElement;
 
-        if (focussed.getAttribute('role') === 'option') {
+        if (this.isOption(focussed)) {
             const nextOption = focussed.nextElementSibling;
 
             if (nextOption) {
@@ -257,7 +322,7 @@ class SingleSelect {
     focusPreviousOption() {
         const focussed = document.activeElement;
 
-        if (focussed.getAttribute('role') === 'option') {
+        if (this.isOption(focussed)) {
             const previousOption = focussed.previousElementSibling;
 
             if (previousOption) {
@@ -274,17 +339,17 @@ class SingleSelect {
     selectFocussedOption() {
         const focussed = document.activeElement;
 
-        if (focussed.getAttribute('role') === 'option') {
+        if (this.isOption(focussed)) {
             const listbox = focussed.parentNode;
             const wrapper = listbox.parentNode;
-            const button = wrapper.querySelector(':scope button[aria-haspopup="listbox"]');
-            const options = listbox.querySelectorAll(':scope [role="option"]');
+            const button = wrapper.querySelector(`:scope ${this.selectors.button}`);
+            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
 
             options.forEach((option) => {
-                option.removeAttribute('aria-selected');
+                option.removeAttribute(this.attributes.optionSelected[0]);
             });
 
-            focussed.setAttribute('aria-selected', true);
+            focussed.setAttribute(this.attributes.optionSelected[0], this.attributes.optionSelected[1]);
 
             if (button) {
                 button.innerHTML = focussed.innerHTML;
@@ -304,8 +369,8 @@ class SingleSelect {
         const selects = document.querySelectorAll('.select');
 
         selects.forEach((select) => {
-            const button = select.querySelector(':scope button[aria-haspopup="listbox"]');
-            const listbox = select.querySelector('[role="listbox"]');
+            const button = select.querySelector(`:scope ${this.selectors.button}`);
+            const listbox = select.querySelector(`:scope ${this.selectors.listbox}`);
 
             button.addEventListener('click', this.toggleListbox.bind(this));
 
@@ -319,7 +384,7 @@ class SingleSelect {
             listbox.onkeydown = (e) => this.onKeyDown(e);
 
             // focus occurs on the focussed element only
-            const options = listbox.querySelectorAll(':scope [role="option"]');
+            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
 
             // :scope - only match selectors on descendants of the base element:
             options.forEach((option) => {
