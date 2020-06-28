@@ -60,6 +60,47 @@ class SingleSelect {
     }
 
     /**
+     * @function toggleListbox
+     * @summary Toggle the visibility listbox in the focussed select.
+     * @memberof SingleSelect
+     *
+     * @param {string} targetState - State to force
+     */
+    toggleListbox(targetState = null) {
+        const focussed = document.activeElement;
+        let listbox = null;
+        let wrapper;
+        let button;
+
+        if (focussed.getAttribute('role') === 'option') {
+            listbox = focussed.parentNode;
+        } else if (focussed.getAttribute('role') === 'listbox') {
+            listbox = focussed;
+        } else if (focussed.getAttribute('aria-haspopup') === 'listbox') {
+            listbox = focussed.parentNode.querySelector(':scope [role="listbox"]');
+        }
+
+        if (listbox !== null) {
+            wrapper = listbox.parentNode;
+            button = wrapper.querySelector('[aria-haspopup="listbox"]');
+
+            if (targetState === 'open') {
+                listbox.removeAttribute('hidden');
+                listbox.focus();
+            } else if (targetState === 'closed') {
+                listbox.setAttribute('hidden', true);
+                button.focus();
+            } else if (listbox.getAttribute('hidden')) {
+                listbox.removeAttribute('hidden');
+                listbox.focus();
+            } else {
+                listbox.setAttribute('hidden', true);
+                button.focus();
+            }
+        }
+    }
+
+    /**
      * @function onKeyDown
      * @memberof SingleSelect
      *
@@ -88,6 +129,7 @@ class SingleSelect {
         case 'Escape':
             console.log('Escape');
             e.preventDefault(); // prevent the natural key action
+            this.toggleListbox('closed');
             break;
         case 'Spacebar': // IE/Edge
         case ' ':
@@ -251,25 +293,6 @@ class SingleSelect {
     }
 
     /**
-     * @function onClickButton
-     * @summary Toggle the visibility of the listbox dropdown.
-     * @memberof SingleSelect
-     *
-     * @param {*} e - target of focus event
-     */
-    onClickButton(e) {
-        const button = e.target;
-        const wrapper = button.parentNode;
-        const listbox = wrapper.querySelector('[role="listbox"]:not([aria-multiselectable="true"]');
-
-        if (listbox.getAttribute('hidden')) {
-            listbox.removeAttribute('hidden');
-        } else {
-            listbox.setAttribute('hidden', true);
-        }
-    }
-
-    /**
      * @function init
      * @memberof SingleSelect
      *
@@ -282,9 +305,9 @@ class SingleSelect {
 
         selects.forEach((select) => {
             const button = select.querySelector(':scope button[aria-haspopup="listbox"]');
-            const listbox = select.querySelector('[role="listbox"]:not([aria-multiselectable="true"]');
+            const listbox = select.querySelector('[role="listbox"]');
 
-            button.addEventListener('click', this.onClickButton.bind(this));
+            button.addEventListener('click', this.toggleListbox.bind(this));
 
             // .addEventListener() sets the this pointer to the DOM element that caught the event
             // use .bind() to force the desired value of this
