@@ -1,8 +1,7 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
-/*  eslint-disable class-methods-use-this */
-// TODO https://jsdoc.app/tags-event.html
+/* eslint-disable class-methods-use-this */
 
 /**
  * @class Label
