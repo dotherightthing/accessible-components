@@ -216,6 +216,7 @@ class SingleSelect {
                 this.toggleListbox('open');
             } else if (this.isOption(document.activeElement)) {
                 this.selectFocussedOption();
+                this.toggleListbox('closed');
             }
 
             break;
@@ -227,6 +228,7 @@ class SingleSelect {
                 this.toggleListbox('open');
             } else if (this.isOption(document.activeElement)) {
                 this.selectFocussedOption();
+                this.toggleListbox('closed');
             }
 
             break;
