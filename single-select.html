@@ -22,7 +22,7 @@
         </fieldset>
         <fieldset>
             <legend>ARIA Single-select A</legend>
-            <p>Each option is a DOM descendant of the listbox. No default selection. Collapsible - button toggles listbox hidden attribute and displays selected value.</p>
+            <p>Each option is a DOM descendant of the listbox. No default selection. Collapsible.</p>
             <p class="label" data-for="listbox-a" id="listbox-a-label">Listbox A</p>
             <div class="select">
                 <button aria-haspopup="listbox">Default</button>
@@ -38,42 +38,51 @@
         </fieldset>
         <fieldset>
             <legend>ARIA Single-select B</legend>
-            <p>Each option is a DOM descendant of the listbox. Default selection.</p>
+            <p>Each option is a DOM descendant of the listbox. Default selection. Collapsible.</p>
             <p class="label" data-for="listbox-b" id="listbox-b-label">Listbox B</p>
-            <div class="select" id="listbox-b" role="listbox" aria-labelledby="listbox-b-label" tabindex="0">
-                <div role="option" aria-selected="true" tabindex="-1">Default</div>
-                <div role="option" tabindex="-1">Option B1</div>
-                <div role="option" tabindex="-1">Option B2</div>
-                <div role="option" tabindex="-1">Option B3</div>
-                <div role="option" tabindex="-1">Option B4</div>
-                <div role="option" tabindex="-1">Option B5</div>
+            <div class="select">
+                <button aria-haspopup="listbox">Default</button>
+                <div class="select" id="listbox-b" role="listbox" aria-labelledby="listbox-b-label" tabindex="0" hidden>
+                    <div role="option" aria-selected="true" tabindex="-1">Default</div>
+                    <div role="option" tabindex="-1">Option B1</div>
+                    <div role="option" tabindex="-1">Option B2</div>
+                    <div role="option" tabindex="-1">Option B3</div>
+                    <div role="option" tabindex="-1">Option B4</div>
+                    <div role="option" tabindex="-1">Option B5</div>
+                </div>
             </div>
         </fieldset>
         <fieldset>
             <legend>ARIA Single-select C</legend>
             <p>aria-owns exposes the parent/child contextual relationship, as each option is not a DOM descendant of the listbox. Default selection.</p>
             <p class="label" data-for="listbox-c" id="listbox-c-label">Listbox C</p>
-            <div class="select" id="listbox-c" role="listbox" aria-labelledby="listbox-c-label" aria-owns="option-c0 option-c1 option-c2 option-c3 option-c4 option-c5" tabindex="0">
-                <div>
-                    <div role="option" id="option-c0" aria-selected="true" tabindex="-1">Default</div>
-                    <div role="option" id="option-c1" tabindex="-1">Option C1</div>
-                    <div role="option" id="option-c2" tabindex="-1">Option C2</div>
-                    <div role="option" id="option-c3" tabindex="-1">Option C3</div>
-                    <div role="option" id="option-c4" tabindex="-1">Option C4</div>
-                    <div role="option" id="option-c5" tabindex="-1">Option C5</div>
+            <div class="select">
+                <button aria-haspopup="listbox">Default</button>
+                <div class="select" id="listbox-c" role="listbox" aria-labelledby="listbox-c-label" aria-owns="option-c0 option-c1 option-c2 option-c3 option-c4 option-c5" tabindex="0" hidden>
+                    <div>
+                        <div role="option" id="option-c0" aria-selected="true" tabindex="-1">Default</div>
+                        <div role="option" id="option-c1" tabindex="-1">Option C1</div>
+                        <div role="option" id="option-c2" tabindex="-1">Option C2</div>
+                        <div role="option" id="option-c3" tabindex="-1">Option C3</div>
+                        <div role="option" id="option-c4" tabindex="-1">Option C4</div>
+                        <div role="option" id="option-c5" tabindex="-1">Option C5</div>
+                    </div>
                 </div>
             </div>
         </fieldset>
         <fieldset>
             <legend>ARIA Multi-select</legend>
-            <p class="label" data-for="listbox-d" id="listbox-d-label">Listbox D</p>
-            <div class="select" id="listbox-d" role="listbox" aria-labelledby="listbox-d-label" aria-multiselectable="true" tabindex="0">
-                <div role="option" aria-selected="true">Default</div>
-                <div role="option" aria-selected="false">Option D1</div>
-                <div role="option" aria-selected="false">Option D2</div>
-                <div role="option" aria-selected="false">Option D3</div>
-                <div role="option" aria-selected="false">Option D4</div>
-                <div role="option" aria-selected="false">Option D5</div>
+            <p class="label" data-for="listbox-d" id="listbox-d-label">This should not be processed.</p>
+            <div class="select">
+                <button aria-haspopup="listbox">Default</button>
+                <div class="select" id="listbox-d" role="listbox" aria-labelledby="listbox-d-label" aria-multiselectable="true" tabindex="0" hidden>
+                    <div role="option" aria-selected="true">Default</div>
+                    <div role="option" aria-selected="false">Option D1</div>
+                    <div role="option" aria-selected="false">Option D2</div>
+                    <div role="option" aria-selected="false">Option D3</div>
+                    <div role="option" aria-selected="false">Option D4</div>
+                    <div role="option" aria-selected="false">Option D5</div>
+                </div>
             </div>
         </fieldset>
     </body>

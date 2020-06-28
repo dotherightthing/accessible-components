@@ -69,7 +69,7 @@ class SingleSelect {
         };
 
         this.selectors = {
-            button: '[aria-haspopup="listbox"]',
+            button: 'button[aria-haspopup="listbox"]',
             listbox: '[role="listbox"]',
             option: '[role="option"]',
             optionSelected: '[role="option"][aria-selected="true"]'
@@ -382,8 +382,15 @@ class SingleSelect {
 
         selects.forEach((select) => {
             const button = select.querySelector(`:scope ${this.selectors.button}`);
-            const listbox = select.querySelector(`:scope ${this.selectors.listbox}`);
+            const listbox = select.querySelector(`:scope ${this.selectors.listbox}:not([aria-multiselectable="true"])`);
+            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
 
+            // keydown events bubble up from the element with focus
+            // so we can handle keyboard interactions for
+            // button, listbox and option altogether
+            select.onkeydown = (e) => this.onKeyDown(e);
+
+            // TODO: error
             button.addEventListener('click', this.toggleListbox.bind(this));
 
             // .addEventListener() sets the this pointer to the DOM element that caught the event
@@ -391,13 +398,7 @@ class SingleSelect {
             // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
             listbox.addEventListener('focus', this.onFocusListbox.bind(this));
 
-            // keydown events bubble up from the element with focus
-            // so we can handle button, listbox and option interactions together
-            select.onkeydown = (e) => this.onKeyDown(e);
-
             // focus occurs on the focussed element only
-            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
-
             // :scope - only match selectors on descendants of the base element:
             options.forEach((option) => {
                 option.addEventListener('focus', this.onFocusOption.bind(this));
