@@ -10,8 +10,8 @@
         <h1>Single select</h1>
         <fieldset>
             <legend>Native select</legend>
-            <label class="label" for="select">Native select</label>
-            <select class="select" id="select">
+            <label for="select">Native select</label>
+            <select id="select">
                 <option value="">Default</option>
                 <option value="option1">Option 1</option>
                 <option value="option2">Option 2</option>
@@ -22,14 +22,18 @@
         </fieldset>
         <fieldset>
             <legend>ARIA Single-select A</legend>
-            <p>Each option is a DOM descendant of the listbox. No default selection.</p>
+            <p>Each option is a DOM descendant of the listbox. No default selection. Collapsible - button toggles listbox hidden attribute and displays selected value.</p>
             <p class="label" data-for="listbox-a" id="listbox-a-label">Listbox A</p>
-            <div class="select" id="listbox-a" role="listbox" aria-labelledby="listbox-a-label" tabindex="0">
-                <div role="option" tabindex="-1">Option A1</div>
-                <div role="option" tabindex="-1">Option A2</div>
-                <div role="option" tabindex="-1">Option A3</div>
-                <div role="option" tabindex="-1">Option A4</div>
-                <div role="option" tabindex="-1">Option A5</div>
+            <div class="select">
+                <button aria-haspopup="listbox">Default</button>
+                <div id="listbox-a" role="listbox" aria-labelledby="listbox-a-label" tabindex="0" hidden>
+                    <div role="option" tabindex="-1">Default</div>
+                    <div role="option" tabindex="-1">Option A1</div>
+                    <div role="option" tabindex="-1">Option A2</div>
+                    <div role="option" tabindex="-1">Option A3</div>
+                    <div role="option" tabindex="-1">Option A4</div>
+                    <div role="option" tabindex="-1">Option A5</div>
+                </div>
             </div>
         </fieldset>
         <fieldset>

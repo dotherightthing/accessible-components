@@ -234,6 +234,8 @@ class SingleSelect {
 
         if (focussed.getAttribute('role') === 'option') {
             const listbox = focussed.parentNode;
+            const wrapper = listbox.parentNode;
+            const button = wrapper.querySelector(':scope button[aria-haspopup="listbox"]');
             const options = listbox.querySelectorAll(':scope [role="option"]');
 
             options.forEach((option) => {
@@ -241,6 +243,29 @@ class SingleSelect {
             });
 
             focussed.setAttribute('aria-selected', true);
+
+            if (button) {
+                button.innerHTML = focussed.innerHTML;
+            }
+        }
+    }
+
+    /**
+     * @function onClickButton
+     * @summary Toggle the visibility of the listbox dropdown.
+     * @memberof SingleSelect
+     *
+     * @param {*} e - target of focus event
+     */
+    onClickButton(e) {
+        const button = e.target;
+        const wrapper = button.parentNode;
+        const listbox = wrapper.querySelector('[role="listbox"]:not([aria-multiselectable="true"]');
+
+        if (listbox.getAttribute('hidden')) {
+            listbox.removeAttribute('hidden');
+        } else {
+            listbox.setAttribute('hidden', true);
         }
     }
 
@@ -252,9 +277,15 @@ class SingleSelect {
      * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
      */
     init() {
-        const listboxes = document.querySelectorAll('[role="listbox"]:not([aria-multiselectable="true"]');
+        // .select wrapper allows button and listbox to be styled together
+        const selects = document.querySelectorAll('.select');
 
-        listboxes.forEach((listbox) => {
+        selects.forEach((select) => {
+            const button = select.querySelector(':scope button[aria-haspopup="listbox"]');
+            const listbox = select.querySelector('[role="listbox"]:not([aria-multiselectable="true"]');
+
+            button.addEventListener('click', this.onClickButton.bind(this));
+
             // .addEventListener() sets the this pointer to the DOM element that caught the event
             // use .bind() to force the desired value of this
             // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
@@ -264,6 +295,7 @@ class SingleSelect {
             // so we can handle listbox and option interactions together
             listbox.onkeydown = (e) => this.onKeyDown(e);
 
+            // focus occurs on the focussed element only
             const options = listbox.querySelectorAll(':scope [role="option"]');
 
             // :scope - only match selectors on descendants of the base element:
