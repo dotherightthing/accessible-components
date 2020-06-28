@@ -182,13 +182,25 @@ class SingleSelect {
         case 'ArrowUp':
             console.log('ArrowUp');
             e.preventDefault(); // prevent the natural key action
-            this.focusPreviousOption();
+
+            if (this.isButton(document.activeElement)) {
+                this.toggleListbox('open');
+            } else if (this.isOption(document.activeElement)) {
+                this.focusPreviousOption();
+            }
+
             break;
         case 'Down': // IE/Edge
         case 'ArrowDown':
             console.log('ArrowDown');
             e.preventDefault(); // prevent the natural key action
-            this.focusNextOption();
+
+            if (this.isButton(document.activeElement)) {
+                this.toggleListbox('open');
+            } else if (this.isOption(document.activeElement)) {
+                this.focusNextOption();
+            }
+
             break;
         case 'Esc': // IE/Edge
         case 'Escape':
@@ -380,8 +392,8 @@ class SingleSelect {
             listbox.addEventListener('focus', this.onFocusListbox.bind(this));
 
             // keydown events bubble up from the element with focus
-            // so we can handle listbox and option interactions together
-            listbox.onkeydown = (e) => this.onKeyDown(e);
+            // so we can handle button, listbox and option interactions together
+            select.onkeydown = (e) => this.onKeyDown(e);
 
             // focus occurs on the focussed element only
             const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
