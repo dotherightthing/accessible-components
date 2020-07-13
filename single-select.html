@@ -8,7 +8,7 @@
     </head>
     <body>
         <h1>Single select</h1>
-        <fieldset>
+        <fieldset id="test-0">
             <legend>Native select</legend>
             <label for="select">Native select</label>
             <select id="select">
@@ -20,7 +20,7 @@
                 <option value="option5">Option 5</option>
             </select>
         </fieldset>
-        <fieldset>
+        <fieldset id="test-1">
             <legend>ARIA Single-select A</legend>
             <p>Each option is a DOM descendant of the listbox. No default selection. Collapsible.</p>
             <p class="label" data-for="listbox-a-button" id="listbox-a-label">Listbox A</p>
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </fieldset>
-        <fieldset>
+        <fieldset id="test-2">
             <legend>ARIA Single-select B</legend>
             <p>Each option is a DOM descendant of the listbox. Default selection. Collapsible.</p>
             <p class="label" data-for="listbox-b-button" id="listbox-b-label">Listbox B</p>
@@ -52,7 +52,7 @@
                 </div>
             </div>
         </fieldset>
-        <fieldset>
+        <fieldset id="test-3">
             <legend>ARIA Single-select C</legend>
             <p>aria-owns exposes the parent/child contextual relationship, as each option is not a DOM descendant of the listbox. Default selection.</p>
             <p class="label" data-for="listbox-c-button" id="listbox-c-label">Listbox C</p>
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </fieldset>
-        <fieldset>
+        <fieldset id="test-4">
             <legend>ARIA Multi-select</legend>
             <p class="label" data-for="listbox-d-button" id="listbox-d-label">This should not be processed.</p>
             <div class="select">

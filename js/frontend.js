@@ -514,21 +514,17 @@ class SingleSelect {
         const callback = function (mutationsList) {
             mutationsList.forEach(function (mutation) { // eslint-disable-line func-names
                 if (mutation.type === 'attributes') {
-                    if (mutation.attributeName === _self.attributes.optionSelected[0]) {
+                    if (mutation.attributeName === selectedAttributeProperty) {
                         // if an option was just selected
                         if (mutation.target.getAttribute(selectedAttributeProperty) === selectedAttributeValue) {
-                            const focussed = document.activeElement;
+                            let listbox = _self.getParentListbox(mutation.target);
 
-                            if (focussed) {
-                                let listbox = _self.getParentListbox(focussed);
+                            if (listbox !== null) {
+                                if (listbox.parentElement) {
+                                    let wrapper = listbox.parentElement;
+                                    let button = wrapper.querySelector(_self.selectors.button);
 
-                                if (listbox !== null) {
-                                    if (listbox.parentElement) {
-                                        let wrapper = listbox.parentElement;
-                                        let button = wrapper.querySelector(_self.selectors.button);
-
-                                        _self.setButtonText(button, focussed.innerHTML);
-                                    }
+                                    _self.setButtonText(button, mutation.target.innerHTML);
                                 }
                             }
                         }
