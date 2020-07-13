@@ -4,6 +4,289 @@
 /* eslint-disable class-methods-use-this */
 
 /**
+ * @class KeyboardHelpers
+ *
+ * @param {object} options                              - Module options
+ * @param {null|NodeList} options.navigationElements    - The child DOM element(s) which will become keyboard navigable
+ * @param {object} options.navigationActions            - The key(s) to press to navigate
+ * @param {null|Node} options.parentElement             - The parent DOM element
+ * @param {Array} options.selectedAttribute             - Property and Value applied to the selected navigableElement
+ * @param {boolean} options.selectionFollowsFocus       - Automatically select the focussed option, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
+ * @param {object} options.toggleActions                - The key(s) to press to toggle the parent state
+ * @param {null|Node} options.toggleElement             - The DOM element which toggles the parent state
+ * @param {boolean} options.toggleOnSelectFocussed      - Whether to trigger the toggle action when the element is selected
+ */
+class KeyboardHelpers {
+    constructor(options = {}) {
+        // public options
+        this.navigationElements = options.navigationElements || null;
+        this.navigationActions = options.navigationActions || {};
+        this.parentElement = options.parentElement || null;
+        this.selectedAttribute = options.selectedAttribute || [];
+        this.selectionFollowsFocus = options.selectionFollowsFocus || false;
+        this.toggleActions = options.toggleActions || {};
+        this.toggleElement = options.toggleElement || null;
+        this.toggleOnSelectFocussed = options.toggleOnSelectFocussed || false;
+    }
+
+    /**
+     * @function normaliseKey
+     * @summary Convert IE/Edge keys to match modern browsers
+     * @memberof KeyboardHelpers
+     *
+     * @param {string} keyPressed - keypress event (e.key)
+     * @returns {string} key - normalised key
+     *
+     * @see https://keycode.info/
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
+     */
+    normaliseKey(keyPressed) {
+        let key = keyPressed;
+
+        // Home - macOS is Fn + ArrowLeft
+        // End - macOS is Fn + ArrowRight
+
+        if (keyPressed === 'Down') {
+            key = 'ArrowDown';
+        } else if (keyPressed === 'Up') {
+            key = 'ArrowUp';
+        } else if (keyPressed === 'Spacebar') {
+            key = ' ';
+        } else if (keyPressed === 'Esc') {
+            key = 'Escape';
+        }
+
+        return key;
+    }
+
+    /**
+     * @function toggle
+     * @summary Toggle something by triggering a click on the toggleElement
+     * @memberof KeyboardHelpers
+     */
+    toggle() {
+        this.toggleElement.focus();
+        this.toggleElement.click();
+    }
+
+    /**
+     * @function toggleClosed
+     * @summary Toggle something by triggering a click on the toggleElement
+     * @memberof KeyboardHelpers
+     *
+     * @description This is a duplicate of toggle, which allows the Escape key to be excluded from toggle
+     */
+    toggleClosed() {
+        this.toggleElement.focus();
+        this.toggleElement.click();
+    }
+
+    /**
+     * @function onKeyDown
+     * @memberof KeyboardHelpers
+     *
+     * @param {*} e - target of keydown event
+     *
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
+     * @see https://stackoverflow.com/questions/24386354/execute-js-code-after-pressing-the-spacebar
+     * @todo Ignore Shift+Tab
+     */
+    onKeyDown(e) {
+        const keyPressed = this.normaliseKey(e.key);
+
+        // separate action objects allow keys to have different functions in different contexts
+        const navigationActions = Object.keys(this.navigationActions);
+        const toggleActions = Object.keys(this.toggleActions);
+
+        if (this.isNavigableElement(e.target)) {
+            navigationActions.forEach((navigationAction) => {
+                // if the pressed key is in the navigationAction's array
+                if (this.navigationActions[navigationAction].includes(keyPressed)) {
+                    e.preventDefault(); // prevent the natural key action
+                    e.stopPropagation(); // else keypress is registered twice
+                    this[navigationAction].call(this, e);
+                }
+            });
+        } else if (this.isParentElement(e.target)) { // toggleElement already natively supports ENTER
+            toggleActions.forEach((toggleAction) => {
+                // if the pressed key is in the navigationAction's array
+                if (this.toggleActions[toggleAction].includes(keyPressed)) {
+                    e.preventDefault(); // prevent the natural key action
+                    e.stopPropagation(); // else keypress is registered twice
+                    this[toggleAction].call(this, e);
+                }
+            });
+        }
+    }
+
+    /**
+     * @function focusFirst
+     * @summary Move the focus to the first option
+     * @memberof KeyboardHelpers
+     */
+    focusFirst() {
+        this.navigationElements[0].focus();
+    }
+
+    /**
+     * @function focusLast
+     * @summary Move the focus to the last option
+     * @memberof KeyboardHelpers
+     */
+    focusLast() {
+        const lastIndex = this.navigationElements.length - 1;
+        this.navigationElements[lastIndex].focus();
+    }
+
+    /**
+     * @function focusNext
+     * @summary Move the focus to the next option, if one exists
+     * @memberof KeyboardHelpers
+     */
+    focusNext() {
+        const focussed = document.activeElement;
+        const nextOption = focussed.nextElementSibling;
+
+        if (nextOption) {
+            nextOption.focus();
+        }
+    }
+
+    /**
+     * @function focusPrevious
+     * @summary Move the focus to the previous option, if one exists
+     * @memberof KeyboardHelpers
+     */
+    focusPrevious() {
+        const focussed = document.activeElement;
+        const previousOption = focussed.previousElementSibling;
+
+        if (previousOption) {
+            previousOption.focus();
+        }
+    }
+
+    /**
+     * @function isNavigableElement
+     * @summary Determine whether the element is one of our navigationElements
+     * @memberof KeyboardHelpers
+     *
+     * @param {Node} element - DOM element
+     * @returns {boolean} isNavigableElement
+     */
+    isNavigableElement(element) {
+        let isNavigableElement = false;
+
+        this.navigationElements.forEach((navigableElement) => {
+            // if the focussed element is one of the navigationElements
+            if (navigableElement === element) {
+                isNavigableElement = true;
+            }
+        });
+
+        return isNavigableElement;
+    }
+
+    /**
+     * @function isParentElement
+     * @summary Determine whether the element is the parentElement
+     * @memberof KeyboardHelpers
+     *
+     * @param {Node} element - DOM element
+     * @returns {boolean} isParentElement
+     */
+    isParentElement(element) {
+        let isParentElement = false;
+
+        if (this.parentElement === element) {
+            isParentElement = true;
+        }
+
+        return isParentElement;
+    }
+
+    /**
+     * @function isToggleElement
+     * @summary Determine whether the element is the toggleElement
+     * @memberof KeyboardHelpers
+     *
+     * @param {Node} element - DOM element
+     * @returns {boolean} isToggleElement
+     */
+    isToggleElement(element) {
+        let isToggleElement = false;
+
+        if (this.toggleElement === element) {
+            isToggleElement = true;
+        }
+
+        return isToggleElement;
+    }
+
+    /**
+     * @function onOptionFocus
+     * @summary React when an option is focussed
+     * @memberof KeyboardHelpers
+     */
+    onOptionFocus() {
+        if (this.selectionFollowsFocus) {
+            this.selectFocussed();
+        }
+    }
+
+    /**
+     * @function selectFocussed
+     * @summary When selection does not follow focus, the user changes which element is selected by pressing the Enter or Space key.
+     * @memberof KeyboardHelpers
+     *
+     * @param {object|undefined} e - Keydown event
+     */
+    selectFocussed(e) {
+        const focussed = document.activeElement;
+
+        if (this.isNavigableElement(focussed)) {
+            const selectedAttributeProperty = this.selectedAttribute[0];
+            const selectedAttributeValue = this.selectedAttribute[1];
+
+            this.navigationElements.forEach((element2) => {
+                element2.removeAttribute(selectedAttributeProperty);
+            });
+
+            focussed.setAttribute(selectedAttributeProperty, selectedAttributeValue);
+
+            if (typeof e === 'object') {
+                if (this.toggleOnSelectFocussed) {
+                    this.toggleClosed();
+                }
+            }
+        }
+    }
+
+    /**
+     * @function init
+     * @memberof KeyboardHelpers
+     *
+     * @see [“This” within es6 class method](https://stackoverflow.com/questions/36489579/this-within-es6-class-method)
+     * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
+     */
+    init() {
+        if (this.navigationElements.length) {
+            // TODO event delegation
+            this.navigationElements.forEach((element) => {
+                element.addEventListener('keydown', this.onKeyDown.bind(this));
+
+                // focus occurs on the focussed element only
+                element.addEventListener('focus', this.onOptionFocus.bind(this));
+            });
+        }
+
+        if (this.parentElement !== null) {
+            this.parentElement.addEventListener('keydown', this.onKeyDown.bind(this));
+        }
+    }
+}
+
+/**
  * @class Label
  */
 class Label {
@@ -41,12 +324,12 @@ class Label {
  * @class SingleSelect
  *
  * @param {object} options - Module options
- * @param {boolean} options.autoSelectFirstOption - Select the first option in the listbox
- * @param {boolean} options.endKeyToLastOption - Pressing End will focus the last option in the listbox
- * @param {boolean} options.homeKeyToFirstOption - Pressing Home will focus the first option in the listbox
- * @param {boolean} options.selectionFollowsFocus - Select the focussed option, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
- * @param {boolean} options.typeaheadSingleCharacter - Focus moves to the next item with a name that starts with the typed character (TODO)
- * @param {boolean} options.typeaheadMultiCharacter - Focus moves to the next item with a name that starts with the string of characters typed (TODO)
+ * @param {boolean} options.autoSelectFirstOption       - Select the first option in the listbox
+ * @param {boolean} options.endKeyToLastOption          - Pressing End will focus the last option in the listbox
+ * @param {boolean} options.homeKeyToFirstOption        - Pressing Home will focus the first option in the listbox
+ * @param {boolean} options.selectionFollowsFocus       - Select the focussed option, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
+ * @param {boolean} options.typeaheadSingleCharacter    - Focus moves to the next item with a name that starts with the typed character (TODO)
+ * @param {boolean} options.typeaheadMultiCharacter     - Focus moves to the next item with a name that starts with the string of characters typed (TODO)
  */
 class SingleSelect {
     constructor(options = {}) {
@@ -63,6 +346,7 @@ class SingleSelect {
         this.attributes = {
             button: [ 'aria-haspopup', 'listbox' ],
             listbox: [ 'role', 'listbox' ],
+            listboxHidden: [ 'hidden', true ],
             option: [ 'role', 'option' ],
             optionSelected: [ 'aria-selected', 'true' ]
         };
@@ -73,6 +357,64 @@ class SingleSelect {
             option: '[role="option"]',
             optionSelected: '[role="option"][aria-selected="true"]'
         };
+    }
+
+    /**
+     * @function focusOption
+     * @memberof SingleSelect
+     *
+     * @param {*} e - target of focus event
+     */
+    focusOption(e) {
+        const listbox = e.target;
+
+        // :scope - only match selectors on descendants of the base element:
+        const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
+        const selectedOptions = listbox.querySelectorAll(`:scope ${this.selectors.optionSelected}`);
+
+        // if no options are selected yet
+        if (!selectedOptions.length) {
+            // focus the first option
+            options[0].focus();
+        } else {
+            // focus the first selected option
+            selectedOptions[0].focus();
+        }
+    }
+
+    /**
+     * @function getParentListbox
+     * @memberof SingleSelect
+     *
+     * @param {Node} childElement - Listbox child element
+     * @returns {Node} element - Listbox
+     */
+    getParentListbox(childElement) {
+        let i = 0;
+        let limit = 10; // for debugging
+        let listbox;
+
+        if (this.isButton(childElement)) {
+            const wrapper = childElement.parentElement;
+            listbox = wrapper.querySelector(`:scope ${this.selectors.listbox}`);
+        } else {
+            listbox = childElement;
+        }
+
+        while (!this.isListbox(listbox) && (i < limit)) {
+            // parentElement goes all the way up to the document which doesn't support getAttribute
+            if (listbox.parentElement) {
+                listbox = listbox.parentElement;
+            }
+
+            i += 1;
+        }
+
+        if (!this.isListbox(listbox)) {
+            listbox = null;
+        }
+
+        return listbox;
     }
 
     /**
@@ -108,278 +450,96 @@ class SingleSelect {
     }
 
     /**
-     * @function isOption
-     * @summary Test whether an element is an option.
+     * @function setButtonText
+     * @summary Change the text within the button which triggers the listbox.
      * @memberof SingleSelect
      *
-     * @param {*} element - DOM Element
-     * @returns {boolean} - True if a match else false
+     * @param {Node} button - Button
+     * @param {string} text - Text
      */
-    isOption(element) {
-        if (element.getAttribute(this.attributes.option[0]) === this.attributes.option[1]) {
-            return true;
-        }
-
-        return false;
+    setButtonText(button, text) {
+        button.innerHTML = text;
     }
 
     /**
-     * @function toggleListbox
+     * @function toggleHidden
      * @summary Toggle the visibility listbox in the focussed select.
      * @memberof SingleSelect
-     *
-     * @param {string} targetState - State to force
      */
-    toggleListbox(targetState = null) {
+    toggleHidden(e) {
         const focussed = document.activeElement;
-        let listbox = null;
-        let wrapper;
-        let button;
 
-        if (this.isButton(focussed)) {
-            listbox = focussed.parentNode.querySelector(`:scope ${this.selectors.listbox}`);
-        } else if (this.isListbox(focussed)) {
-            listbox = focussed;
-        } else if (this.isOption(focussed)) {
-            listbox = focussed.parentNode;
-        }
+        if (focussed) {
+            let listbox = this.getParentListbox(focussed);
 
-        if (listbox !== null) {
-            wrapper = listbox.parentNode;
-            button = wrapper.querySelector(this.selectors.button);
+            if (listbox !== null) {
+                if (listbox.parentElement) {
+                    let wrapper = listbox.parentElement;
+                    let button = wrapper.querySelector(this.selectors.button);
 
-            if (targetState === 'open') {
-                listbox.removeAttribute('hidden');
-                listbox.focus();
-            } else if (targetState === 'closed') {
-                listbox.setAttribute('hidden', true);
-                button.focus(); // TODO fails for Listbox C
-            } else if (listbox.getAttribute('hidden')) {
-                listbox.removeAttribute('hidden');
-                listbox.focus();
-            } else {
-                listbox.setAttribute('hidden', true);
-                button.focus();
+                    if (listbox.hasAttribute(this.attributes.listboxHidden[0])) {
+                        listbox.removeAttribute(this.attributes.listboxHidden[0]);
+                        listbox.focus();
+                    } else {
+                        listbox.setAttribute(this.attributes.listboxHidden[0], this.attributes.listboxHidden[1]);
+                        button.focus();
+                    }
+                }
             }
         }
     }
 
     /**
-     * @function onKeyDown
+     * @function watchFocus
+     * @summary Watch for changes in the target
      * @memberof SingleSelect
      *
-     * @param {*} e - target of focus event
-     *
-     * @see https://keycode.info/
-     * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
-     * @see https://stackoverflow.com/questions/24386354/execute-js-code-after-pressing-the-spacebar
-     * @todo Ignore Shift+Tab
+     * @param {Node} target - Target to watch for changes
      */
-    onKeyDown(e) {
-        switch (e.key) {
-        case 'Up': // IE/Edge
-        case 'ArrowUp':
-            console.log('ArrowUp');
-            e.preventDefault(); // prevent the natural key action
+    watchFocus(target) {
+        // Options for the observer (which mutations to observe)
+        const config = {
+            attributes: true,
+            childList: false,
+            subtree: true
+        };
 
-            if (this.isButton(document.activeElement)) {
-                this.toggleListbox('open');
-            } else if (this.isOption(document.activeElement)) {
-                this.focusPreviousOption();
-            }
+        const _self = this;
+        const selectedAttributeProperty = this.attributes.optionSelected[0];
+        const selectedAttributeValue = this.attributes.optionSelected[1];
 
-            break;
-        case 'Down': // IE/Edge
-        case 'ArrowDown':
-            console.log('ArrowDown');
-            e.preventDefault(); // prevent the natural key action
+        // Callback function to execute when mutations are observed
+        const callback = function (mutationsList) {
+            mutationsList.forEach(function (mutation) { // eslint-disable-line func-names
+                if (mutation.type === 'attributes') {
+                    if (mutation.attributeName === _self.attributes.optionSelected[0]) {
+                        // if an option was just selected
+                        if (mutation.target.getAttribute(selectedAttributeProperty) === selectedAttributeValue) {
+                            const focussed = document.activeElement;
 
-            if (this.isButton(document.activeElement)) {
-                this.toggleListbox('open');
-            } else if (this.isOption(document.activeElement)) {
-                this.focusNextOption();
-            }
+                            if (focussed) {
+                                let listbox = _self.getParentListbox(focussed);
 
-            break;
-        case 'Esc': // IE/Edge
-        case 'Escape':
-            console.log('Escape');
-            e.preventDefault(); // prevent the natural key action
-            this.toggleListbox('closed');
-            break;
-        case 'Spacebar': // IE/Edge
-        case ' ':
-            console.log('Spacebar');
-            e.preventDefault(); // prevent the natural key action
+                                if (listbox !== null) {
+                                    if (listbox.parentElement) {
+                                        let wrapper = listbox.parentElement;
+                                        let button = wrapper.querySelector(_self.selectors.button);
 
-            if (this.isButton(document.activeElement)) {
-                this.toggleListbox('open');
-            } else if (this.isOption(document.activeElement)) {
-                this.selectFocussedOption();
-                this.toggleListbox('closed');
-            }
-
-            break;
-        case 'Enter':
-            console.log('Enter');
-            e.preventDefault(); // prevent the natural key action
-
-            if (this.isButton(document.activeElement)) {
-                this.toggleListbox('open');
-            } else if (this.isOption(document.activeElement)) {
-                this.selectFocussedOption();
-                this.toggleListbox('closed');
-            }
-
-            break;
-        case 'Home': // macOS is Fn + ArrowLeft
-            console.log('Home');
-            e.preventDefault(); // prevent the natural key action
-            this.focusFirstOption();
-            break;
-        case 'End': // macOS is Fn + ArrowRight
-            console.log('End');
-            e.preventDefault(); // prevent the natural key action
-            this.focusLastOption();
-            break;
-        default:
-            console.log(e.key);
-        }
-    }
-
-    /**
-     * @function onFocusListbox
-     * @memberof SingleSelect
-     *
-     * @param {*} e - target of focus event
-     */
-    onFocusListbox(e) {
-        const listbox = e.target;
-
-        // :scope - only match selectors on descendants of the base element:
-        const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
-        const selectedOptions = listbox.querySelectorAll(`:scope ${this.selectors.optionSelected}`);
-
-        // if no options are selected yet
-        if (!selectedOptions.length) {
-            // focus the first option
-            options[0].focus();
-        } else {
-            // focus the first selected option
-            selectedOptions[0].focus();
-        }
-    }
-
-    /**
-     * @function onFocusOption
-     * @summary React when an option is focussed
-     * @memberof SingleSelect
-     */
-    onFocusOption() {
-        if (this.selectionFollowsFocus) {
-            this.selectFocussedOption();
-        }
-    }
-
-    /**
-     * @function focusFirstOption
-     * @summary Move the focus to the first option
-     * @memberof SingleSelect
-     */
-    focusFirstOption() {
-        if (!this.homeKeyToFirstOption) {
-            return;
-        }
-
-        const focussed = document.activeElement;
-
-        if (this.isOption(focussed)) {
-            const listbox = focussed.parentNode;
-            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
-
-            options[0].focus();
-        }
-    }
-
-    /**
-     * @function focusLastOption
-     * @summary Move the focus to the last option
-     * @memberof SingleSelect
-     */
-    focusLastOption() {
-        if (!this.endKeyToLastOption) {
-            return;
-        }
-
-        const focussed = document.activeElement;
-
-        if (this.isOption(focussed)) {
-            const listbox = focussed.parentNode;
-            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
-            const lastIndex = options.length - 1;
-
-            options[lastIndex].focus();
-        }
-    }
-
-    /**
-     * @function focusNextOption
-     * @summary Move the focus to the next option, if one exists
-     * @memberof SingleSelect
-     */
-    focusNextOption() {
-        const focussed = document.activeElement;
-
-        if (this.isOption(focussed)) {
-            const nextOption = focussed.nextElementSibling;
-
-            if (nextOption) {
-                nextOption.focus();
-            }
-        }
-    }
-
-    /**
-     * @function focusPreviousOption
-     * @summary Move the focus to the previous option, if one exists
-     * @memberof SingleSelect
-     */
-    focusPreviousOption() {
-        const focussed = document.activeElement;
-
-        if (this.isOption(focussed)) {
-            const previousOption = focussed.previousElementSibling;
-
-            if (previousOption) {
-                previousOption.focus();
-            }
-        }
-    }
-
-    /**
-     * @function selectFocussedOption
-     * @summary When selection does not follow focus, the user changes which element is selected by pressing the Enter or Space key.
-     * @memberof SingleSelect
-     */
-    selectFocussedOption() {
-        const focussed = document.activeElement;
-
-        if (this.isOption(focussed)) {
-            const listbox = focussed.parentNode;
-            const wrapper = listbox.parentNode;
-            const button = wrapper.querySelector(`:scope ${this.selectors.button}`);
-            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
-
-            options.forEach((option) => {
-                option.removeAttribute(this.attributes.optionSelected[0]);
+                                        _self.setButtonText(button, focussed.innerHTML);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             });
+        };
 
-            focussed.setAttribute(this.attributes.optionSelected[0], this.attributes.optionSelected[1]);
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
 
-            if (button) {
-                button.innerHTML = focussed.innerHTML;
-            }
-        }
+        // Start observing the target node for configured mutations
+        observer.observe(target, config);
     }
 
     /**
@@ -399,24 +559,45 @@ class SingleSelect {
 
             if (listbox) {
                 const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
+                const selectedAttributeProperty = this.attributes.optionSelected[0];
+                const selectedAttributeValue = this.attributes.optionSelected[1];
 
-                // keydown events bubble up from the element with focus
+                // TODO apply public options here
+                // TODO Cypress tests
+                // TODO button requires 2x ENTER to show listbox
+                const SingleSelectKeys = new KeyboardHelpers({
+                    navigationActions: {
+                        focusFirst: [ 'Home' ],
+                        focusLast: [ 'End' ],
+                        focusNext: [ 'ArrowDown' ],
+                        focusPrevious: [ 'ArrowUp' ],
+                        selectFocussed: [ 'Enter', ' ' ]
+                    },
+                    navigationElements: options,
+                    parentElement: select,
+                    selectedAttribute: [ selectedAttributeProperty, selectedAttributeValue ],
+                    selectionFollowsFocus: true,
+                    toggleActions: {
+                        toggle: [ 'ArrowUp', 'ArrowDown', 'Enter', ' ' ],
+                        toggleClosed: [ 'Enter', ' ', 'Escape' ]
+                    },
+                    toggleElement: button,
+                    toggleOnSelectFocussed: true
+                });
+
+                SingleSelectKeys.init();
+
+                // keydown events bubble up from the element with click
                 // so we can handle keyboard interactions for
                 // button, listbox and option altogether
-                select.onkeydown = (e) => this.onKeyDown(e);
-
-                button.addEventListener('click', this.toggleListbox.bind(this));
+                select.addEventListener('click', this.toggleHidden.bind(this));
 
                 // .addEventListener() sets the this pointer to the DOM element that caught the event
                 // use .bind() to force the desired value of this
                 // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
-                listbox.addEventListener('focus', this.onFocusListbox.bind(this));
+                listbox.addEventListener('focus', this.focusOption.bind(this));
 
-                // focus occurs on the focussed element only
-                // :scope - only match selectors on descendants of the base element:
-                options.forEach((option) => {
-                    option.addEventListener('focus', this.onFocusOption.bind(this));
-                });
+                this.watchFocus(listbox);
             }
         });
     }
@@ -426,15 +607,10 @@ document.onreadystatechange = () => {
     // The document has finished loading and the document has been parsed
     // but sub-resources such as images, stylesheets and frames are still loading.
     if (document.readyState === 'interactive') {
-        let label = new Label();
-
-        let singleSelect = new SingleSelect({
-            endKeyToLastOption: true,
-            homeKeyToFirstOption: true,
-            selectionFollowsFocus: false
-        });
-
+        const label = new Label();
         label.init();
+
+        const singleSelect = new SingleSelect();
         singleSelect.init();
     }
 };
