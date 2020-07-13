@@ -324,22 +324,23 @@ class Label {
  * @class SingleSelect
  *
  * @param {object} options - Module options
- * @param {boolean} options.autoSelectFirstOption       - Select the first option in the listbox
  * @param {boolean} options.endKeyToLastOption          - Pressing End will focus the last option in the listbox
  * @param {boolean} options.homeKeyToFirstOption        - Pressing Home will focus the first option in the listbox
  * @param {boolean} options.selectionFollowsFocus       - Select the focussed option, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
- * @param {boolean} options.typeaheadSingleCharacter    - Focus moves to the next item with a name that starts with the typed character (TODO)
- * @param {boolean} options.typeaheadMultiCharacter     - Focus moves to the next item with a name that starts with the string of characters typed (TODO)
+ *
+ * @todo {boolean} options.autoSelectFirstOption       - Select the first option in the listbox
+ * @todo {boolean} options.typeaheadSingleCharacter     - Focus moves to the next item with a name that starts with the typed character (TODO)
+ * @todo {boolean} options.typeaheadMultiCharacter      - Focus moves to the next item with a name that starts with the string of characters typed (TODO)
  */
 class SingleSelect {
     constructor(options = {}) {
         // public options
-        this.autoSelectFirstOption = options.autoSelectFirstOption || false;
         this.endKeyToLastOption = options.endKeyToLastOption || false;
         this.homeKeyToFirstOption = options.homeKeyToFirstOption || false;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
-        this.typeaheadSingleCharacter = options.typeaheadSingleCharacter || false;
-        this.typeaheadMultiCharacter = options.typeaheadMultiCharacter || false;
+        // this.autoSelectFirstOption = options.autoSelectFirstOption || false;
+        // this.typeaheadSingleCharacter = options.typeaheadSingleCharacter || false;
+        // this.typeaheadMultiCharacter = options.typeaheadMultiCharacter || false;
 
         // private options
         // Note: when using setAttribute, any non-string value specified is converted automatically into a string.
@@ -372,13 +373,14 @@ class SingleSelect {
         const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
         const selectedOptions = listbox.querySelectorAll(`:scope ${this.selectors.optionSelected}`);
 
-        // if no options are selected yet
-        if (!selectedOptions.length) {
-            // focus the first option
-            options[0].focus();
-        } else {
+        if (selectedOptions.length) {
             // focus the first selected option
             selectedOptions[0].focus();
+        } else {
+            // focus the first option
+            options[0].focus();
+
+            // TODO if this.autoSelectFirstOption {}
         }
     }
 
@@ -466,8 +468,8 @@ class SingleSelect {
      * @summary Toggle the visibility listbox in the focussed select.
      * @memberof SingleSelect
      */
-    toggleHidden(e) {
-        const focussed = document.activeElement;
+    toggleHidden() {
+        const focussed = document.activeElement; // or could use e.target
 
         if (focussed) {
             let listbox = this.getParentListbox(focussed);
@@ -562,13 +564,12 @@ class SingleSelect {
                 const selectedAttributeProperty = this.attributes.optionSelected[0];
                 const selectedAttributeValue = this.attributes.optionSelected[1];
 
-                // TODO apply public options here
                 // TODO Cypress tests
                 // TODO button requires 2x ENTER to show listbox
-                const SingleSelectKeys = new KeyboardHelpers({
+                // TODO create one instance for each select?
+
+                const config = {
                     navigationActions: {
-                        focusFirst: [ 'Home' ],
-                        focusLast: [ 'End' ],
                         focusNext: [ 'ArrowDown' ],
                         focusPrevious: [ 'ArrowUp' ],
                         selectFocussed: [ 'Enter', ' ' ]
@@ -576,14 +577,24 @@ class SingleSelect {
                     navigationElements: options,
                     parentElement: select,
                     selectedAttribute: [ selectedAttributeProperty, selectedAttributeValue ],
-                    selectionFollowsFocus: true,
+                    selectionFollowsFocus: this.selectionFollowsFocus,
                     toggleActions: {
                         toggle: [ 'ArrowUp', 'ArrowDown', 'Enter', ' ' ],
                         toggleClosed: [ 'Enter', ' ', 'Escape' ]
                     },
                     toggleElement: button,
                     toggleOnSelectFocussed: true
-                });
+                };
+
+                if (this.homeKeyToFirstOption) {
+                    config.navigationActions.focusFirst = [ 'Home' ];
+                }
+
+                if (this.endKeyToLastOption) {
+                    config.navigationActions.focusLast = [ 'End' ];
+                }
+
+                const SingleSelectKeys = new KeyboardHelpers(config);
 
                 SingleSelectKeys.init();
 
@@ -611,6 +622,8 @@ document.onreadystatechange = () => {
         label.init();
 
         const singleSelect = new SingleSelect();
-        singleSelect.init();
+        singleSelect.init(
+
+        );
     }
 };
