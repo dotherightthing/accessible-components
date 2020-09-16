@@ -15,6 +15,7 @@
  * @param {object} options.toggleActions                - The key(s) to press to toggle the parent state
  * @param {null|Node} options.toggleElement             - The DOM element which toggles the parent state
  * @param {boolean} options.toggleOnSelectFocussed      - Whether to trigger the toggle action when the element is selected
+ * @param {boolean} options.useRovingTabIndex           - Whether to use tabindex="0" rather than tabindex="-1" for focussed iten
  */
 class KeyboardHelpers {
     constructor(options = {}) {
@@ -27,6 +28,7 @@ class KeyboardHelpers {
         this.toggleActions = options.toggleActions || {};
         this.toggleElement = options.toggleElement || null;
         this.toggleOnSelectFocussed = options.toggleOnSelectFocussed || false;
+        this.useRovingTabIndex = options.useRovingTabIndex || false;
     }
 
     /**
@@ -129,6 +131,10 @@ class KeyboardHelpers {
      * @memberof KeyboardHelpers
      */
     focusFirst() {
+        // make the first one focussable
+        this.roveTabIndex(0);
+
+        // focus the first one
         this.navigationElements[0].focus();
     }
 
@@ -139,6 +145,11 @@ class KeyboardHelpers {
      */
     focusLast() {
         const lastIndex = this.navigationElements.length - 1;
+
+        // make the last one focussable
+        this.roveTabIndex(lastIndex);
+
+        // focus the last one
         this.navigationElements[lastIndex].focus();
     }
 
@@ -152,6 +163,12 @@ class KeyboardHelpers {
         const nextOption = focussed.nextElementSibling;
 
         if (nextOption) {
+            let nextOptionIndex = this.getIndexOfNavigationElement(nextOption);
+
+            // make the next one focussable
+            this.roveTabIndex(nextOptionIndex);
+
+            // focus the next one
             nextOption.focus();
         }
     }
@@ -166,8 +183,34 @@ class KeyboardHelpers {
         const previousOption = focussed.previousElementSibling;
 
         if (previousOption) {
+            let previousOptionIndex = this.getIndexOfNavigationElement(previousOption);
+
+            // make the previous one focussable
+            this.roveTabIndex(previousOptionIndex);
+
+            // focus the previous one
             previousOption.focus();
         }
+    }
+
+    /**
+     * @function getIndexOfNavigationElement
+     * @summary Get the array index of the navigationElementToFind, relative to the array of DOM elements
+     * @memberof KeyboardHelpers
+     *
+     * @param {Element} navigationElementToFind - Navigation element to get the index of
+     * @returns {number} navigationElementIndex
+     */
+    getIndexOfNavigationElement(navigationElementToFind) {
+        let navigationElementIndex = -1;
+
+        this.navigationElements.forEach((navigationElement, index) => {
+            if (navigationElement === navigationElementToFind) {
+                navigationElementIndex = index;
+            }
+        });
+
+        return navigationElementIndex;
     }
 
     /**
@@ -235,6 +278,26 @@ class KeyboardHelpers {
     onOptionFocus() {
         if (this.selectionFollowsFocus) {
             this.selectFocussed();
+        }
+    }
+
+    /**
+     * @function roveTabIndex
+     * @summary Remove all but active tab from the tab sequence.
+     * @memberof TabbedCarousel
+     *
+     * @see {@link https://www.w3.org/TR/wai-aria-practices/#kbd_roving_tabindex}
+     * @param {number} index - Index of navigationElement to which to apply tabindex="0"
+     */
+    roveTabIndex(index) {
+        if (this.useRovingTabIndex) {
+            this.navigationElements.forEach((navigationElement, navigationElementIndex) => {
+                if (navigationElementIndex === index) {
+                    navigationElement.setAttribute('tabindex', '0');
+                } else {
+                    navigationElement.setAttribute('tabindex', '-1');
+                }
+            });
         }
     }
 
