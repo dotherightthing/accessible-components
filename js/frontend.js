@@ -679,6 +679,172 @@ class SingleSelect {
     }
 }
 
+/**
+ * @class TabbedCarousel
+ *
+ * @param {object} options - Module options
+ * @param {boolean} options.endKeyToLastOption          - Pressing End will focus the last tab in the tablist
+ * @param {boolean} options.homeKeyToFirstOption        - Pressing Home will focus the first tab in the tablist
+ * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
+ *
+ * @todo {boolean} options.autoSelectFirstOption        - Select the first tab in the tablist
+ */
+class TabbedCarousel {
+    constructor(options = {}) {
+        // public options
+        this.endKeyToLastOption = options.endKeyToLastOption || false;
+        this.homeKeyToFirstOption = options.homeKeyToFirstOption || false;
+        this.selectionFollowsFocus = options.selectionFollowsFocus || false;
+        // this.autoSelectFirstOption = options.autoSelectFirstOption || false;
+
+        // private options
+        // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
+        this.attributes = {
+            tab: [ 'role', 'tab' ],
+            tabSelected: [ 'aria-selected', 'true' ],
+            tablist: [ 'role', 'tablist' ],
+            tabpanel: [ 'role', 'tabpanel' ]
+        };
+
+        this.selectors = {
+            tab: '[role="tab"]',
+            tabSelected: '[role="tab"][aria-selected="true"]',
+            tablist: '[role="tablist"]',
+            tabpanel: '[role="tabpanel"]'
+        };
+    }
+
+    /**
+     * @function getParentTablist
+     * @memberof TabbedCarousel
+     *
+     * @param {Node} childElement - Listbox child element
+     * @returns {Node} element - Listbox
+     */
+    getParentTablist(childElement) {
+        let i = 0;
+        let limit = 10; // for debugging
+        let tablist;
+
+        if (this.isButton(childElement)) {
+            const wrapper = childElement.parentElement;
+            tablist = wrapper.querySelector(`:scope ${this.selectors.listbox}`);
+        } else {
+            tablist = childElement;
+        }
+
+        while (!this.isTablist(tablist) && (i < limit)) {
+            // parentElement goes all the way up to the document which doesn't support getAttribute
+            if (tablist.parentElement) {
+                tablist = tablist.parentElement;
+            }
+
+            i += 1;
+        }
+
+        if (!this.isTablist(tablist)) {
+            tablist = null;
+        }
+
+        return tablist;
+    }
+
+    /**
+     * @function isButton
+     * @summary Test whether an element is a button.
+     * @memberof TabbedCarousel
+     *
+     * @param {*} element - DOM Element
+     * @returns {boolean} - True if a match else false
+     */
+    isButton(element) {
+        if (element.getAttribute(this.attributes.button[0]) === this.attributes.button[1]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @function isTablist
+     * @summary Test whether an element is a listbox.
+     * @memberof TabbedCarousel
+     *
+     * @param {*} element - DOM Element
+     * @returns {boolean} - True if a match else false
+     */
+    isTablist(element) {
+        if (element.getAttribute(this.attributes.listbox[0]) === this.attributes.listbox[1]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @function setButtonText
+     * @summary Change the text within the button which triggers the listbox.
+     * @memberof TabbedCarousel
+     *
+     * @param {Node} button - Button
+     * @param {string} text - Text
+     */
+    setButtonText(button, text) {
+        button.innerHTML = text;
+    }
+
+    /**
+     * @function init
+     * @memberof TabbedCarousel
+     *
+     * @see [“This” within es6 class method](https://stackoverflow.com/questions/36489579/this-within-es6-class-method)
+     * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
+     */
+    init() {
+        // .select wrapper allows button and listbox to be styled together
+        const tabbedCarousels = document.querySelectorAll('.tabbed-carousel');
+
+        tabbedCarousels.forEach((tabbedCarousel) => {
+            const tab = tabbedCarousel.querySelectorAll(`:scope ${this.selectors.tab}`);
+            // const tablist = tabbedCarousel.querySelectorAll(`:scope ${this.selectors.tablist}`);
+
+            if (tab.length) {
+                const selectedAttributeProperty = this.attributes.tabSelected[0];
+                const selectedAttributeValue = this.attributes.tabSelected[1];
+
+                // TODO Cypress tests
+
+                const config = {
+                    endKeyToLastOption: true,
+                    homeKeyToFirstOption: true,
+                    navigationActions: {
+                        focusNext: [ 'ArrowRight' ],
+                        focusPrevious: [ 'ArrowLeft' ],
+                        selectFocussed: [ 'Enter', ' ' ]
+                    },
+                    navigationElements: tab,
+                    parentElement: null, // tablist, but focus listener not used
+                    selectedAttribute: [ selectedAttributeProperty, selectedAttributeValue ],
+                    selectionFollowsFocus: this.selectionFollowsFocus,
+                    useRovingTabIndex: true
+                };
+
+                if (config.homeKeyToFirstOption) {
+                    config.navigationActions.focusFirst = [ 'Home' ];
+                }
+
+                if (config.endKeyToLastOption) {
+                    config.navigationActions.focusLast = [ 'End' ];
+                }
+
+                const TabbedCarouselKeys = new KeyboardHelpers(config);
+
+                TabbedCarouselKeys.init();
+            }
+        });
+    }
+}
+
 document.onreadystatechange = () => {
     // The document has finished loading and the document has been parsed
     // but sub-resources such as images, stylesheets and frames are still loading.
@@ -687,8 +853,9 @@ document.onreadystatechange = () => {
         label.init();
 
         const singleSelect = new SingleSelect();
-        singleSelect.init(
+        singleSelect.init();
 
-        );
+        const tabbedCarousel = new TabbedCarousel();
+        tabbedCarousel.init();
     }
 };

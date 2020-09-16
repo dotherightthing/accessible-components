@@ -18,3 +18,11 @@ Design Pattern: [Listbox](https://www.w3.org/TR/wai-aria-practices/#Listbox)
 
 * <https://www.w3.org/TR/wai-aria-practices/examples/listbox/listbox-collapsible.html>
 * <https://www.scottohara.me/blog/2018/05/05/hidden-vs-none.html>
+
+## Tabbed Carousel
+
+> We do not call carousels "sliders" so the difference to the slider pattern (selecting a value in a min/max range) is obvious.
+>
+> Before you continue, please read Tablist widgets (or: tab panels, tabs) to understand why carousels are extended variants of tablists, simply providing additional controls like previous/next buttons, and sometimes autoplay functionality.
+>
+> Source: [Accessibility Developer Guide: Carousels (or: slideshow, slider)](https://www.accessibility-developer-guide.com/examples/widgets/carousel/)

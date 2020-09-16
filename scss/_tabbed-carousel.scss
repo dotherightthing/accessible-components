@@ -1,0 +1,33 @@
+.tabbed-carousel {
+    img {
+        display: block;
+    }
+
+    [role='tablist'] {
+        display: flex;
+        float: left;
+        width: 156px; // 44*3, 8*3
+
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        > [role='tab'] {
+            padding: 0;
+            border: 0;
+            margin: 0 .5rem .5rem 0;
+        }
+    }
+
+    [role='tabpanel'] {
+        position: relative;
+        width: 400px;
+        margin-left: 156px;
+
+        > h2 {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            margin: 0;
+        }
+    }
+}
