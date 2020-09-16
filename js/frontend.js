@@ -410,7 +410,7 @@ class SingleSelect {
         // this.typeaheadMultiCharacter = options.typeaheadMultiCharacter || false;
 
         // private options
-        // Note: when using setAttribute, any non-string value specified is converted automatically into a string.
+        // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
         this.attributes = {
             button: [ 'aria-haspopup', 'listbox' ],
             listbox: [ 'role', 'listbox' ],
