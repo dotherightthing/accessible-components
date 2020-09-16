@@ -50,6 +50,10 @@ class KeyboardHelpers {
             key = 'ArrowDown';
         } else if (keyPressed === 'Up') {
             key = 'ArrowUp';
+        } else if (keyPressed === 'Left') {
+            key = 'ArrowLeft';
+        } else if (keyPressed === 'Right') {
+            key = 'ArrowRight';
         } else if (keyPressed === 'Spacebar') {
             key = ' ';
         } else if (keyPressed === 'Esc') {
