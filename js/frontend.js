@@ -569,6 +569,8 @@ class SingleSelect {
                 // TODO create one instance for each select?
 
                 const config = {
+                    endKeyToLastOption: true,
+                    homeKeyToFirstOption: true,
                     navigationActions: {
                         focusNext: [ 'ArrowDown' ],
                         focusPrevious: [ 'ArrowUp' ],
@@ -586,11 +588,11 @@ class SingleSelect {
                     toggleOnSelectFocussed: true
                 };
 
-                if (this.homeKeyToFirstOption) {
+                if (config.homeKeyToFirstOption) {
                     config.navigationActions.focusFirst = [ 'Home' ];
                 }
 
-                if (this.endKeyToLastOption) {
+                if (config.endKeyToLastOption) {
                     config.navigationActions.focusLast = [ 'End' ];
                 }
 
