@@ -8,6 +8,7 @@
  *
  * @param {object}          options                         - Module options
  * @param {null|Node}       options.componentElement        - The outermost DOM element
+ * @param {boolean}         options.infiniteNavigation      - Whether to loop the focus to the first/last navigableElement when the focus is out of range
  * @param {object}          options.keyboardActions         - The key(s) which trigger actions
  * @param {null|NodeList}   options.navigableElements       - The DOM element(s) which will become keyboard navigable
  * @param {Array}           options.selectedAttr            - Property and Value applied to the selected navigableElement
@@ -21,6 +22,7 @@ class KeyboardHelpers {
     constructor(options = {}) {
         // public options
         this.componentElement = options.componentElement || null;
+        this.infiniteNavigation = options.infiniteNavigation || false;
         this.keyboardActions = options.keyboardActions || {};
         this.navigableElements = options.navigableElements || null;
         this.selectedAttr = options.selectedAttr || [];
@@ -78,6 +80,8 @@ class KeyboardHelpers {
 
             // focus the next one
             nextOption.focus();
+        } else if (this.infiniteNavigation) {
+            this.focusFirst();
         }
     }
 
@@ -98,6 +102,8 @@ class KeyboardHelpers {
 
             // focus the previous one
             previousOption.focus();
+        } else if (this.infiniteNavigation) {
+            this.focusLast();
         }
     }
 
@@ -772,6 +778,7 @@ class TabbedCarousel {
 
                 const KeyboardHelpersConfig = {
                     componentElement: null, // tablist is not a tab stop
+                    infiniteNavigation: true,
                     keyboardActions: {
                         focusFirst: [ 'Home' ],
                         focusLast: [ 'End' ],
