@@ -385,7 +385,7 @@ class Label {
 }
 
 /**
- * @class SingleSelect
+ * @class SingleSelectListbox
  *
  * @param {object} options                          - Module options
  * @param {boolean} options.selectionFollowsFocus   - Select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
@@ -394,7 +394,7 @@ class Label {
  * @todo {boolean} options.typeaheadSingleCharacter - Focus moves to the next item with a name that starts with the typed character
  * @todo {boolean} options.typeaheadMultiCharacter  - Focus moves to the next item with a name that starts with the string of characters typed
  */
-class SingleSelect {
+class SingleSelectListbox {
     constructor(options = {}) {
         // public options
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
@@ -406,14 +406,15 @@ class SingleSelect {
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
         this.attributes = {
             button: [ 'aria-haspopup', 'listbox' ],
+            hidden: [ 'hidden', true ],
             listbox: [ 'role', 'listbox' ],
-            listboxHidden: [ 'hidden', true ],
             option: [ 'role', 'option' ],
             selected: [ 'aria-selected', 'true' ]
         };
 
         this.selectors = {
             button: '[aria-haspopup="listbox"]',
+            hidden: '[hidden]',
             listbox: '[role="listbox"]',
             option: '[role="option"]',
             selected: '[aria-selected="true"]'
@@ -422,7 +423,7 @@ class SingleSelect {
 
     /**
      * @function focusOption
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      *
      * @param {*} e - target of focus event
      */
@@ -446,7 +447,7 @@ class SingleSelect {
 
     /**
      * @function getListbox
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      *
      * @param {Node} childElement - Listbox child element
      * @returns {Node} element - Listbox
@@ -482,7 +483,7 @@ class SingleSelect {
     /**
      * @function isButton
      * @summary Test whether an element is a button.
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      *
      * @param {*} element - DOM Element
      * @returns {boolean} - True if a match else false
@@ -494,7 +495,7 @@ class SingleSelect {
     /**
      * @function isListbox
      * @summary Test whether an element is a listbox.
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      *
      * @param {*} element - DOM Element
      * @returns {boolean} - True if a match else false
@@ -506,7 +507,7 @@ class SingleSelect {
     /**
      * @function propagateSelection
      * @summary When KeyboardHelpers makes a selection, update the UI to match
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      *
      * @param {Node} target - Target to watch for changes
      */
@@ -556,7 +557,7 @@ class SingleSelect {
     /**
      * @function setButtonText
      * @summary Change the text within the button which triggers the listbox.
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      *
      * @param {Node} button - Button
      * @param {string} text - Text
@@ -568,7 +569,7 @@ class SingleSelect {
     /**
      * @function toggleHidden
      * @summary Toggle the visibility listbox in the focussed select.
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      */
     toggleHidden() {
         const focussed = document.activeElement; // or could use e.target
@@ -581,11 +582,11 @@ class SingleSelect {
                     let wrapper = listbox.parentElement;
                     let button = wrapper.querySelector(this.selectors.button);
 
-                    if (listbox.hasAttribute(this.attributes.listboxHidden[0])) {
-                        listbox.removeAttribute(this.attributes.listboxHidden[0]);
+                    if (listbox.hasAttribute(this.attributes.hidden[0])) {
+                        listbox.removeAttribute(this.attributes.hidden[0]);
                         listbox.focus();
                     } else {
-                        listbox.setAttribute(this.attributes.listboxHidden[0], this.attributes.listboxHidden[1]);
+                        listbox.setAttribute(this.attributes.hidden[0], this.attributes.hidden[1]);
                         button.focus();
                     }
                 }
@@ -595,7 +596,7 @@ class SingleSelect {
 
     /**
      * @function init
-     * @memberof SingleSelect
+     * @memberof SingleSelectListbox
      *
      * @see [“This” within es6 class method](https://stackoverflow.com/questions/36489579/this-within-es6-class-method)
      * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
@@ -635,9 +636,9 @@ class SingleSelect {
                     toggleAfterSelected: true
                 };
 
-                const SingleSelectKeys = new KeyboardHelpers(KeyboardHelpersConfig);
+                const singleSelectListboxKeys = new KeyboardHelpers(KeyboardHelpersConfig);
 
-                SingleSelectKeys.init();
+                singleSelectListboxKeys.init();
 
                 // keydown events bubble up from the element with click
                 // so we can handle keyboard interactions for
@@ -820,11 +821,11 @@ document.onreadystatechange = () => {
         const label = new Label();
         label.init();
 
-        const singleSelect = new SingleSelect({
+        const singleSelectListbox = new SingleSelectListbox({
             selectionFollowsFocus: false
         });
 
-        singleSelect.init();
+        singleSelectListbox.init();
 
         const tabbedCarousel = new TabbedCarousel({
             selectionFollowsFocus: true

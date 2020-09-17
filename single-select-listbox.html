@@ -2,12 +2,13 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Single select</title>
+        <title>Single-select listbox</title>
         <script src="js/frontend-es5.js"></script>
         <link rel="stylesheet" href="css/frontend.css" />
     </head>
     <body>
-        <h1>Single select</h1>
+        <h1>Single-select listbox</h1>
+        <p>Based on <a href="https://www.w3.org/TR/wai-aria-practices/#Listbox">WAI-ARIA Design Patterns and Widgets: Listbox</a></p>
         <fieldset id="test-0">
             <legend>Native select</legend>
             <label for="select">Native select</label>
@@ -21,7 +22,7 @@
             </select>
         </fieldset>
         <fieldset id="test-1">
-            <legend>ARIA Single-select A</legend>
+            <legend>Single-select listbox A</legend>
             <p>Each option is a DOM descendant of the listbox. No default selection. Collapsible.</p>
             <p class="label" data-for="listbox-a-button" id="listbox-a-label">Listbox A</p>
             <div class="select">
@@ -37,7 +38,7 @@
             </div>
         </fieldset>
         <fieldset id="test-2">
-            <legend>ARIA Single-select B</legend>
+            <legend>Single-select listbox B</legend>
             <p>Each option is a DOM descendant of the listbox. Default selection. Collapsible.</p>
             <p class="label" data-for="listbox-b-button" id="listbox-b-label">Listbox B</p>
             <div class="select">
@@ -53,8 +54,8 @@
             </div>
         </fieldset>
         <fieldset id="test-3">
-            <legend>ARIA Single-select C</legend>
-            <p>aria-owns exposes the parent/child contextual relationship, as each option is not a DOM descendant of the listbox. Default selection.</p>
+            <legend>Single-select listbox C</legend>
+            <p>Each option is not a DOM descendant of the listbox, so <code>aria-owns</code> exposes the parent/child contextual relationship. Default selection.</p>
             <p class="label" data-for="listbox-c-button" id="listbox-c-label">Listbox C</p>
             <div class="select">
                 <button id="listbox-c-button" aria-haspopup="listbox">Default</button>
@@ -71,8 +72,9 @@
             </div>
         </fieldset>
         <fieldset id="test-4">
-            <legend>ARIA Multi-select</legend>
-            <p class="label" data-for="listbox-d-button" id="listbox-d-label">This should not be processed.</p>
+            <legend>Multi-select listbox</legend>
+            <p>This should not be processed.</p>
+            <p class="label" data-for="listbox-d-button" id="listbox-d-label">Listbox D</p>
             <div class="select">
                 <button id="listbox-d-button" aria-haspopup="listbox">Default</button>
                 <div id="listbox-d" role="listbox" aria-labelledby="listbox-d-label" aria-multiselectable="true" tabindex="0" hidden>
