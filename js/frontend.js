@@ -7,7 +7,7 @@
  * @class KeyboardHelpers
  *
  * @param {object}          options                         - Module options
- * @param {null|Node}       options.componentElement        - The outermost DOM element
+ * @param {null|Node}       options.componentElement        - The outermost DOM element, used to apply keydown listener
  * @param {boolean}         options.infiniteNavigation      - Whether to loop the focus to the first/last navigableElement when the focus is out of range
  * @param {object}          options.keyboardActions         - The key(s) which trigger actions
  * @param {null|NodeList}   options.navigableElements       - The DOM element(s) which will become keyboard navigable
@@ -66,6 +66,7 @@ class KeyboardHelpers {
     /**
      * @function focusNext
      * @summary Move the focus to the next option, if one exists
+     * @description When focus is on a tab element in a horizontal tab list:
      * @memberof KeyboardHelpers
      */
     focusNext() {
@@ -412,7 +413,7 @@ class SingleSelect {
         };
 
         this.selectors = {
-            button: 'button[aria-haspopup="listbox"]',
+            button: '[aria-haspopup="listbox"]',
             listbox: '[role="listbox"]',
             option: '[role="option"]',
             selected: '[aria-selected="true"]'
@@ -463,7 +464,7 @@ class SingleSelect {
         }
 
         while (!this.isListbox(listbox) && (i < limit)) {
-            // componentElement goes all the way up to the document which doesn't support getAttribute
+            // parentElement goes all the way up to the document which doesn't support getAttribute
             if (listbox.parentElement) {
                 listbox = listbox.parentElement;
             }
@@ -503,13 +504,13 @@ class SingleSelect {
     }
 
     /**
-     * @function watchForSelectWithin
-     * @summary When KeyboardHelpers selects an option, update the UI to match
+     * @function propagateSelection
+     * @summary When KeyboardHelpers makes a selection, update the UI to match
      * @memberof SingleSelect
      *
      * @param {Node} target - Target to watch for changes
      */
-    watchForSelectWithin(target) {
+    propagateSelection(target) {
         // Options for the observer (which mutations to observe)
         const observerConfig = {
             attributes: true,
@@ -648,7 +649,7 @@ class SingleSelect {
                 // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
                 listbox.addEventListener('focus', this.focusOption.bind(this));
 
-                this.watchForSelectWithin(listbox);
+                this.propagateSelection(listbox);
             }
         });
     }
@@ -671,8 +672,8 @@ class TabbedCarousel {
         // private options
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
         this.attributes = {
-            selected: ['aria-selected', 'true'],
-            tab: ['role', 'tab'],
+            selected: [ 'aria-selected', 'true' ],
+            tab: [ 'role', 'tab' ],
             tablist: [ 'role', 'tablist' ],
             tabpanel: [ 'role', 'tabpanel' ]
         };
@@ -686,35 +687,14 @@ class TabbedCarousel {
     }
 
     /**
-     * @function getSiblings
-     * @memberof TabbedCarousel
-     *
-     * @param {Element} element - DOM element
-     * @returns {Array} siblings - DOM siblings
-     */
-    getSiblings(element) {
-        const parent = element.parentElement;
-        let currentChild = parent.firstElementChild;
-        let siblings = [];
-
-        siblings.push(currentChild);
-
-        while (currentChild.nextElementSibling) {
-            siblings.push(currentChild.nextElementSibling);
-            currentChild = currentChild.nextElementSibling;
-        }
-
-        return siblings;
-    }
-
-    /**
-     * @function watchForSelectWithin
-     * @summary When KeyboardHelpers selects a tab, update the UI to match
+     * @function propagateSelection
+     * @summary When KeyboardHelpers makes a selection, update the UI to match
      * @memberof TabbedCarousel
      *
      * @param {Node} target - Target to watch for changes
+     * @param {Node} tabPanels - Affected tab panels
      */
-    watchForSelectWithin(target) {
+    propagateSelection(target, tabPanels) {
         // Options for the observer (which mutations to observe)
         const observerConfig = {
             attributes: true,
@@ -722,7 +702,7 @@ class TabbedCarousel {
             subtree: true
         };
 
-        const _self = this;
+        // const _self = this;
         const selectedAttrProp = this.attributes.selected[0];
         const selectedAttrVal = this.attributes.selected[1];
 
@@ -736,9 +716,6 @@ class TabbedCarousel {
                             const tab = mutation.target;
                             const tabPanelId = tab.getAttribute('aria-controls');
                             const selectedTabPanel = document.getElementById(tabPanelId);
-
-                            // TODO: Could I use selectors.tabpanel instead to only get tabpanels within this instance of the component ?
-                            const tabPanels = _self.getSiblings(selectedTabPanel);
 
                             tabPanels.forEach((tabPanel) => {
                                 tabPanel.setAttribute('hidden', true);
@@ -772,24 +749,57 @@ class TabbedCarousel {
         tabbedCarousels.forEach((tabbedCarousel) => {
             const tab = tabbedCarousel.querySelectorAll(`:scope ${this.selectors.tab}`);
             const tablist = tabbedCarousel.querySelector(`:scope ${this.selectors.tablist}`);
+            const tabpanels = tabbedCarousel.querySelectorAll(`:scope ${this.selectors.tabpanel}`);
 
             if (tab.length) {
                 // TODO Cypress tests
 
                 const KeyboardHelpersConfig = {
-                    componentElement: null, // tablist is not a tab stop
+                    // If focus is on the first tab, moves focus to the last tab.
+                    // If focus is on the last tab element, moves focus to the first tab.
+                    // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
                     infiniteNavigation: true,
+
                     keyboardActions: {
+                        // Home (Optional): Moves focus to the first tab.
+                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
                         focusFirst: [ 'Home' ],
+
+                        // End (Optional): Moves focus to the last tab
+                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
                         focusLast: [ 'End' ],
+
+                        // Right Arrow: Moves focus to the next tab.
+                        // See also infiniteNavigation
+                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
                         focusNext: [ 'ArrowRight' ],
+
+                        // Left Arrow: moves focus to the previous tab.
+                        // See also infiniteNavigation
+                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
                         focusPrevious: [ 'ArrowLeft' ],
-                        selectFocussed: [ 'Enter', ' ' ]
+
+                        // Space or Enter: Activates the tab if it was not activated automatically on focus.
+                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
+                        selectFocussed: [ ' ', 'Enter' ]
                     },
+
                     navigableElements: tab,
+
                     selectedAttr: this.attributes.selected,
+
+                    // It is recommended that tabs activate automatically when they receive focus
+                    // as long as their associated tab panels are displayed without noticeable latency.
+                    // This typically requires tab panel content to be preloaded.
+                    // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
                     selectionFollowsFocus: this.selectionFollowsFocus,
-                    toggleAfterSelected: false, // n/a
+
+                    // When using roving tabindex to manage focus in a composite UI component,
+                    // the element that is to be included in the tab sequence has tabindex of "0"
+                    // and all other focusable elements contained in the composite have tabindex of "-1".
+                    // One benefit of using roving tabindex rather than aria-activedescendant to manage focus
+                    // is that the user agent will scroll the newly focused element into view.
+                    // See: https://www.w3.org/TR/wai-aria-practices/#kbd_roving_tabindex
                     useRovingTabIndex: true
                 };
 
@@ -797,7 +807,7 @@ class TabbedCarousel {
 
                 TabbedCarouselKeys.init();
 
-                this.watchForSelectWithin(tablist);
+                this.propagateSelection(tablist, tabpanels);
             }
         });
     }
@@ -817,10 +827,6 @@ document.onreadystatechange = () => {
         singleSelect.init();
 
         const tabbedCarousel = new TabbedCarousel({
-            // It is recommended that tabs activate automatically when they receive focus
-            // as long as their associated tab panels are displayed without noticeable latency.
-            // This typically requires tab panel content to be preloaded.
-            // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
             selectionFollowsFocus: true
         });
 
