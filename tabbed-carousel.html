@@ -31,6 +31,17 @@
                 </button>
             </div>
             <div class="tabpanels">
+                <!-- Features needed to provide sufficient rotation control include: Buttons for displaying the previous and next slides. -->
+                <div class="tabpanel-nav">
+                    <ul>
+                        <li>
+                            <button class="tabpanel-nav__previous" data-kh-proxy="selectPrevious">Previous</button>
+                        </li>
+                        <li>
+                            <button class="tabpanel-nav__next" data-kh-proxy="selectNext">Next</button>
+                        </li>
+                    </ul>
+                </div>
                 <!-- Tab Panel: The element that contains the content associated with a tab. -->
                 <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
                 <div role="tabpanel" id="tabpanel-1" aria-labelledby="tab-1" tabindex="0">

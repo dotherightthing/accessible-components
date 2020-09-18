@@ -3,20 +3,23 @@
 /* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
 
+// keyboardNavigableElements - direction selection - directSelectElements
+// relativeXX - relative selection (previous/next) - relativeSelectElements
+
 /**
  * @class KeyboardHelpers
  *
- * @param {object}          options                         - Module options
- * @param {null|Node}       options.componentElement        - The outermost DOM element, used to apply keydown listener
- * @param {boolean}         options.infiniteNavigation      - Whether to loop the focus to the first/last navigableElement when the focus is out of range
- * @param {object}          options.keyboardActions         - The key(s) which trigger actions
- * @param {null|NodeList}   options.navigableElements       - The DOM element(s) which will become keyboard navigable
- * @param {Array}           options.selectedAttr            - Property and Value applied to the selected navigableElement
- * @param {boolean}         options.selectionFollowsFocus   - Automatically select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
- * @param {object}          options.toggleActions           - The key(s) which toggle the parent state
- * @param {null|Node}       options.toggleElement           - The DOM element which toggles the parent state
- * @param {boolean}         options.toggleAfterSelected     - Whether to trigger the toggle action after a navigableElement is selected
- * @param {boolean}         options.useRovingTabIndex       - Whether to apply a tabindex of 0 (tabstop) rather than -1 (programmatic focus) to the focussed item
+ * @param {object}          options                             - Module options
+ * @param {null|Node}       options.componentElement            - The outermost DOM element, used to apply keydown listener
+ * @param {boolean}         options.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
+ * @param {object}          options.keyboardActions             - The key(s) which trigger actions
+ * @param {null|NodeList}   options.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
+ * @param {Array}           options.selectedAttr                - Property and Value applied to the selected keyboardNavigableElement
+ * @param {boolean}         options.selectionFollowsFocus       - Automatically select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
+ * @param {object}          options.toggleActions               - The key(s) which toggle the parent state
+ * @param {null|Node}       options.toggleElement               - The DOM element which toggles the parent state
+ * @param {boolean}         options.toggleAfterSelected         - Whether to trigger the toggle action after a keyboardNavigableElement is selected
+ * @param {boolean}         options.useRovingTabIndex           - Whether to apply a tabindex of 0 (tabstop) rather than -1 (programmatic focus) to the focussed item
  */
 class KeyboardHelpers {
     constructor(options = {}) {
@@ -24,13 +27,20 @@ class KeyboardHelpers {
         this.componentElement = options.componentElement || null;
         this.infiniteNavigation = options.infiniteNavigation || false;
         this.keyboardActions = options.keyboardActions || {};
-        this.navigableElements = options.navigableElements || null;
+        this.keyboardNavigableElements = options.keyboardNavigableElements || null;
         this.selectedAttr = options.selectedAttr || [];
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
         this.toggleActions = options.toggleActions || {};
         this.toggleElement = options.toggleElement || null;
         this.toggleAfterSelected = options.toggleAfterSelected || false;
         this.useRovingTabIndex = options.useRovingTabIndex || false;
+
+        // private options
+
+        this.proxyActionElements = {
+            selectNext: '[data-kh-proxy="selectNext"]',
+            selectPrevious: '[data-kh-proxy="selectPrevious"]'
+        };
     }
 
     /**
@@ -39,13 +49,13 @@ class KeyboardHelpers {
      * @memberof KeyboardHelpers
      */
     focusFirst() {
-        const firstIndex = 0;
+        const firstElement = this.getFirst();
 
-        // make the first one focussable
-        this.updateRovingTabIndex(firstIndex);
+        // make the element focussable
+        this.updateRovingTabIndex(firstElement);
 
-        // focus the first one
-        this.navigableElements[firstIndex].focus();
+        // shift the focus
+        firstElement.focus();
     }
 
     /**
@@ -54,13 +64,13 @@ class KeyboardHelpers {
      * @memberof KeyboardHelpers
      */
     focusLast() {
-        const lastIndex = this.navigableElements.length - 1;
+        const lastElement = this.getLast();
 
-        // make the last one focussable
-        this.updateRovingTabIndex(lastIndex);
+        // make the element focussable
+        this.updateRovingTabIndex(lastElement);
 
-        // focus the last one
-        this.navigableElements[lastIndex].focus();
+        // shift the focus
+        lastElement.focus();
     }
 
     /**
@@ -71,18 +81,18 @@ class KeyboardHelpers {
      */
     focusNext() {
         const focussed = document.activeElement;
-        const nextOption = focussed.nextElementSibling;
+        let nextElement = focussed.nextElementSibling;
 
-        if (nextOption) {
-            let nextOptionIndex = this.getIndexOfNavigableElement(nextOption);
+        if (!nextElement && this.infiniteNavigation) {
+            nextElement = this.getFirst();
+        }
 
-            // make the next one focussable
-            this.updateRovingTabIndex(nextOptionIndex);
+        if (nextElement) {
+            // make the element focussable
+            this.updateRovingTabIndex(nextElement);
 
-            // focus the next one
-            nextOption.focus();
-        } else if (this.infiniteNavigation) {
-            this.focusFirst();
+            // shift the focus
+            nextElement.focus();
         }
     }
 
@@ -93,39 +103,170 @@ class KeyboardHelpers {
      */
     focusPrevious() {
         const focussed = document.activeElement;
-        const previousOption = focussed.previousElementSibling;
+        let previousElement = focussed.previousElementSibling;
 
-        if (previousOption) {
-            let previousOptionIndex = this.getIndexOfNavigableElement(previousOption);
+        if (!previousElement && this.infiniteNavigation) {
+            previousElement = this.getLast();
+        }
 
-            // make the previous one focussable
-            this.updateRovingTabIndex(previousOptionIndex);
+        if (previousElement) {
+            // make the element focussable
+            this.updateRovingTabIndex(previousElement);
 
-            // focus the previous one
-            previousOption.focus();
-        } else if (this.infiniteNavigation) {
-            this.focusLast();
+            // shift the focus
+            previousElement.focus();
         }
     }
 
     /**
-     * @function getIndexOfNavigableElement
-     * @summary Get the array index of the navigableElementToFind, relative to the array of DOM elements
+     * @function getFirst
+     * @summary Get a reference to the first navigableElement
      * @memberof KeyboardHelpers
      *
-     * @param {Element} navigableElementToFind - Navigable element to get the index of
-     * @returns {number} navigableElementIndex
+     * @returns {Node} firstElement
      */
-    getIndexOfNavigableElement(navigableElementToFind) {
-        let navigableElementIndex = -1;
+    getFirst() {
+        const firstIndex = 0;
+        let firstElement = this.keyboardNavigableElements[firstIndex];
 
-        this.navigableElements.forEach((navigableElement, index) => {
-            if (navigableElement === navigableElementToFind) {
-                navigableElementIndex = index;
+        return firstElement;
+    }
+
+    /**
+     * @function getLast
+     * @summary Get a reference to the last navigableElement
+     * @memberof KeyboardHelpers
+     *
+     * @returns {Node} lastElement
+     */
+    getLast() {
+        const lastIndex = this.keyboardNavigableElements.length - 1;
+        const lastElement = this.keyboardNavigableElements[lastIndex];
+
+        return lastElement;
+    }
+
+    /**
+     * @function getNext
+     * @summary Get a reference to the next navigableElement after the selected one
+     * @memberof KeyboardHelpers
+     *
+     * @returns {Node} nextElement
+     */
+    getNext() {
+        const selected = this.getSelected();
+        let nextElement = selected.nextElementSibling;
+
+        if (!nextElement && this.infiniteNavigation) {
+            nextElement = this.getFirst();
+        }
+
+        if (nextElement) {
+            this.updateRovingTabIndex(nextElement);
+        }
+
+        return nextElement;
+    }
+
+    /**
+     * @function getPrevious
+     * @summary Get a reference to the previous navigableElement before the selected one
+     * @memberof KeyboardHelpers
+     *
+     * @returns {Node} previousElement
+     */
+    getPrevious() {
+        const selected = this.getSelected();
+        let previousElement = selected.previousElementSibling;
+
+        if (!previousElement && this.infiniteNavigation) {
+            previousElement = this.getLast();
+        }
+
+        if (previousElement) {
+            this.updateRovingTabIndex(previousElement);
+        }
+
+        return previousElement;
+    }
+
+    /**
+     * @function getSelected
+     * @summary Get a reference to the element which is currently selected
+     * @memberof KeyboardHelpers
+     *
+     * @returns {Node} selectedElement
+     */
+    getSelected() {
+        const selectedAttrProp = this.selectedAttr[0];
+        const selectedAttrVal = this.selectedAttr[1];
+        const selectedElement = this.componentElement.querySelector(`:scope [${selectedAttrProp}="${selectedAttrVal}"]`);
+
+        return selectedElement;
+    }
+
+    /**
+     * @function selectNext
+     * @summary Select the next element
+     * @memberof KeyboardHelpers
+     */
+    selectNext() {
+        const nextElement = this.getNext();
+
+        this.selectNonFocussed(nextElement);
+    }
+
+    /**
+     * @function selectNonFocussed
+     * @summary Direct select an element without focussing first
+     * @description Used with previous/next button proxies.
+     * @memberof KeyboardHelpers
+     *
+     * @param {Node} element - DOM Element
+     */
+    selectNonFocussed(element) {
+        if (this.isKeyboardNavigableElement(element)) {
+            const selectedAttrProp = this.selectedAttr[0];
+            const selectedAttrVal = this.selectedAttr[1];
+
+            this.keyboardNavigableElements.forEach((element2) => {
+                element2.removeAttribute(selectedAttrProp);
+            });
+
+            // this triggers mutation observer callback in host component
+            element.setAttribute(selectedAttrProp, selectedAttrVal);
+        }
+    }
+
+    /**
+     * @function selectPrevious
+     * @summary Select the previous element
+     * @memberof KeyboardHelpers
+     */
+    selectPrevious() {
+        const previousElement = this.getPrevious();
+
+        this.selectNonFocussed(previousElement);
+    }
+
+    /**
+     * @function getIndexOfKeyboardNavigableElement
+     * @summary Get the array index of the keyboardNavigableElementToFind, relative to the array of DOM elements
+     * @memberof KeyboardHelpers
+     *
+     * @param {Node} keyboardNavigableElementToFind - Navigable element to get the index of
+     * @returns {number} keyboardNavigableElementIndex
+     */
+    getIndexOfKeyboardNavigableElement(keyboardNavigableElementToFind) {
+        let keyboardNavigableElementIndex = -1;
+
+        this.keyboardNavigableElements.forEach((keyboardNavigableElement, index) => {
+            if (keyboardNavigableElement === keyboardNavigableElementToFind) {
+                keyboardNavigableElementIndex = index;
             }
         });
 
-        return navigableElementIndex;
+        return keyboardNavigableElementIndex;
     }
 
     /**
@@ -141,24 +282,24 @@ class KeyboardHelpers {
     }
 
     /**
-     * @function isNavigableElement
-     * @summary Determine whether the element is one of our navigableElements
+     * @function isKeyboardNavigableElement
+     * @summary Determine whether the element is one of our keyboardNavigableElements
      * @memberof KeyboardHelpers
      *
      * @param {Node} element - DOM element
-     * @returns {boolean} isNavigableElement
+     * @returns {boolean} isKeyboardNavigableElement
      */
-    isNavigableElement(element) {
-        let isNavigableElement = false;
+    isKeyboardNavigableElement(element) {
+        let isKeyboardNavigableElement = false;
 
-        this.navigableElements.forEach((navigableElement) => {
-            // if the focussed element is one of the navigableElements
-            if (navigableElement === element) {
-                isNavigableElement = true;
+        this.keyboardNavigableElements.forEach((keyboardNavigableElement) => {
+            // if the focussed element is one of the keyboardNavigableElements
+            if (keyboardNavigableElement === element) {
+                isKeyboardNavigableElement = true;
             }
         });
 
-        return isNavigableElement;
+        return isKeyboardNavigableElement;
     }
 
     /**
@@ -208,6 +349,27 @@ class KeyboardHelpers {
     }
 
     /**
+     * @function onClick
+     * @memberof KeyboardHelpers
+     *
+     * @param {*} e - target of click event
+     */
+    onClick(e) {
+        const clickedClass = e.target.getAttribute('class');
+
+        const clickActions = Object.keys(this.clickActions);
+
+        clickActions.forEach((clickAction) => {
+            // if the clicked element is in the clickActions array
+            if (this.clickActions[clickAction].includes(clickedClass)) {
+                e.preventDefault();
+                e.stopPropagation();
+                this[clickAction].call(this, e);
+            }
+        });
+    }
+
+    /**
      * @function onKeyDown
      * @memberof KeyboardHelpers
      *
@@ -224,7 +386,7 @@ class KeyboardHelpers {
         const keyboardActions = Object.keys(this.keyboardActions);
         const toggleActions = Object.keys(this.toggleActions);
 
-        if (this.isNavigableElement(e.target)) {
+        if (this.isKeyboardNavigableElement(e.target)) {
             keyboardActions.forEach((keyboardAction) => {
                 // if the pressed key is in the keyboardActions array
                 if (this.keyboardActions[keyboardAction].includes(keyPressed)) {
@@ -234,11 +396,14 @@ class KeyboardHelpers {
                 }
             });
         } else if (this.isComponentElement(e.target)) { // toggleElement already natively supports ENTER
+            // trigger the toggleAction if one is registered for this component
             toggleActions.forEach((toggleAction) => {
                 // if the pressed key is in the keyboardActions array
                 if (this.toggleActions[toggleAction].includes(keyPressed)) {
                     e.preventDefault(); // prevent the natural key action
                     e.stopPropagation(); // else keypress is registered twice
+
+                    // trigger the toggle action to alter the state of a sub-component
                     this[toggleAction].call(this, e);
                 }
             });
@@ -246,14 +411,57 @@ class KeyboardHelpers {
     }
 
     /**
-     * @function onNavigableElementFocus
-     * @summary React when a navigableElement is focussed
+     * @function onKeyboardNavigableElementFocus
+     * @summary React when a keyboardNavigableElement is focussed
+     * @description Note: additional callbacks are implemented in the host component using Mutation Observers
      * @memberof KeyboardHelpers
      */
-    onNavigableElementFocus() {
+    onKeyboardNavigableElementFocus() {
         if (this.selectionFollowsFocus) {
             this.selectFocussed();
         }
+    }
+
+    /**
+     * @function registerKeyboardActions
+     * @summary Call a keyboard action when a key is pressed
+     * @memberof KeyboardHelpers
+     *
+     * @see [“This” within es6 class method](https://stackoverflow.com/questions/36489579/this-within-es6-class-method)
+     * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
+     */
+    registerKeyboardActions() {
+        if (this.keyboardNavigableElements.length) {
+            // TODO event delegation
+            this.keyboardNavigableElements.forEach((keyboardNavigableElement) => {
+                keyboardNavigableElement.addEventListener('keydown', this.onKeyDown.bind(this));
+
+                // focus occurs on the focussed element only
+                keyboardNavigableElement.addEventListener('focus', this.onKeyboardNavigableElementFocus.bind(this));
+            });
+        }
+
+        // key listener on component is used to trigger toggle action
+        if (this.componentElement !== null) {
+            this.componentElement.addEventListener('keydown', this.onKeyDown.bind(this));
+        }
+    }
+
+    /**
+     * @function registerProxyKeyboardActions
+     * @summary Call a keyboard action when a proxy element is activated/clicked
+     * @memberof KeyboardHelpers
+     */
+    registerProxyKeyboardActions() {
+        const proxyActions = Object.keys(this.proxyActionElements);
+
+        proxyActions.forEach((proxyAction) => {
+            const proxyActionElement = this.componentElement.querySelector(`:scope ${this.proxyActionElements[proxyAction]}`);
+
+            if (proxyActionElement !== null) {
+                proxyActionElement.addEventListener('click', this[proxyAction].bind(this));
+            }
+        });
     }
 
     /**
@@ -266,11 +474,11 @@ class KeyboardHelpers {
     selectFocussed(e) {
         const focussed = document.activeElement;
 
-        if (this.isNavigableElement(focussed)) {
+        if (this.isKeyboardNavigableElement(focussed)) {
             const selectedAttrProp = this.selectedAttr[0];
             const selectedAttrVal = this.selectedAttr[1];
 
-            this.navigableElements.forEach((element2) => {
+            this.keyboardNavigableElements.forEach((element2) => {
                 element2.removeAttribute(selectedAttrProp);
             });
 
@@ -312,15 +520,15 @@ class KeyboardHelpers {
      * @memberof TabbedCarousel
      *
      * @see {@link https://www.w3.org/TR/wai-aria-practices/#kbd_roving_tabindex}
-     * @param {number} index - Index of navigableElement to which to apply tabindex="0"
+     * @param {Node} element - keyboardNavigableElement to which to apply tabindex="0"
      */
-    updateRovingTabIndex(index) {
+    updateRovingTabIndex(element) {
         if (this.useRovingTabIndex) {
-            this.navigableElements.forEach((navigableElement, navigableElementIndex) => {
-                if (navigableElementIndex === index) {
-                    navigableElement.setAttribute('tabindex', '0');
+            this.keyboardNavigableElements.forEach((keyboardNavigableElement) => {
+                if (keyboardNavigableElement === element) {
+                    keyboardNavigableElement.setAttribute('tabindex', '0');
                 } else {
-                    navigableElement.setAttribute('tabindex', '-1');
+                    keyboardNavigableElement.setAttribute('tabindex', '-1');
                 }
             });
         }
@@ -329,24 +537,10 @@ class KeyboardHelpers {
     /**
      * @function init
      * @memberof KeyboardHelpers
-     *
-     * @see [“This” within es6 class method](https://stackoverflow.com/questions/36489579/this-within-es6-class-method)
-     * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
      */
     init() {
-        if (this.navigableElements.length) {
-            // TODO event delegation
-            this.navigableElements.forEach((element) => {
-                element.addEventListener('keydown', this.onKeyDown.bind(this));
-
-                // focus occurs on the focussed element only
-                element.addEventListener('focus', this.onNavigableElementFocus.bind(this));
-            });
-        }
-
-        if (this.componentElement !== null) {
-            this.componentElement.addEventListener('keydown', this.onKeyDown.bind(this));
-        }
+        this.registerKeyboardActions();
+        this.registerProxyKeyboardActions();
     }
 }
 
@@ -625,7 +819,7 @@ class SingleSelectListbox {
                         focusPrevious: [ 'ArrowUp' ],
                         selectFocussed: [ 'Enter', ' ' ]
                     },
-                    navigableElements: options,
+                    keyboardNavigableElements: options,
                     selectedAttr: this.attributes.selected,
                     selectionFollowsFocus: this.selectionFollowsFocus,
                     toggleActions: {
@@ -756,6 +950,8 @@ class TabbedCarousel {
                 // TODO Cypress tests
 
                 const KeyboardHelpersConfig = {
+                    componentElement: tabbedCarousel,
+
                     // If focus is on the first tab, moves focus to the last tab.
                     // If focus is on the last tab element, moves focus to the first tab.
                     // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
@@ -785,7 +981,16 @@ class TabbedCarousel {
                         selectFocussed: [ ' ', 'Enter' ]
                     },
 
-                    navigableElements: tab,
+                    // keyboard navigation selects the tab
+                    // focussing a tab via keyboard or mouse directly sets the active tabpanel
+                    // Q: what to call the relative selection controls (prev/next)
+                    // for listbox: keyboardNavigableElements are options, which indirectly set the button text, i.e. they are not controls
+                    // for tabbed carousel: keyboardNavigableElements are controls, which directly set the active tabpanel
+                    // both variations essentially allow the 'current value' to be set
+                    // this is then used to populate the button or select the associated panel
+                    // so they are value setters
+                    // an option is a value referenced by a name
+                    keyboardNavigableElements: tab,
 
                     selectedAttr: this.attributes.selected,
 
