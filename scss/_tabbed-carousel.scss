@@ -16,12 +16,8 @@
             border: 3px solid transparent;
             margin: 0 .5rem .5rem 0;
 
-            &:focus {
-                outline-color: orange;
-            }
-
             &[aria-selected='true'] {
-                border-color: green;
+                border-color: var(--color-selected);
             }
         }
     }

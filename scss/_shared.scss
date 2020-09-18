@@ -1,3 +1,10 @@
+:root {
+    --color-focus: hsl(240, 100%, 50%);
+    --color-component-bg: hsla(0, 0%, 100%, 1);
+    --color-component-border: hsla(0, 0%, 60%, 1);
+    --color-selected: rgb(20, 173, 0);
+}
+
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin: 64px 32px 32px;
@@ -5,6 +12,10 @@ body {
 
 * {
     box-sizing: border-box;
+
+    &:focus {
+        outline-color: var(--color-focus);
+    }
 }
 
 h1 {
