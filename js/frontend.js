@@ -161,10 +161,6 @@ class KeyboardHelpers {
             nextElement = this.getFirst();
         }
 
-        if (nextElement) {
-            this.updateRovingTabIndex(nextElement);
-        }
-
         return nextElement;
     }
 
@@ -181,10 +177,6 @@ class KeyboardHelpers {
 
         if (!previousElement && this.infiniteNavigation) {
             previousElement = this.getLast();
-        }
-
-        if (previousElement) {
-            this.updateRovingTabIndex(previousElement);
         }
 
         return previousElement;
@@ -232,6 +224,8 @@ class KeyboardHelpers {
             this.keyboardNavigableElements.forEach((element2) => {
                 element2.removeAttribute(selectedAttrProp);
             });
+
+            this.updateRovingTabIndex(element);
 
             // this triggers mutation observer callback in host component
             element.setAttribute(selectedAttrProp, selectedAttrVal);
