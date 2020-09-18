@@ -1,6 +1,7 @@
 :root {
     --color-focus: hsl(240, 100%, 50%);
     --color-component-bg: hsla(0, 0%, 100%, 1);
+    --color-component-bg2: hsla(0, 0%, 0%, .05);
     --color-component-border: hsla(0, 0%, 60%, 1);
     --color-selected: rgb(0, 0, 0);
 }
@@ -21,18 +22,40 @@ body {
 h1 {
     font-size: 64px;
     font-weight: bold;
-    margin-bottom: 0;
 
     &::after {
         content: '.';
-    }
-
-    + p {
-        margin-top: 8px;
-        margin-bottom: 48px;
     }
 }
 
 code {
     font-size: 1.1em;
+}
+
+table {
+    border: 1px solid var(--color-component-border);
+    border-collapse: collapse;
+    border-width: 1px 1px 0 0;
+
+    th,
+    td {
+        vertical-align: top;
+        font-size: .85em;
+        text-align: left;
+        padding: 6px;
+        border: 1px solid var(--color-component-border);
+        border-width: 0 0 1px 1px;
+    }
+
+    thead {
+        th {
+            background-color: var(--color-component-bg2);
+        }
+    }
+}
+
+hr {
+    border: 1px solid var(--color-component-border);
+    border-width: 1px 0 0;
+    margin: 32px 0;
 }

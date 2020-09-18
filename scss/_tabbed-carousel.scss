@@ -41,35 +41,19 @@
         margin-left: 156px;
 
         &__nav {
+            display: flex;
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-
-            ul,
-            li {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-
-            ul {
-                display: flex;
-                width: 100%;
-                height: 100%;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                justify-content: space-between;
-            }
-
-            li {
-                width: 25%;
-            }
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
 
             button {
                 opacity: .5;
-                width: 100%;
+                width: 25%;
                 height: 100%;
                 border: 0;
             }

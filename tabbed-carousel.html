@@ -8,14 +8,8 @@
     </head>
     <body>
         <h1>Tabbed carousel</h1>
-        <p>Based on <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">WAI-ARIA Design Patterns and Widgets: Tabs</a> and <a href="https://www.w3.org/TR/wai-aria-practices/#carousel"˘>WAI-ARIA Design Patterns and Widgets: Carousel</a></p>
-        <!-- Tabs or Tabbed Interface: A set of tab elements and their associated tab panels. -->
         <div class="tabbed-carousel">
-            <!-- Tab List: A set of tab elements contained in a tablist element. -->
-            <!-- Carousel: Optionally, a control, or group of controls, for choosing a specific slide to display.
-                 For example, slide picker controls can be marked up as tabs in a tablist with the slide represented by a tabpanel element. -->
             <div role="tablist" aria-label="Choose photo to display">
-                <!-- Tab: An element in the tab list that serves as a label for one of the tab panels and can be activated to display that panel. -->
                 <button role="tab" aria-controls="tabpanel-1" aria-selected="true" id="tab-1">
                     <img src="https://placehold.it/44x44?text=1" alt="Photo 1">
                 </button>
@@ -33,21 +27,11 @@
                 </button>
             </div>
             <div class="tabpanels">
-                <!-- Features needed to provide sufficient rotation control include: Buttons for displaying the previous and next slides. -->
                 <div class="tabpanels__nav">
-                    <ul>
-                        <li>
-                            <button class="tabpanels-nav__previous" data-kh-proxy="selectPrevious">Previous</button>
-                        </li>
-                        <li>
-                            <button class="tabpanels-nav__next" data-kh-proxy="selectNext">Next</button>
-                        </li>
-                    </ul>
+                    <button class="tabpanels-nav__previous" data-kh-proxy="selectPrevious">Previous</button>
+                    <button class="tabpanels-nav__next" data-kh-proxy="selectNext">Next</button>
                 </div>
-                <!-- Tab Panel: The element that contains the content associated with a tab. -->
                 <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
-                <!-- Carousel: The structure of a tabbed carousel is the same as a basic carousel except that:
-                               Each slide container has role tabpanel in lieu of group, and it does not have the aria-roledescription property. -->
                 <div role="tabpanel" id="tabpanel-1" aria-labelledby="tab-1" tabindex="0">
                     <h2>Image 1</h2>
                     <img src="https://placehold.it/400x300" alt="Description of photo 1">
@@ -70,5 +54,103 @@
                 </div>
             </div>
         </div>
+
+        <hr>
+
+        <h2>Documentation</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">WAI-ARIA Design Pattern</th>
+                    <th scope="col">WAI-ARIA Term</th>
+                    <th scope="col">WAI-ARIA Definition</th>
+                    <th scope="col">HTML Implementation</th>
+                    <th scope="col">JavaScript Implementation</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
+                    </td>
+                    <td>Tabs or Tabbed Interface</td>
+                    <td>A set of tab elements and their associated tab panels.</td>
+                    <td>
+                        <code>&lt;div class="tabbed-carousel"&gt;</code>
+                    </td>
+                    <td>TabbedCarousel</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
+                    </td>
+                    <td>Tab List</td>
+                    <td>A set of tab elements contained in a tablist element.</td>
+                    <td>
+                        <code>&lt;div role="tablist" aria-label="Choose photo to display"&gt;</code>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
+                    </td>
+                    <td>tab</td>
+                    <td>An element in the tab list that serves as a label for one of the tab panels and can be activated to display that panel.</td>
+                    <td>
+                        <code>&lt;button role="tab" aria-controls="tabpanel-1" aria-selected="true" id="tab-1"&gt;</code>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
+                    </td>
+                    <td>tabpanel</td>
+                    <td>The element that contains the content associated with a tab.</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://www.w3.org/TR/wai-aria-practices/#carousel">Carousel</a>
+                    </td>
+                    <td>-</td>
+                    <td>The structure of a tabbed carousel is the same as a basic carousel except that: Each slide container has role tabpanel in lieu of group, and it does not have the aria-roledescription property.</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://www.w3.org/TR/wai-aria-practices/#carousel">Carousel</a>
+                    </td>
+                    <td>-</td>
+                    <td>Features needed to provide sufficient rotation control include: Buttons for displaying the previous and next slides.</td>
+                    <td>
+                        <code>&lt;div class="tabpanels__nav"&gt;</code>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="https://www.w3.org/TR/wai-aria-practices/#carousel">Carousel</a>
+                    </td>
+                    <td>-</td>
+                    <td>Features needed to provide sufficient rotation control include: Optionally, a control, or group of controls, for choosing a specific slide to display. For example, slide picker controls can be marked up as tabs in a tablist with the slide represented by a tabpanel element.</td>
+                    <td>
+                        <code>&lt;div role="tablist" aria-label="Choose photo to display"&gt;</code>
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
     </body>
 </html>
