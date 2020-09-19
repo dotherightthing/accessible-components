@@ -21,18 +21,18 @@ Cypress.env('RETRIES', 2);
 
 describe('Single Select', function () {
     before(function () {
-        cy.visit('single-select.html');
+        cy.visit('single-select-listbox.html');
     });
 
     describe('Configuration', function () {
         it('Classes exist', function () {
             // check that the class is available
             cy.window()
-                .should('have.property', 'SingleSelect');
+                .should('have.property', 'SingleSelectListbox');
 
             // check that it's a function
             cy.window().then((win) => {
-                expect(win.SingleSelect).to.be.a('function');
+                expect(win.SingleSelectListbox).to.be.a('function');
             });
 
             // check that the class is available
