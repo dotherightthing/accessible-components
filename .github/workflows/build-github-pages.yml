@@ -17,18 +17,17 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v2
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
       with:
+        php-version: '7.2.15'
         node-version: ${{ matrix.node-version }}
-
-    - name: Run tests
-      run: |
-        npm run lint --if-present
-        npm run test:cypress --if-present
-
+    
     - name: Run build
       run: |
+        composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+        npm ci
+        npm run lint --if-present
         npm run compile --if-present
 
     - name: Deploy
