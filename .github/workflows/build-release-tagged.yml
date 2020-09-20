@@ -134,7 +134,7 @@ jobs:
     # This repo only
     - name: Deploy to Github pages
       run: |
-        git config --global user.name "Dan Smith"
+        git config --global user.name "dotherightthing"
         git config --global user.email "dev@dotherightthing.co.nz"
         git remote set-url origin https://${github_token}@github.com/${repository}
         npm run deploy
