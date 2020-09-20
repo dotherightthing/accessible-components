@@ -161,7 +161,7 @@ describe('Single Select', function () {
                     });
                 });
 
-                it('Spacebar key opens the listbox', function () {
+                it.skip('Spacebar key opens the listbox', function () {
                     cy.get('@button')
                         .focus()
                         .type(' ');
