@@ -46,6 +46,19 @@ jobs:
         WPUNIT_DB_PASS: root
         WPUNIT_DB_HOST: 127.0.0.1
 
+    # This repo only
+    - name: Deploy to Github pages
+      run: |
+        git config --global user.name $user_name
+        git config --global user.email $user_email
+        git remote set-url origin https://${github_token}@github.com/${repository}
+        npm run deploy
+      env:
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
+        repository: ${{ github.repository }}
+
     - name: Copy built files to release folder
       run: npm run release --if-present
 
