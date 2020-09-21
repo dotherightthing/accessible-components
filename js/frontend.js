@@ -1092,3 +1092,80 @@ document.onreadystatechange = () => {
         });
     }
 };
+
+// vue app (table)
+
+/* eslint-disable no-undef */
+
+const app = Vue.createApp({});
+
+app.component('spec-table-start', {
+    template: `
+        <table>
+    `
+});
+
+app.component('spec-table-head', {
+    template: `
+        <thead>
+            <tr>
+                <th scope="col">WAI-ARIA Design Pattern</th>
+                <th scope="col">WAI-ARIA Term</th>
+                <th scope="col">WAI-ARIA Definition</th>
+                <th scope="col">HTML Implementation</th>
+                <th scope="col">JavaScript Implementation</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+    `
+});
+
+app.component('spec-table-row', {
+    props: [
+        'first',
+        'last',
+        'waiAriaPatternUrl',
+        'waiAriaPatternName',
+        'waiAriaTerm',
+        'waiAriaDefinition',
+        'htmlImplementation',
+        'jsImplementation',
+        'description'
+    ],
+    template: `
+        <tr>
+            <td>
+                <a v-if="waiAriaPatternUrl" href="{{ waiAriaPatternUrl }}">{{ waiAriaPatternName }}</a>
+                <span v-else>-</span>
+            </td>
+            <td>
+                <span v-if="waiAriaTerm">{{ waiAriaTerm }}</span>
+                <span v-else>-</span>
+            </td>
+            <td>
+                <span v-if="waiAriaDefinition">{{ waiAriaDefinition }}</span>
+                <span v-else>-</span>
+            </td>
+            <td>
+                <code v-if="htmlImplementation">{{ htmlImplementation }}</code>
+                <span v-else>-</span>
+            </td>
+            <td>
+                <span v-if="jsImplementation">{{ jsImplementation }}</span>
+                <span v-else>-</span>
+            </td>
+            <td>
+                <span v-if="description">{{ description }}</span>
+                <span v-else>-</span>
+            </td>
+        </tr>
+    `
+});
+
+app.component('spec-table-end', {
+    template: `
+        </table>
+    `
+});
+
+app.mount('#app');

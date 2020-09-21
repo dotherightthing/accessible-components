@@ -3,8 +3,6 @@
     <head>
         <meta charset="utf-8" />
         <title>Tabbed carousel</title>
-        <script src="node_modules/@babel/polyfill/dist/polyfill.min.js"></script>
-        <script src="js/frontend-es5.js"></script>
         <link rel="stylesheet" href="css/frontend.css" />
     </head>
     <body>
@@ -59,40 +57,30 @@
         <hr>
 
         <h2>Documentation</h2>
+        <div id="app">
+            <spec-table-start><!-- this fails --></spec-table-start>
+            <spec-table-head></spec-table-head>
+            <spec-table-row
+                first="true"
+                wai-aria-pattern-name="Tabs"
+                wai-aria-pattern-url="https://www.w3.org/TR/wai-aria-practices/#tabpanel"
+                wai-aria-definition="Tabs are a set of layered sections of content, known as tab panels, that display one panel of content at a time. Each tab panel has an associated tab element, that when activated, displays the panel. The list of tab elements is arranged along one edge of the currently displayed panel, most commonly the top edge."
+            ></spec-table-row>
+            <spec-table-row
+                last="true"
+                wai-aria-pattern-name="Tabs"
+                wai-aria-pattern-url="https://www.w3.org/TR/wai-aria-practices/#tabpanel"
+                wai-aria-term="Tabs or Tabbed Interface"
+                wai-aria-definition="A set of tab elements and their associated tab panels."
+                html-implementation="<div class='tabbed-carousel'>"
+                js-implementation="TabbedCarousel"
+                description=""
+            ></spec-table-row>
+            <spec-table-end></spec-table-end>
+        </div>
+
         <table>
-            <thead>
-                <tr>
-                    <th scope="col">WAI-ARIA Design Pattern</th>
-                    <th scope="col">WAI-ARIA Term</th>
-                    <th scope="col">WAI-ARIA Definition</th>
-                    <th scope="col">HTML Implementation</th>
-                    <th scope="col">JavaScript Implementation</th>
-                    <th scope="col">Description</th>
-                </tr>
-            </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
-                    </td>
-                    <td>-</td>
-                    <td>Tabs are a set of layered sections of content, known as tab panels, that display one panel of content at a time. Each tab panel has an associated tab element, that when activated, displays the panel. The list of tab elements is arranged along one edge of the currently displayed panel, most commonly the top edge.</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
-                    </td>
-                    <td>Tabs or Tabbed Interface</td>
-                    <td>A set of tab elements and their associated tab panels.</td>
-                    <td>
-                        <code>&lt;div class="tabbed-carousel"&gt;</code>
-                    </td>
-                    <td>TabbedCarousel</td>
-                    <td></td>
-                </tr>
                 <tr>
                     <td>
                         <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
@@ -163,5 +151,9 @@
                 </tr>
             </tbody>
         </table>
+
+        <script src="https://unpkg.com/vue@next"></script>
+        <script src="node_modules/@babel/polyfill/dist/polyfill.min.js"></script>
+        <script src="js/frontend-es5.js"></script>
     </body>
 </html>
