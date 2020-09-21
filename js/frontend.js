@@ -10,7 +10,7 @@
  * @class KeyboardHelpers
  *
  * @param {object}          options                             - Module options
- * @param {null|Node}       options.componentElement            - The outermost DOM element, used to apply keydown listener
+ * @param {null|Node}       options.componentElement            - The outermost DOM element
  * @param {boolean}         options.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
  * @param {object}          options.keyboardActions             - The key(s) which trigger actions
  * @param {null|NodeList}   options.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
@@ -20,6 +20,8 @@
  * @param {null|Node}       options.toggleElement               - The DOM element which toggles the parent state
  * @param {boolean}         options.toggleAfterSelected         - Whether to trigger the toggle action after a keyboardNavigableElement is selected
  * @param {boolean}         options.useRovingTabIndex           - Whether to apply a tabindex of 0 (tabstop) rather than -1 (programmatic focus) to the focussed item
+ *
+ * @todo Make this a module, as it doesn't need to manage state
  */
 class KeyboardHelpers {
     constructor(options = {}) {
@@ -540,8 +542,15 @@ class KeyboardHelpers {
 
 /**
  * @class Label
+ *
+ * @param {null|Node} options.componentElement - The outermost DOM element
  */
 class Label {
+    constructor(options = {}) {
+        // public options
+        this.componentElement = options.componentElement || null;
+    }
+
     /**
      * @function onClickLabel
      * @memberof Label
@@ -564,18 +573,16 @@ class Label {
      * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
      */
     init() {
-        const labels = document.querySelectorAll('.label[data-for]');
-
-        labels.forEach((label) => {
-            label.addEventListener('click', this.onClickLabel.bind(this));
-        });
+        this.componentElement.addEventListener('click', this.onClickLabel.bind(this));
     }
 }
 
 /**
  * @class SingleSelectListbox
+ * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
  * @param {object} options                          - Module options
+ * @param {null|Node} options.componentElement      - The outermost DOM element
  * @param {boolean} options.selectionFollowsFocus   - Select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
  *
  * @todo {boolean} options.autoSelectFirstOption    - Select the first option in the listbox
@@ -585,6 +592,7 @@ class Label {
 class SingleSelectListbox {
     constructor(options = {}) {
         // public options
+        this.componentElement = options.componentElement || null;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
         // this.autoSelectFirstOption = options.autoSelectFirstOption || false;
         // this.typeaheadSingleCharacter = options.typeaheadSingleCharacter || false;
@@ -791,61 +799,59 @@ class SingleSelectListbox {
      */
     init() {
         // .select wrapper allows button and listbox to be styled together
-        const selects = document.querySelectorAll('.select');
 
-        selects.forEach((select) => {
-            const button = select.querySelector(`:scope ${this.selectors.button}`);
-            const listbox = select.querySelector(`:scope ${this.selectors.listbox}:not([aria-multiselectable="true"])`);
+        const button = this.componentElement.querySelector(`:scope ${this.selectors.button}`);
+        const listbox = this.componentElement.querySelector(`:scope ${this.selectors.listbox}:not([aria-multiselectable="true"])`);
 
-            if (listbox) {
-                const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
+        if (listbox) {
+            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
 
-                // TODO Cypress tests
-                // TODO button requires 2x ENTER to show listbox
-                // TODO create one instance for each select?
+            // TODO Cypress tests
+            // TODO button requires 2x ENTER to show listbox
+            // TODO create one instance for each select?
 
-                const KeyboardHelpersConfig = {
-                    componentElement: select, // TODO: should this be listbox as that is focussable?
-                    keyboardActions: {
-                        focusFirst: [ 'Home' ],
-                        focusLast: [ 'End' ],
-                        focusNext: [ 'ArrowDown' ],
-                        focusPrevious: [ 'ArrowUp' ],
-                        selectFocussed: [ 'Enter', ' ' ]
-                    },
-                    keyboardNavigableElements: options,
-                    selectedAttr: this.attributes.selected,
-                    selectionFollowsFocus: this.selectionFollowsFocus,
-                    toggleActions: {
-                        toggle: [ 'ArrowUp', 'ArrowDown', 'Enter', ' ' ],
-                        toggleClosed: [ 'Enter', ' ', 'Escape' ]
-                    },
-                    toggleElement: button,
-                    toggleAfterSelected: true
-                };
+            const KeyboardHelpersConfig = {
+                componentElement: this.componentElement, // TODO: should this be listbox as that is focussable?
+                keyboardActions: {
+                    focusFirst: [ 'Home' ],
+                    focusLast: [ 'End' ],
+                    focusNext: [ 'ArrowDown' ],
+                    focusPrevious: [ 'ArrowUp' ],
+                    selectFocussed: [ 'Enter', ' ' ]
+                },
+                keyboardNavigableElements: options,
+                selectedAttr: this.attributes.selected,
+                selectionFollowsFocus: this.selectionFollowsFocus,
+                toggleActions: {
+                    toggle: [ 'ArrowUp', 'ArrowDown', 'Enter', ' ' ],
+                    toggleClosed: [ 'Enter', ' ', 'Escape' ]
+                },
+                toggleElement: button,
+                toggleAfterSelected: true
+            };
 
-                const singleSelectListboxKeys = new KeyboardHelpers(KeyboardHelpersConfig);
+            const singleSelectListboxKeys = new KeyboardHelpers(KeyboardHelpersConfig);
 
-                singleSelectListboxKeys.init();
+            singleSelectListboxKeys.init();
 
-                // keydown events bubble up from the element with click
-                // so we can handle keyboard interactions for
-                // button, listbox and option altogether
-                select.addEventListener('click', this.toggleHidden.bind(this));
+            // keydown events bubble up from the element with click
+            // so we can handle keyboard interactions for
+            // button, listbox and option altogether
+            this.componentElement.addEventListener('click', this.toggleHidden.bind(this));
 
-                // .addEventListener() sets the this pointer to the DOM element that caught the event
-                // use .bind() to force the desired value of this
-                // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
-                listbox.addEventListener('focus', this.focusOption.bind(this));
+            // .addEventListener() sets the this pointer to the DOM element that caught the event
+            // use .bind() to force the desired value of this
+            // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
+            listbox.addEventListener('focus', this.focusOption.bind(this));
 
-                this.propagateSelection(listbox);
-            }
-        });
+            this.propagateSelection(listbox);
+        }
     }
 }
 
 /**
  * @class TabbedCarousel
+ * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
  * @param {object} options - Module options
  * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
@@ -932,84 +938,79 @@ class TabbedCarousel {
      * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
      */
     init() {
-        // .select wrapper allows child elements to be styled together
-        const tabbedCarousels = document.querySelectorAll('.tabbed-carousel');
+        const tab = this.componentElement.querySelectorAll(`:scope ${this.selectors.tab}`);
+        const tablist = this.componentElement.querySelector(`:scope ${this.selectors.tablist}`);
+        const tabpanels = this.componentElement.querySelectorAll(`:scope ${this.selectors.tabpanel}`);
 
-        tabbedCarousels.forEach((tabbedCarousel) => {
-            const tab = tabbedCarousel.querySelectorAll(`:scope ${this.selectors.tab}`);
-            const tablist = tabbedCarousel.querySelector(`:scope ${this.selectors.tablist}`);
-            const tabpanels = tabbedCarousel.querySelectorAll(`:scope ${this.selectors.tabpanel}`);
+        if (tab.length) {
+            // TODO Cypress tests
 
-            if (tab.length) {
-                // TODO Cypress tests
+            const KeyboardHelpersConfig = {
+                componentElement: this.componentElement,
 
-                const KeyboardHelpersConfig = {
-                    componentElement: tabbedCarousel,
+                // If focus is on the first tab, moves focus to the last tab.
+                // If focus is on the last tab element, moves focus to the first tab.
+                // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
+                infiniteNavigation: true,
 
-                    // If focus is on the first tab, moves focus to the last tab.
-                    // If focus is on the last tab element, moves focus to the first tab.
+                keyboardActions: {
+                    // Home (Optional): Moves focus to the first tab.
                     // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                    infiniteNavigation: true,
+                    focusFirst: [ 'Home' ],
 
-                    keyboardActions: {
-                        // Home (Optional): Moves focus to the first tab.
-                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                        focusFirst: [ 'Home' ],
-
-                        // End (Optional): Moves focus to the last tab
-                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                        focusLast: [ 'End' ],
-
-                        // Right Arrow: Moves focus to the next tab.
-                        // See also infiniteNavigation
-                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                        focusNext: [ 'ArrowRight' ],
-
-                        // Left Arrow: moves focus to the previous tab.
-                        // See also infiniteNavigation
-                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                        focusPrevious: [ 'ArrowLeft' ],
-
-                        // Space or Enter: Activates the tab if it was not activated automatically on focus.
-                        // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                        selectFocussed: [ ' ', 'Enter' ]
-                    },
-
-                    // keyboard navigation selects the tab
-                    // focussing a tab via keyboard or mouse directly sets the active tabpanel
-                    // Q: what to call the relative selection controls (prev/next)
-                    // for listbox: keyboardNavigableElements are options, which indirectly set the button text, i.e. they are not controls
-                    // for tabbed carousel: keyboardNavigableElements are controls, which directly set the active tabpanel
-                    // both variations essentially allow the 'current value' to be set
-                    // this is then used to populate the button or select the associated panel
-                    // so they are value setters
-                    // an option is a value referenced by a name
-                    keyboardNavigableElements: tab,
-
-                    selectedAttr: this.attributes.selected,
-
-                    // It is recommended that tabs activate automatically when they receive focus
-                    // as long as their associated tab panels are displayed without noticeable latency.
-                    // This typically requires tab panel content to be preloaded.
+                    // End (Optional): Moves focus to the last tab
                     // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                    selectionFollowsFocus: this.selectionFollowsFocus,
+                    focusLast: [ 'End' ],
 
-                    // When using roving tabindex to manage focus in a composite UI component,
-                    // the element that is to be included in the tab sequence has tabindex of "0"
-                    // and all other focusable elements contained in the composite have tabindex of "-1".
-                    // One benefit of using roving tabindex rather than aria-activedescendant to manage focus
-                    // is that the user agent will scroll the newly focused element into view.
-                    // See: https://www.w3.org/TR/wai-aria-practices/#kbd_roving_tabindex
-                    useRovingTabIndex: true
-                };
+                    // Right Arrow: Moves focus to the next tab.
+                    // See also infiniteNavigation
+                    // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
+                    focusNext: [ 'ArrowRight' ],
 
-                const TabbedCarouselKeys = new KeyboardHelpers(KeyboardHelpersConfig);
+                    // Left Arrow: moves focus to the previous tab.
+                    // See also infiniteNavigation
+                    // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
+                    focusPrevious: [ 'ArrowLeft' ],
 
-                TabbedCarouselKeys.init();
+                    // Space or Enter: Activates the tab if it was not activated automatically on focus.
+                    // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
+                    selectFocussed: [ ' ', 'Enter' ]
+                },
 
-                this.propagateSelection(tablist, tabpanels);
-            }
-        });
+                // keyboard navigation selects the tab
+                // focussing a tab via keyboard or mouse directly sets the active tabpanel
+                // Q: what to call the relative selection controls (prev/next)
+                // for listbox: keyboardNavigableElements are options, which indirectly set the button text, i.e. they are not controls
+                // for tabbed carousel: keyboardNavigableElements are controls, which directly set the active tabpanel
+                // both variations essentially allow the 'current value' to be set
+                // this is then used to populate the button or select the associated panel
+                // so they are value setters
+                // an option is a value referenced by a name
+                keyboardNavigableElements: tab,
+
+                selectedAttr: this.attributes.selected,
+
+                // It is recommended that tabs activate automatically when they receive focus
+                // as long as their associated tab panels are displayed without noticeable latency.
+                // This typically requires tab panel content to be preloaded.
+                // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
+                selectionFollowsFocus: this.selectionFollowsFocus,
+
+                // When using roving tabindex to manage focus in a composite UI component,
+                // the element that is to be included in the tab sequence has tabindex of "0"
+                // and all other focusable elements contained in the composite have tabindex of "-1".
+                // One benefit of using roving tabindex rather than aria-activedescendant to manage focus
+                // is that the user agent will scroll the newly focused element into view.
+                // See: https://www.w3.org/TR/wai-aria-practices/#kbd_roving_tabindex
+                useRovingTabIndex: true
+            };
+
+            const TabbedCarouselKeys = new KeyboardHelpers(KeyboardHelpersConfig);
+
+            TabbedCarouselKeys.init();
+
+            this.propagateSelection(tablist, tabpanels);
+        }
     }
 }
 
@@ -1017,19 +1018,31 @@ document.onreadystatechange = () => {
     // The document has finished loading and the document has been parsed
     // but sub-resources such as images, stylesheets and frames are still loading.
     if (document.readyState === 'interactive') {
-        const label = new Label();
-        label.init();
+        // Function to make IE9+ support forEach
+        // untested (CBD Free not working)
+        // https://stackoverflow.com/a/50917053/6850747
+        if (window.NodeList && !NodeList.prototype.forEach) {
+            NodeList.prototype.forEach = Array.prototype.forEach;
+        }
 
-        const singleSelectListbox = new SingleSelectListbox({
-            selectionFollowsFocus: false
+        document.querySelectorAll('.label[data-for]').forEach((label) => {
+            return new Label({
+                componentElement: label
+            }).init();
         });
 
-        singleSelectListbox.init();
-
-        const tabbedCarousel = new TabbedCarousel({
-            selectionFollowsFocus: true
+        document.querySelectorAll('.select').forEach((singleSelectListbox) => {
+            return new SingleSelectListbox({
+                componentElement: singleSelectListbox,
+                selectionFollowsFocus: false
+            }).init();
         });
 
-        tabbedCarousel.init();
+        document.querySelectorAll('.tabbed-carousel').forEach((tabbedCarousel) => {
+            return new TabbedCarousel({
+                componentElement: tabbedCarousel,
+                selectionFollowsFocus: true
+            }).init();
+        });
     }
 };
