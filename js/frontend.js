@@ -10,7 +10,7 @@
  * @class KeyboardHelpers
  *
  * @param {object}          options                             - Module options
- * @param {null|Node}       options.componentElement            - The outermost DOM element
+ * @param {null|Node}       options.instanceElement             - The outermost DOM element
  * @param {boolean}         options.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
  * @param {object}          options.keyboardActions             - The key(s) which trigger actions
  * @param {null|NodeList}   options.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
@@ -26,7 +26,7 @@
 class KeyboardHelpers {
     constructor(options = {}) {
         // public options
-        this.componentElement = options.componentElement || null;
+        this.instanceElement = options.instanceElement || null;
         this.infiniteNavigation = options.infiniteNavigation || false;
         this.keyboardActions = options.keyboardActions || {};
         this.keyboardNavigableElements = options.keyboardNavigableElements || null;
@@ -194,7 +194,7 @@ class KeyboardHelpers {
     getSelected() {
         const selectedAttrProp = this.selectedAttr[0];
         const selectedAttrVal = this.selectedAttr[1];
-        const selectedElement = this.componentElement.querySelector(`:scope [${selectedAttrProp}="${selectedAttrVal}"]`);
+        const selectedElement = document.querySelector(`#${this.instanceId} [${selectedAttrProp}="${selectedAttrVal}"]`);
 
         return selectedElement;
     }
@@ -267,14 +267,14 @@ class KeyboardHelpers {
 
     /**
      * @function isComponentElement
-     * @summary Determine whether the element is the componentElement
+     * @summary Determine whether the element is the instanceElement
      * @memberof KeyboardHelpers
      *
      * @param {Node} element - DOM element
      * @returns {boolean} isComponentElement
      */
     isComponentElement(element) {
-        return (this.componentElement === element);
+        return (this.instanceElement === element);
     }
 
     /**
@@ -438,8 +438,8 @@ class KeyboardHelpers {
         }
 
         // key listener on component is used to trigger toggle action
-        if (this.componentElement !== null) {
-            this.componentElement.addEventListener('keydown', this.onKeyDown.bind(this));
+        if (this.instanceElement !== null) {
+            this.instanceElement.addEventListener('keydown', this.onKeyDown.bind(this));
         }
     }
 
@@ -452,7 +452,7 @@ class KeyboardHelpers {
         const proxyActions = Object.keys(this.proxyActionElements);
 
         proxyActions.forEach((proxyAction) => {
-            const proxyActionElement = this.componentElement.querySelector(`:scope ${this.proxyActionElements[proxyAction]}`);
+            const proxyActionElement = document.querySelector(`#${this.instanceId} ${this.proxyActionElements[proxyAction]}`);
 
             if (proxyActionElement !== null) {
                 proxyActionElement.addEventListener('click', this[proxyAction].bind(this));
@@ -535,6 +535,8 @@ class KeyboardHelpers {
      * @memberof KeyboardHelpers
      */
     init() {
+        this.instanceId = this.instanceElement.getAttribute('id');
+
         this.registerKeyboardActions();
         this.registerProxyKeyboardActions();
     }
@@ -543,12 +545,12 @@ class KeyboardHelpers {
 /**
  * @class Label
  *
- * @param {null|Node} options.componentElement - The outermost DOM element
+ * @param {null|Node} options.instanceElement - The outermost DOM element
  */
 class Label {
     constructor(options = {}) {
         // public options
-        this.componentElement = options.componentElement || null;
+        this.instanceElement = options.instanceElement || null;
     }
 
     /**
@@ -573,7 +575,7 @@ class Label {
      * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
      */
     init() {
-        this.componentElement.addEventListener('click', this.onClickLabel.bind(this));
+        this.instanceElement.addEventListener('click', this.onClickLabel.bind(this));
     }
 }
 
@@ -582,7 +584,7 @@ class Label {
  * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
  * @param {object} options                          - Module options
- * @param {null|Node} options.componentElement      - The outermost DOM element
+ * @param {null|Node} options.instanceElement       - The outermost DOM element
  * @param {boolean} options.selectionFollowsFocus   - Select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
  *
  * @todo {boolean} options.autoSelectFirstOption    - Select the first option in the listbox
@@ -592,7 +594,7 @@ class Label {
 class SingleSelectListbox {
     constructor(options = {}) {
         // public options
-        this.componentElement = options.componentElement || null;
+        this.instanceElement = options.instanceElement || null;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
         // this.autoSelectFirstOption = options.autoSelectFirstOption || false;
         // this.typeaheadSingleCharacter = options.typeaheadSingleCharacter || false;
@@ -618,17 +620,32 @@ class SingleSelectListbox {
     }
 
     /**
+     * @function assignInstanceId
+     * @summary Assign a unique ID to an instance to allow querying of descendant selectors sans :scope (Edge 79)
+     * @memberof SingleSelectListbox
+     */
+    assignInstanceId() {
+        // If the parent element does not have an ID, assign a temporary ID
+        if (this.instanceElement.getAttribute('id') === null) {
+            const randomNumber = () => {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            };
+
+            this.instanceElement.setAttribute('id', `singleselectlistbox-${randomNumber()}-${randomNumber()}`);
+        }
+
+        this.instanceId = this.instanceElement.getAttribute('id');
+    }
+
+    /**
      * @function focusOption
      * @memberof SingleSelectListbox
-     *
-     * @param {*} e - target of focus event
      */
-    focusOption(e) {
-        const listbox = e.target;
-
-        // :scope - only match selectors on descendants of the base element:
-        const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
-        const selectedOptions = listbox.querySelectorAll(`:scope ${this.selectors.selected}`);
+    focusOption() {
+        const options = document.querySelectorAll(`#${this.instanceId} ${this.selectors.option}`);
+        const selectedOptions = document.querySelectorAll(`#${this.instanceId} ${this.selectors.selected}`);
 
         if (selectedOptions.length) {
             // focus the first selected option
@@ -654,8 +671,7 @@ class SingleSelectListbox {
         let listbox;
 
         if (this.isButton(childElement)) {
-            const wrapper = childElement.parentElement;
-            listbox = wrapper.querySelector(`:scope ${this.selectors.listbox}`);
+            listbox = document.querySelector(`#${this.instanceId} ${this.selectors.listbox}`);
         } else {
             listbox = childElement;
         }
@@ -799,19 +815,20 @@ class SingleSelectListbox {
      */
     init() {
         // .select wrapper allows button and listbox to be styled together
+        this.assignInstanceId();
 
-        const button = this.componentElement.querySelector(`:scope ${this.selectors.button}`);
-        const listbox = this.componentElement.querySelector(`:scope ${this.selectors.listbox}:not([aria-multiselectable="true"])`);
+        const button = document.querySelector(`#${this.instanceId} ${this.selectors.button}`);
+        const listbox = document.querySelector(`#${this.instanceId} ${this.selectors.listbox}:not([aria-multiselectable="true"])`);
 
         if (listbox) {
-            const options = listbox.querySelectorAll(`:scope ${this.selectors.option}`);
+            const options = document.querySelectorAll(`#${this.instanceId} ${this.selectors.option}`);
 
             // TODO Cypress tests
             // TODO button requires 2x ENTER to show listbox
             // TODO create one instance for each select?
 
             const KeyboardHelpersConfig = {
-                componentElement: this.componentElement, // TODO: should this be listbox as that is focussable?
+                instanceElement: this.instanceElement, // TODO: should this be listbox as that is focussable?
                 keyboardActions: {
                     focusFirst: [ 'Home' ],
                     focusLast: [ 'End' ],
@@ -837,7 +854,7 @@ class SingleSelectListbox {
             // keydown events bubble up from the element with click
             // so we can handle keyboard interactions for
             // button, listbox and option altogether
-            this.componentElement.addEventListener('click', this.toggleHidden.bind(this));
+            this.instanceElement.addEventListener('click', this.toggleHidden.bind(this));
 
             // .addEventListener() sets the this pointer to the DOM element that caught the event
             // use .bind() to force the desired value of this
@@ -853,7 +870,8 @@ class SingleSelectListbox {
  * @class TabbedCarousel
  * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
- * @param {object} options - Module options
+ * @param {object} options                              - Module options
+ * @param {null|Node} options.instanceElement           - The outermost DOM element
  * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
  *
  * @todo {boolean} options.autoSelectFirstOption        - Select the first tab in the tablist
@@ -861,6 +879,7 @@ class SingleSelectListbox {
 class TabbedCarousel {
     constructor(options = {}) {
         // public options
+        this.instanceElement = options.instanceElement || null;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
         // this.autoSelectFirstOption = options.autoSelectFirstOption || false;
 
@@ -879,6 +898,25 @@ class TabbedCarousel {
             tablist: '[role="tablist"]',
             tabpanel: '[role="tabpanel"]'
         };
+    }
+
+    /**
+     * @function assignInstanceId
+     * @summary Assign a unique ID to an instance to allow querying of descendant selectors sans :scope (Edge 79)
+     * @memberof TabbedCarousel
+     */
+    assignInstanceId() {
+        if (this.instanceElement.getAttribute('id') === null) {
+            const randomNumber = () => {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            };
+
+            this.instanceElement.setAttribute('id', `singleselectlistbox-${randomNumber()}-${randomNumber()}`);
+        }
+
+        this.instanceId = this.instanceElement.getAttribute('id');
     }
 
     /**
@@ -938,15 +976,17 @@ class TabbedCarousel {
      * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
      */
     init() {
-        const tab = this.componentElement.querySelectorAll(`:scope ${this.selectors.tab}`);
-        const tablist = this.componentElement.querySelector(`:scope ${this.selectors.tablist}`);
-        const tabpanels = this.componentElement.querySelectorAll(`:scope ${this.selectors.tabpanel}`);
+        this.assignInstanceId();
+
+        const tab = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tab}`);
+        const tablist = document.querySelector(`#${this.instanceId} ${this.selectors.tablist}`);
+        const tabpanels = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanel}`);
 
         if (tab.length) {
             // TODO Cypress tests
 
             const KeyboardHelpersConfig = {
-                componentElement: this.componentElement,
+                instanceElement: this.instanceElement,
 
                 // If focus is on the first tab, moves focus to the last tab.
                 // If focus is on the last tab element, moves focus to the first tab.
@@ -1026,23 +1066,29 @@ document.onreadystatechange = () => {
         }
 
         document.querySelectorAll('.label[data-for]').forEach((label) => {
-            return new Label({
-                componentElement: label
-            }).init();
+            const labelInstance = new Label({
+                instanceElement: label
+            });
+
+            labelInstance.init();
         });
 
         document.querySelectorAll('.select').forEach((singleSelectListbox) => {
-            return new SingleSelectListbox({
-                componentElement: singleSelectListbox,
+            const singleSelectListboxInstance = new SingleSelectListbox({
+                instanceElement: singleSelectListbox,
                 selectionFollowsFocus: false
-            }).init();
+            });
+
+            singleSelectListboxInstance.init();
         });
 
         document.querySelectorAll('.tabbed-carousel').forEach((tabbedCarousel) => {
-            return new TabbedCarousel({
-                componentElement: tabbedCarousel,
+            const tabbedCarouselInstance = new TabbedCarousel({
+                instanceElement: tabbedCarousel,
                 selectionFollowsFocus: true
-            }).init();
+            });
+
+            tabbedCarouselInstance.init();
         });
     }
 };
