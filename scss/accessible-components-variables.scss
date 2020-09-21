@@ -1,0 +1,8 @@
+// Colours
+// These use SCSS rather than CSS Custom Properties, in order to support IE11 without a polyfill
+
+$color-focus: hsl(240, 100%, 50%);
+$color-component-bg: hsla(0, 0%, 100%, 1);
+$color-component-bg2: hsla(0, 0%, 0%, .05);
+$color-component-border: hsla(0, 0%, 60%, 1);
+$color-selected: rgb(0, 0, 0);
