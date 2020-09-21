@@ -63,19 +63,6 @@ jobs:
         source: "tabbed-carousel.html"
         target: "release/tabbed-carousel.html"
 
-    # This repo only
-    - name: Deploy to Github pages
-      run: |
-        git config --global user.name "dotherightthing"
-        git config --global user.email "dev@dotherightthing.co.nz"
-        git remote set-url origin https://${github_token}@github.com/${repository}
-        npm run deploy
-      env:
-        user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'
-        github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
-        repository: ${{ github.repository }}
-
     # https://help.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts
     - name: Archive release folder
       uses: actions/upload-artifact@v1
@@ -100,10 +87,6 @@ jobs:
     # https://stackoverflow.com/a/58869470/6850747
     # https://help.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-output-parameter
     steps:
-    # check out the repository, so that the .git folder exists for the deploy step
-    - name: Checkout repo
-      uses: actions/checkout@v2
-
     - name: Check Tag
       id: check-tag
       run: |
