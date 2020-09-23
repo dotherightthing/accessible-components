@@ -37,6 +37,8 @@
     "release": "npm run release --prefix $npm_package_config_wpdtrt_npm_scripts",
     "server": "http-server ./",
     "test": "npm run test --prefix $npm_package_config_wpdtrt_npm_scripts && npx cypress run",
+    "test:js": "npx cypress run",
+    "test:jsui": "npx cypress open",
     "version": "npm run version --prefix $npm_package_config_wpdtrt_npm_scripts",
     "watch": "nodemon"
   },
