@@ -71,13 +71,13 @@ describe('Tabbed Carousel', function () {
                         cy.get(`.${componentClass} [role="tablist"]`)
                             .as('tablist');
 
-                        cy.get(`.${componentClass} .slide`)
+                        cy.get(`.${componentClass} .tabpanel`)
                             .as('tabpanel');
 
-                        cy.get(`.${componentClass} .slides__nav-previous`)
+                        cy.get(`.${componentClass} .tabpanels__nav-previous`)
                             .as('tabpanelNavPrevious');
 
-                        cy.get(`.${componentClass} .slides__nav-next`)
+                        cy.get(`.${componentClass} .tabpanels__nav-next`)
                             .as('tabpanelNavNext');
                     });
                 });
