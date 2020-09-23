@@ -49,7 +49,7 @@ class TabbedCarousel {
                     .substring(1);
             };
 
-            this.instanceElement.setAttribute('id', `singleselectlistbox-${randomNumber()}-${randomNumber()}`);
+            this.instanceElement.setAttribute('id', `tabbedcarousel-${randomNumber()}-${randomNumber()}`);
         }
 
         this.instanceId = this.instanceElement.getAttribute('id');
