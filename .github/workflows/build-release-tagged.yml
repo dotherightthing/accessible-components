@@ -27,6 +27,11 @@ jobs:
       with:
         php-version: '7.2.15'
         node-version: ${{ matrix.node-version }}
+
+    # This repo only
+    - name: Generate frontend.js
+      run: |
+        npm run merge:js --if-present
     
     - name: Run build
       run: |
