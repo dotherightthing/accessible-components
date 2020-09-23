@@ -59,9 +59,6 @@ describe('Tabbed Carousel', function () {
                     // Aliases are cleared between tests
                     // https://stackoverflow.com/questions/49431483/using-aliases-in-cypress
 
-                    // a gallery viewer that is below the fold won't have been transformed yet
-                    // the default gallery item is an image, which is accessible
-
                     cy.get(`#${testId}`).within(() => {
                         cy.get(`.${componentClass}`)
                             .as('tabbedCarousel');
@@ -86,100 +83,123 @@ describe('Tabbed Carousel', function () {
                     });
                 });
 
-                context('Caveats', function () {
-                    // cy.log('https://www.w3.org/TR/wai-aria-practices/#browser_and_AT_support - Testing assistive technology interoperability is essential before using code from this guide in production. Because the purpose of this guide is to illustrate appropriate use of ARIA 1.1 as defined in the ARIA specification, the design patterns, reference examples, and sample code intentionally do not describe and implement coding techniques for working around problems caused by gaps in support for ARIA 1.1 in browsers and assistive technologies. It is thus advisable to test implementations thoroughly with each browser and assistive technology combination that is relevant within a target audience.');
-                });
-
-                context('WAI-ARIA: Tabs design pattern', function () {
-                    it('Tabs', function () {
-                        cy.log('Tabs are a set of layered sections of content, known as tab panels, that display one panel of content at a time. Each tab panel has an associated tab element, that when activated, displays the panel. The list of tab elements is arranged along one edge of the currently displayed panel, most commonly the top edge.');
-                        cy.log('https://www.w3.org/TR/wai-aria-practices/#tabpanel');
-                    });
-
-                    it('Tabs or Tabbed Interface', function () {
-                        cy.log('A set of tab elements and their associated tab panels.');
-                        cy.log('https://www.w3.org/TR/wai-aria-practices/#tabpanel');
-
-                        cy.get('@tabbedCarousel').within(() => {
-                            cy.get('@tab').should('exist');
-                            cy.get('@tabpanel').should('exist');
+                // structure follows https://www.w3.org/TR/wai-aria-practices
+                context('WAI-ARIA design pattern', function () {
+                    context('Caveats', function () {
+                        it('Browser and Assistive Technology Support', function () {
+                            cy.log('https://www.w3.org/TR/wai-aria-practices/#browser_and_AT_support - Testing assistive technology interoperability is essential before using code from this guide in production. Because the purpose of this guide is to illustrate appropriate use of ARIA 1.1 as defined in the ARIA specification, the design patterns, reference examples, and sample code intentionally do not describe and implement coding techniques for working around problems caused by gaps in support for ARIA 1.1 in browsers and assistive technologies. It is thus advisable to test implementations thoroughly with each browser and assistive technology combination that is relevant within a target audience.');
                         });
                     });
 
-                    it('Tab List', function () {
-                        cy.log('A set of tab elements contained in a tablist element.');
-                        cy.log('https://www.w3.org/TR/wai-aria-practices/#tabpanel');
-
-                        cy.get('@tablist').within(() => {
-                            cy.get('@tab').should('exist');
-                        });
-                    });
-
-                    context('tab', function () {
-                        it('An element in the tab list that serves as a label for one of the tab panels and can be activated to display that panel.', function () {
-                            cy.get('@tabpanel').each(($tabPanel, i) => {
-                                cy.get('@tab').eq(i).then(($tab) => {
-                                    cy.wrap($tabPanel)
-                                        .should('have.attr', 'aria-labelledby', `${$tab.attr('id')}`);
-
-                                    cy.wrap($tab)
-                                        .should('have.attr', 'role', 'tab')
-                                        .should('have.attr', 'aria-controls', $tabPanel.attr('id'));
-                                });
-
-                                cy.get('@tabImage').eq(i)
-                                    .should('have.attr', 'alt', `Photo ${i + 1}`);
+                    context('Tabs', function () {
+                        context('Terms', function () {
+                            it('Tabs', function () {
+                                cy.log('Tabs are a set of layered sections of content, known as tab panels, that display one panel of content at a time. Each tab panel has an associated tab element, that when activated, displays the panel. The list of tab elements is arranged along one edge of the currently displayed panel, most commonly the top edge.');
+                                cy.log('https://www.w3.org/TR/wai-aria-practices/#tabpanel');
                             });
-                        });
-                    });
 
-                    it('tabpanel', function () {
+                            it('Tabs or Tabbed Interface', function () {
+                                cy.log('A set of tab elements and their associated tab panels.');
+                                cy.log('https://www.w3.org/TR/wai-aria-practices/#tabpanel');
+
+                                cy.get('@tabbedCarousel').within(() => {
+                                    cy.get('@tab').should('exist');
+                                    cy.get('@tabpanel').should('exist');
+                                });
+                            });
+
+                            it('Tab List', function () {
+                                cy.log('A set of tab elements contained in a tablist element.');
+                                cy.log('https://www.w3.org/TR/wai-aria-practices/#tabpanel');
+
+                                cy.get('@tablist').within(() => {
+                                    cy.get('@tab').should('exist');
+                                });
+                            });
+
+                            context('tab', function () {
+                                it('An element in the tab list that serves as a label for one of the tab panels and can be activated to display that panel.', function () {
+                                    cy.get('@tabpanel').each(($tabPanel, i) => {
+                                        cy.get('@tab').eq(i).then(($tab) => {
+                                            cy.wrap($tabPanel)
+                                                .should('have.attr', 'aria-labelledby', `${$tab.attr('id')}`);
+
+                                            cy.wrap($tab)
+                                                .should('have.attr', 'role', 'tab')
+                                                .should('have.attr', 'aria-controls', $tabPanel.attr('id'));
+                                        });
+
+                                        cy.get('@tabImage').eq(i)
+                                            .should('have.attr', 'alt', `Photo ${i + 1}`);
+                                    });
+                                });
+                            });
+
+                            it('tabpanel', function () {
                         cy.log('The element that contains the content associated with a tab.');
                         cy.log('https://www.w3.org/TR/wai-aria-practices/#tabpanel');
 
                         cy.get('@tabpanel').should('have.attr', 'role', 'tabpanel');
                     });
-
-                    context('Tabs with Automatic Activation', function () {
-                        // cy.log('https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-1/tabs.html');
-                    });
-
-                    context('Tabs with Manual Activation', function () {
-                        // cy.log('https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-2/tabs.html');
-                    });
-                });
-
-                context('Carousel design pattern', function () {
-                    context('Features needed to provide sufficient rotation control include', function () {
-                        it('Buttons for displaying the previous and next slides.', function () {
-                            cy.log('https://www.w3.org/TR/wai-aria-practices/#carousel');
-
-                            cy.get('@tabpanelNavPrevious').should('exist');
-                            cy.get('@tabpanelNavNext').should('exist');
                         });
 
-                        it('Optionally, a control, or group of controls, for choosing a specific slide to display. For example, slide picker controls can be marked up as tabs in a tablist with the slide represented by a tabpanel element.', function () {
-                            cy.log('https://www.w3.org/TR/wai-aria-practices/#carousel');
+                        context('Examples', function () {
+                            context('Tabs with Automatic Activation', function () {
+                                // cy.log('https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-1/tabs.html');
+                            });
 
-                            cy.get('@tablist').within(() => {
-                                cy.get('@tab').should('exist');
+                            context('Tabs with Manual Activation', function () {
+                                // cy.log('https://www.w3.org/TR/wai-aria-practices/examples/tabs/tabs-2/tabs.html');
                             });
                         });
 
-                        it.skip('If the carousel can automatically rotate, it also: Has a button for stopping and restarting rotation. This is particularly important for supporting assistive technologies operating in a mode that does not move either keyboard focus or the mouse.');
+                        context('Keyboard Interaction', function () {
+                            //
+                        });
 
-                        it.skip('If the carousel can automatically rotate, it also: Stops rotating when keyboard focus enters the carousel. It does not restart unless the user explicitly requests it to do so.');
-
-                        it.skip('If the carousel can automatically rotate, it also: Stops rotating whenever the mouse is hovering over the carousel.');
+                        context('WAI-ARIA Roles, States, and Properties', function () {
+                            //
+                        });
                     });
 
-                    context('Tabbed carousel style', function () {
-                        it('The structure of a tabbed carousel is the same as a basic carousel except that: Each slide container has role tabpanel in lieu of group, and it does not have the aria-roledescription property.', function () {
-                            cy.log('https://www.w3.org/TR/wai-aria-practices/#tabbed-carousel-elements');
+                    context('Carousel', function () {
+                        context('Features needed to provide sufficient rotation control', function () {
+                            it('Buttons for displaying the previous and next slides.', function () {
+                                cy.log('https://www.w3.org/TR/wai-aria-practices/#carousel');
 
-                            cy.get('@tabpanel').should('have.attr', 'role', 'tabpanel');
-                            cy.get('@tabpanel').should('not.have.attr', 'role', 'group');
-                            cy.get('@tabpanel').should('not.have.attr', 'aria-roledescription');
+                                cy.get('@tabpanelNavPrevious').should('exist');
+                                cy.get('@tabpanelNavNext').should('exist');
+                            });
+
+                            it('Optionally, a control, or group of controls, for choosing a specific slide to display. For example, slide picker controls can be marked up as tabs in a tablist with the slide represented by a tabpanel element.', function () {
+                                cy.log('https://www.w3.org/TR/wai-aria-practices/#carousel');
+
+                                cy.get('@tablist').within(() => {
+                                    cy.get('@tab').should('exist');
+                                });
+                            });
+
+                            it.skip('If the carousel can automatically rotate, it also: Has a button for stopping and restarting rotation. This is particularly important for supporting assistive technologies operating in a mode that does not move either keyboard focus or the mouse.');
+
+                            it.skip('If the carousel can automatically rotate, it also: Stops rotating when keyboard focus enters the carousel. It does not restart unless the user explicitly requests it to do so.');
+
+                            it.skip('If the carousel can automatically rotate, it also: Stops rotating whenever the mouse is hovering over the carousel.');
+                        });
+
+                        context('Examples', function () {});
+
+                        context('Terms', function () {});
+
+                        context('WAI-ARIA Roles, States, and Properties', function () {
+                            context('Tabbed Carousel Elements', function () {
+                                it('The structure of a tabbed carousel is the same as a basic carousel except that: Each slide container has role tabpanel in lieu of group, and it does not have the aria-roledescription property.', function () {
+                                    cy.log('https://www.w3.org/TR/wai-aria-practices/#tabbed-carousel-elements');
+
+                                    cy.get('@tabpanel').should('have.attr', 'role', 'tabpanel');
+                                    cy.get('@tabpanel').should('not.have.attr', 'role', 'group');
+                                    cy.get('@tabpanel').should('not.have.attr', 'aria-roledescription');
+                                });
+                            });
                         });
                     });
                 });

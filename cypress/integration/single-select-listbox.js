@@ -60,8 +60,6 @@ describe('Single Select', function () {
                     // Aliases are cleared between tests
                     // https://stackoverflow.com/questions/49431483/using-aliases-in-cypress
 
-                    // a gallery viewer that is below the fold won't have been transformed yet
-                    // the default gallery item is an image, which is accessible
                     cy.get(`#${testId}`).within(() => {
                         cy.get(`.${componentClass}`)
                             .as('select');
