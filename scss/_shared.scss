@@ -15,9 +15,14 @@ body {
 h1 {
     font-size: 64px;
     font-weight: bold;
+    margin-bottom: 0;
 
     &::after {
         content: '.';
+    }
+
+    + p {
+        margin-bottom: 48px;
     }
 }
 

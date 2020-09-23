@@ -68,6 +68,9 @@ describe('Tabbed Carousel', function () {
                         cy.get(`.${componentClass} [role="tab"]`)
                             .as('tab');
 
+                        cy.get(`.${componentClass} [role="tab"] > img`)
+                            .as('tabImage');
+
                         cy.get(`.${componentClass} [role="tablist"]`)
                             .as('tablist');
 
@@ -122,6 +125,9 @@ describe('Tabbed Carousel', function () {
                                         .should('have.attr', 'role', 'tab')
                                         .should('have.attr', 'aria-controls', $tabPanel.attr('id'));
                                 });
+
+                                cy.get('@tabImage').eq(i)
+                                    .should('have.attr', 'alt', `Photo ${i + 1}`);
                             });
                         });
                     });

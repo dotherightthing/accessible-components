@@ -9,6 +9,7 @@
     </head>
     <body>
         <h1>Tabbed carousel</h1>
+        <p>See Cypress unit tests for specification.</p>
         <div id="test-1">
             <div class="tabbed-carousel">
                 <div role="tablist" aria-label="Choose photo to display">
@@ -57,49 +58,5 @@
                 </div>
             </div>
         </div>
-
-        <hr>
-
-        <h2>Documentation</h2>
-        <h3>Specifications</h3>
-        <h4>Checklist</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th scope="col">WAI-ARIA Design Pattern</th>
-                    <th scope="col">WAI-ARIA Term</th>
-                    <th scope="col">WAI-ARIA Definition</th>
-                    <th scope="col">HTML Implementation</th>
-                    <th scope="col">JavaScript Implementation</th>
-                    <th scope="col">Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#carousel">Carousel</a>
-                    </td>
-                    <td>-</td>
-                    <td>Features needed to provide sufficient rotation control include: Buttons for displaying the previous and next slides.</td>
-                    <td>
-                        <code>&lt;div class="tabpanels__nav"&gt;</code>
-                    </td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#carousel">Carousel</a>
-                    </td>
-                    <td>-</td>
-                    <td>Features needed to provide sufficient rotation control include: Optionally, a control, or group of controls, for choosing a specific slide to display. For example, slide picker controls can be marked up as tabs in a tablist with the slide represented by a tabpanel element.</td>
-                    <td>
-                        <code>&lt;div role="tablist" aria-label="Choose photo to display"&gt;</code>
-                    </td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
     </body>
 </html>
