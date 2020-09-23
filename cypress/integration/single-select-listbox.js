@@ -1,5 +1,5 @@
 /**
- * @file cypress/integration/listbox.js
+ * @file cypress/integration/single-select-listbox.js
  * @summary Cypress spec for End-to-End UI testing.
  * @requires accessible-components
  */
@@ -62,17 +62,19 @@ describe('Single Select', function () {
 
                     // a gallery viewer that is below the fold won't have been transformed yet
                     // the default gallery item is an image, which is accessible
-                    cy.get(`#${testId} .${componentClass}`)
-                        .as('select');
+                    cy.get(`#${testId}`).within(() => {
+                        cy.get(`.${componentClass}`)
+                            .as('select');
 
-                    cy.get(`#${testId} .${componentClass} button`)
-                        .as('button');
+                        cy.get(`.${componentClass} button`)
+                            .as('button');
 
-                    cy.get(`#${testId} .${componentClass} [role="listbox"]`)
-                        .as('listbox');
+                        cy.get(`.${componentClass} [role="listbox"]`)
+                            .as('listbox');
 
-                    cy.get(`#${testId} .${componentClass} [role="option"] `)
-                        .as('options');
+                        cy.get(`.${componentClass} [role="option"] `)
+                            .as('options');
+                    });
                 });
 
                 it('Elements exist', function () {

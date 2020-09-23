@@ -9,49 +9,51 @@
     </head>
     <body>
         <h1>Tabbed carousel</h1>
-        <div class="tabbed-carousel">
-            <div role="tablist" aria-label="Choose photo to display">
-                <button role="tab" aria-controls="tabpanel-1" aria-selected="true" id="tab-1">
-                    <img src="https://placehold.it/44x44?text=1" alt="Photo 1">
-                </button>
-                <button role="tab" aria-controls="tabpanel-2" aria-selected="false" id="tab-2" tabindex="-1">
-                    <img src="https://placehold.it/44x44?text=2" alt="Photo 2">
-                </button>
-                <button role="tab" aria-controls="tabpanel-3" aria-selected="false" id="tab-3" tabindex="-1">
-                    <img src="https://placehold.it/44x44?text=3" alt="Photo 3">
-                </button>
-                <button role="tab" aria-controls="tabpanel-4" aria-selected="false" id="tab-4" tabindex="-1">
-                    <img src="https://placehold.it/44x44?text=4" alt="Photo 4">
-                </button>
-                <button role="tab" aria-controls="tabpanel-5" aria-selected="false" id="tab-5" tabindex="-1">
-                    <img src="https://placehold.it/44x44?text=5" alt="Photo 5">
-                </button>
-            </div>
-            <div class="tabpanels">
-                <div class="tabpanels__nav">
-                    <button class="tabpanels-nav__previous" data-kh-proxy="selectPrevious">Previous</button>
-                    <button class="tabpanels-nav__next" data-kh-proxy="selectNext">Next</button>
+        <div id="test-1">
+            <div class="tabbed-carousel">
+                <div role="tablist" aria-label="Choose photo to display">
+                    <button role="tab" aria-controls="tabpanel-1" aria-selected="true" id="tab-1">
+                        <img src="https://placehold.it/44x44?text=1" alt="Photo 1">
+                    </button>
+                    <button role="tab" aria-controls="tabpanel-2" aria-selected="false" id="tab-2" tabindex="-1">
+                        <img src="https://placehold.it/44x44?text=2" alt="Photo 2">
+                    </button>
+                    <button role="tab" aria-controls="tabpanel-3" aria-selected="false" id="tab-3" tabindex="-1">
+                        <img src="https://placehold.it/44x44?text=3" alt="Photo 3">
+                    </button>
+                    <button role="tab" aria-controls="tabpanel-4" aria-selected="false" id="tab-4" tabindex="-1">
+                        <img src="https://placehold.it/44x44?text=4" alt="Photo 4">
+                    </button>
+                    <button role="tab" aria-controls="tabpanel-5" aria-selected="false" id="tab-5" tabindex="-1">
+                        <img src="https://placehold.it/44x44?text=5" alt="Photo 5">
+                    </button>
                 </div>
-                <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
-                <div role="tabpanel" id="tabpanel-1" aria-labelledby="tab-1" tabindex="0">
-                    <h2>Image 1</h2>
-                    <img src="https://placehold.it/400x300" alt="Description of photo 1">
-                </div>
-                <div role="tabpanel" id="tabpanel-2" aria-labelledby="tab-2" tabindex="0" hidden>
-                    <h2>Image 2</h2>
-                    <img src="https://placehold.it/400x300" alt="Description of photo 2">
-                </div>
-                <div role="tabpanel" id="tabpanel-3" aria-labelledby="tab-3" tabindex="0" hidden>
-                    <h2>Image 3</h2>
-                    <img src="https://placehold.it/400x300" alt="Description of photo 3">
-                </div>
-                <div role="tabpanel" id="tabpanel-4" aria-labelledby="tab-4" tabindex="0" hidden>
-                    <h2>Image 4</h2>
-                    <img src="https://placehold.it/400x300" alt="Description of photo 4">
-                </div>
-                <div role="tabpanel" id="tabpanel-5" aria-labelledby="tab-5" tabindex="0" hidden>
-                    <h2>Image 5</h2>
-                    <img src="https://placehold.it/400x300" alt="Description of photo 5">
+                <div class="slides">
+                    <div class="slides__nav">
+                        <button class="slides__nav-previous" data-kh-proxy="selectPrevious">Previous</button>
+                        <button class="slides__nav-next" data-kh-proxy="selectNext">Next</button>
+                    </div>
+                    <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
+                    <div class="slide" role="tabpanel" id="tabpanel-1" aria-labelledby="tab-1" tabindex="0">
+                        <h2>Image 1</h2>
+                        <img src="https://placehold.it/400x300" alt="Description of photo 1">
+                    </div>
+                    <div class="slide" role="tabpanel" id="tabpanel-2" aria-labelledby="tab-2" tabindex="0" hidden>
+                        <h2>Image 2</h2>
+                        <img src="https://placehold.it/400x300" alt="Description of photo 2">
+                    </div>
+                    <div class="slide" role="tabpanel" id="tabpanel-3" aria-labelledby="tab-3" tabindex="0" hidden>
+                        <h2>Image 3</h2>
+                        <img src="https://placehold.it/400x300" alt="Description of photo 3">
+                    </div>
+                    <div class="slide" role="tabpanel" id="tabpanel-4" aria-labelledby="tab-4" tabindex="0" hidden>
+                        <h2>Image 4</h2>
+                        <img src="https://placehold.it/400x300" alt="Description of photo 4">
+                    </div>
+                    <div class="slide" role="tabpanel" id="tabpanel-5" aria-labelledby="tab-5" tabindex="0" hidden>
+                        <h2>Image 5</h2>
+                        <img src="https://placehold.it/400x300" alt="Description of photo 5">
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,6 +61,8 @@
         <hr>
 
         <h2>Documentation</h2>
+        <h3>Specifications</h3>
+        <h4>Checklist</h4>
         <table>
             <thead>
                 <tr>
@@ -73,78 +77,12 @@
             <tbody>
                 <tr>
                     <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
-                    </td>
-                    <td>-</td>
-                    <td>Tabs are a set of layered sections of content, known as tab panels, that display one panel of content at a time. Each tab panel has an associated tab element, that when activated, displays the panel. The list of tab elements is arranged along one edge of the currently displayed panel, most commonly the top edge.</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
-                    </td>
-                    <td>Tabs or Tabbed Interface</td>
-                    <td>A set of tab elements and their associated tab panels.</td>
-                    <td>
-                        <code>&lt;div class="tabbed-carousel"&gt;</code>
-                    </td>
-                    <td>TabbedCarousel</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
-                    </td>
-                    <td>Tab List</td>
-                    <td>A set of tab elements contained in a tablist element.</td>
-                    <td>
-                        <code>&lt;div role="tablist" aria-label="Choose photo to display"&gt;</code>
-                    </td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
-                    </td>
-                    <td>tab</td>
-                    <td>An element in the tab list that serves as a label for one of the tab panels and can be activated to display that panel.</td>
-                    <td>
-                        <code>&lt;button role="tab" aria-controls="tabpanel-1" aria-selected="true" id="tab-1"&gt;</code>
-                    </td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#tabpanel">Tabs</a>
-                    </td>
-                    <td>tabpanel</td>
-                    <td>The element that contains the content associated with a tab.</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <a href="https://www.w3.org/TR/wai-aria-practices/#carousel">Carousel</a>
-                    </td>
-                    <td>-</td>
-                    <td>The structure of a tabbed carousel is the same as a basic carousel except that: Each slide container has role tabpanel in lieu of group, and it does not have the aria-roledescription property.</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
                         <a href="https://www.w3.org/TR/wai-aria-practices/#carousel">Carousel</a>
                     </td>
                     <td>-</td>
                     <td>Features needed to provide sufficient rotation control include: Buttons for displaying the previous and next slides.</td>
                     <td>
-                        <code>&lt;div class="tabpanels__nav"&gt;</code>
+                        <code>&lt;div class="slides__nav"&gt;</code>
                     </td>
                     <td></td>
                     <td></td>
