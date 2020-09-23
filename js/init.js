@@ -33,7 +33,7 @@ document.onreadystatechange = () => {
         document.querySelectorAll('.tabbed-carousel').forEach((tabbedCarousel) => {
             const tabbedCarouselInstance = new TabbedCarousel({
                 instanceElement: tabbedCarousel,
-                selectionFollowsFocus: true
+                selectionFollowsFocus: tabbedCarousel.getAttribute('data-selection-follows-focus')
             });
 
             tabbedCarouselInstance.init();

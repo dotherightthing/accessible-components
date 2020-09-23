@@ -47,7 +47,8 @@ describe('Tabbed Carousel', function () {
     });
 
     const testIds = [
-        'test-1'
+        'test-1',
+        'test-2'
     ];
 
     describe('Tests', function () {
