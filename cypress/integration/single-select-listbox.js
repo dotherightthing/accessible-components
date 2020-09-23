@@ -91,17 +91,15 @@ describe('Single Select', function () {
                 it('Listbox can be focussed', function () {
                     cy.get('@listbox').focus();
 
-                    cy.get('@listbox').then(($el) => {
-                        Cypress.dom.isFocused($el);
-                    });
+                    cy.get('@listbox')
+                        .should('have.focus');
                 });
 
                 it('Button can be focussed', function () {
                     cy.get('@button').focus();
 
-                    cy.get('@button').then(($el) => {
-                        Cypress.dom.isFocused($el);
-                    });
+                    cy.get('@button')
+                        .should('have.focus');
                 });
 
                 it('A click opens the listbox', function () {
@@ -133,9 +131,8 @@ describe('Single Select', function () {
                     cy.get('@options').eq(0)
                         .type('{downarrow}');
 
-                    cy.get('@options').eq(1).then(($el) => {
-                        Cypress.dom.isFocused($el);
-                    });
+                    cy.get('@options').eq(1)
+                        .should('have.focus');
                 });
 
                 it('The Enter key selects the current option, hides the listbox, returns focus to the button, displays the new value in the button', function () {
@@ -152,7 +149,7 @@ describe('Single Select', function () {
                         .should('have.attr', 'hidden');
 
                     cy.get('@button').then(($button) => {
-                        Cypress.dom.isFocused($button);
+                        Cypress.dom.isFocused($button); // .should('have.focus');
 
                         const $buttonText = $button.text();
 

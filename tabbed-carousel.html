@@ -12,9 +12,10 @@
         <p>See Cypress unit tests for specification.</p>
         <div id="test-1">
             <h2>Test 1</h2>
-            <div class="tabbed-carousel">
+            <button class="test-focus-start" id="test-1-start">Start test</button>
+            <div class="tabbed-carousel" data-default-tab="1">
                 <div role="tablist" aria-label="Choose photo to display">
-                    <button role="tab" aria-controls="test-1-tabpanel-1" aria-selected="true" id="test-1-tab-1">
+                    <button role="tab" aria-controls="test-1-tabpanel-1" aria-selected="false" id="test-1-tab-1" tabindex="-1">
                         <img src="https://placehold.it/44x44?text=1" alt="Photo 1">
                     </button>
                     <button role="tab" aria-controls="test-1-tabpanel-2" aria-selected="false" id="test-1-tab-2" tabindex="-1">
@@ -31,10 +32,6 @@
                     </button>
                 </div>
                 <div class="tabpanels">
-                    <div class="tabpanels__nav">
-                        <button class="tabpanels__nav-previous" data-kh-proxy="selectPrevious">Previous</button>
-                        <button class="tabpanels__nav-next" data-kh-proxy="selectNext">Next</button>
-                    </div>
                     <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
                     <div class="tabpanel" role="tabpanel" id="test-1-tabpanel-1" aria-labelledby="test-1-tab-1" tabindex="0">
                         <h2>Image 1</h2>
@@ -56,14 +53,23 @@
                         <h2>Image 5</h2>
                         <img src="https://placehold.it/400x300" alt="Description of photo 5">
                     </div>
+                    <!--
+                         nav is after slides in order to have the active slide adjacent to the active tab in the tab sequence
+                         this is in contrast with the WAI-ARIA Carousel example, which doesn't have tab navigation
+                    -->
+                    <div class="tabpanels__nav">
+                        <button class="tabpanels__nav-previous" data-kh-proxy="selectPrevious">Previous</button>
+                        <button class="tabpanels__nav-next" data-kh-proxy="selectNext">Next</button>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="test-2">
             <h2>Test 2: Selection follows focus</h2>
-            <div class="tabbed-carousel" data-selection-follows-focus="true">
+            <button class="test-focus-start" id="test-2-start">Start test</button>
+            <div class="tabbed-carousel" data-selection-follows-focus="true" data-default-tab="1">
                 <div role="tablist" aria-label="Choose photo to display">
-                    <button role="tab" aria-controls="test-2-tabpanel-1" aria-selected="true" id="test-2-tab-1">
+                    <button role="tab" aria-controls="test-2-tabpanel-1" aria-selected="false" id="test-2-tab-1" tabindex="-1">
                         <img src="https://placehold.it/44x44?text=1" alt="Photo 1">
                     </button>
                     <button role="tab" aria-controls="test-2-tabpanel-2" aria-selected="false" id="test-2-tab-2" tabindex="-1">
@@ -80,10 +86,6 @@
                     </button>
                 </div>
                 <div class="tabpanels">
-                    <div class="tabpanels__nav">
-                        <button class="tabpanels__nav-previous" data-kh-proxy="selectPrevious">Previous</button>
-                        <button class="tabpanels__nav-next" data-kh-proxy="selectNext">Next</button>
-                    </div>
                     <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
                     <div class="tabpanel" role="tabpanel" id="test-2-tabpanel-1" aria-labelledby="test-2-tab-1" tabindex="0">
                         <h2>Image 1</h2>
@@ -104,6 +106,14 @@
                     <div class="tabpanel" role="tabpanel" id="test-2-tabpanel-5" aria-labelledby="test-2-tab-5" tabindex="0" hidden>
                         <h2>Image 5</h2>
                         <img src="https://placehold.it/400x300" alt="Description of photo 5">
+                    </div>
+                    <!--
+                         nav is after slides in order to have the active slide adjacent to the active tab in the tab sequence
+                         this is in contrast with the WAI-ARIA Carousel example, which doesn't have tab navigation
+                    -->
+                    <div class="tabpanels__nav">
+                        <button class="tabpanels__nav-previous" data-kh-proxy="selectPrevious">Previous</button>
+                        <button class="tabpanels__nav-next" data-kh-proxy="selectNext">Next</button>
                     </div>
                 </div>
             </div>

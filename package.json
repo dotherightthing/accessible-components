@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "cypress": "^5.2.0",
+    "cypress-plugin-tab": "^1.0.5",
     "wpdtrt-npm-scripts": "github:dotherightthing/wpdtrt-npm-scripts#semver:0.3.*"
   },
   "repository": {

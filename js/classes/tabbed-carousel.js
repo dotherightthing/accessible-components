@@ -7,22 +7,22 @@
  * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
  * @param {object} options                              - Module options
+ * @param {null|number} options.defaultTab                   - Tab to select on init
  * @param {null|Node} options.instanceElement           - The outermost DOM element
  * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
- *
- * @todo {boolean} options.autoSelectFirstOption        - Select the first tab in the tablist
  */
 class TabbedCarousel {
     constructor(options = {}) {
         // public options
+        this.defaultTab = options.defaultTab || null;
         this.instanceElement = options.instanceElement || null;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
-        // this.autoSelectFirstOption = options.autoSelectFirstOption || false;
 
         // private options
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
         this.attributes = {
             selected: [ 'aria-selected', 'true' ],
+            unselected: [ 'aria-selected', 'false' ],
             tab: [ 'role', 'tab' ],
             tablist: [ 'role', 'tablist' ],
             tabpanel: [ 'role', 'tabpanel' ]
@@ -30,6 +30,7 @@ class TabbedCarousel {
 
         this.selectors = {
             selected: '[aria-selected="true"]',
+            unselected: '[aria-selected="false"]',
             tab: '[role="tab"]',
             tablist: '[role="tablist"]',
             tabpanel: '[role="tabpanel"]'
@@ -105,6 +106,22 @@ class TabbedCarousel {
     }
 
     /**
+     * @function selectDefaultTab
+     * @summary Select the tab which should be active on init
+     * @memberof TabbedCarousel
+     *
+     * @param {Node} tab - Tab elements
+     */
+    selectDefaultTab(tab) {
+        if (this.defaultTab) {
+            const n = parseInt(this.defaultTab, 10);
+            const defaultEl = tab[n - 1]; // zero index
+            defaultEl.focus();
+            defaultEl.click();
+        }
+    }
+
+    /**
      * @function init
      * @memberof TabbedCarousel
      *
@@ -119,8 +136,6 @@ class TabbedCarousel {
         const tabpanels = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanel}`);
 
         if (tab.length) {
-            // TODO Cypress tests
-
             const KeyboardHelpersConfig = {
                 instanceElement: this.instanceElement,
 
@@ -172,6 +187,8 @@ class TabbedCarousel {
                 // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
                 selectionFollowsFocus: this.selectionFollowsFocus,
 
+                unselectedAttr: this.attributes.unselected,
+
                 // When using roving tabindex to manage focus in a composite UI component,
                 // the element that is to be included in the tab sequence has tabindex of "0"
                 // and all other focusable elements contained in the composite have tabindex of "-1".
@@ -186,6 +203,8 @@ class TabbedCarousel {
             TabbedCarouselKeys.init();
 
             this.propagateSelection(tablist, tabpanels);
+
+            this.selectDefaultTab(tab);
         }
     }
 }

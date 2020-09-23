@@ -17,6 +17,7 @@
  * @param {object}          options.toggleActions               - The key(s) which toggle the parent state
  * @param {null|Node}       options.toggleElement               - The DOM element which toggles the parent state
  * @param {boolean}         options.toggleAfterSelected         - Whether to trigger the toggle action after a keyboardNavigableElement is selected
+ * @param {Array}           options.unselectedAttr              - Property and Value applied to the unselected keyboardNavigableElement
  * @param {boolean}         options.useRovingTabIndex           - Whether to apply a tabindex of 0 (tabstop) rather than -1 (programmatic focus) to the focussed item
  *
  * @todo Make this a module, as it doesn't need to manage state
@@ -33,6 +34,7 @@ class KeyboardHelpers {
         this.toggleActions = options.toggleActions || {};
         this.toggleElement = options.toggleElement || null;
         this.toggleAfterSelected = options.toggleAfterSelected || false;
+        this.unselectedAttr = options.unselectedAttr || [];
         this.useRovingTabIndex = options.useRovingTabIndex || false;
 
         // private options
@@ -220,9 +222,12 @@ class KeyboardHelpers {
         if (this.isKeyboardNavigableElement(element)) {
             const selectedAttrProp = this.selectedAttr[0];
             const selectedAttrVal = this.selectedAttr[1];
+            const unselectedAttrProp = this.unselectedAttr[0];
+            const unselectedAttrVal = this.unselectedAttr[1];
 
             this.keyboardNavigableElements.forEach((element2) => {
                 element2.removeAttribute(selectedAttrProp);
+                element2.setAttribute(unselectedAttrProp, unselectedAttrVal);
             });
 
             this.updateRovingTabIndex(element);
@@ -471,9 +476,12 @@ class KeyboardHelpers {
         if (this.isKeyboardNavigableElement(focussed)) {
             const selectedAttrProp = this.selectedAttr[0];
             const selectedAttrVal = this.selectedAttr[1];
+            const unselectedAttrProp = this.unselectedAttr[0];
+            const unselectedAttrVal = this.unselectedAttr[1];
 
             this.keyboardNavigableElements.forEach((element2) => {
                 element2.removeAttribute(selectedAttrProp);
+                element2.setAttribute(unselectedAttrProp, unselectedAttrVal);
             });
 
             focussed.setAttribute(selectedAttrProp, selectedAttrVal);
