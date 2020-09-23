@@ -11,7 +11,7 @@
     "http-server": "^0.12.3"
   },
   "devDependencies": {
-    "cypress": "^4.10.0",
+    "cypress": "^5.2.0",
     "wpdtrt-npm-scripts": "github:dotherightthing/wpdtrt-npm-scripts#semver:0.3.*"
   },
   "repository": {
