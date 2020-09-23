@@ -200,55 +200,6 @@ class KeyboardHelpers {
     }
 
     /**
-     * @function selectNext
-     * @summary Select the next element
-     * @memberof KeyboardHelpers
-     */
-    selectNext() {
-        const nextElement = this.getNext();
-
-        this.selectNonFocussed(nextElement);
-    }
-
-    /**
-     * @function selectNonFocussed
-     * @summary Direct select an element without focussing first
-     * @description Used with previous/next button proxies.
-     * @memberof KeyboardHelpers
-     *
-     * @param {Node} element - DOM Element
-     */
-    selectNonFocussed(element) {
-        if (this.isKeyboardNavigableElement(element)) {
-            const selectedAttrProp = this.selectedAttr[0];
-            const selectedAttrVal = this.selectedAttr[1];
-            const unselectedAttrProp = this.unselectedAttr[0];
-            const unselectedAttrVal = this.unselectedAttr[1];
-
-            this.keyboardNavigableElements.forEach((element2) => {
-                element2.removeAttribute(selectedAttrProp);
-                element2.setAttribute(unselectedAttrProp, unselectedAttrVal);
-            });
-
-            this.updateRovingTabIndex(element);
-
-            // this triggers mutation observer callback in host component
-            element.setAttribute(selectedAttrProp, selectedAttrVal);
-        }
-    }
-
-    /**
-     * @function selectPrevious
-     * @summary Select the previous element
-     * @memberof KeyboardHelpers
-     */
-    selectPrevious() {
-        const previousElement = this.getPrevious();
-
-        this.selectNonFocussed(previousElement);
-    }
-
-    /**
      * @function getIndexOfKeyboardNavigableElement
      * @summary Get the array index of the keyboardNavigableElementToFind, relative to the array of DOM elements
      * @memberof KeyboardHelpers
@@ -345,27 +296,6 @@ class KeyboardHelpers {
         }
 
         return key;
-    }
-
-    /**
-     * @function onClick
-     * @memberof KeyboardHelpers
-     *
-     * @param {*} e - target of click event
-     */
-    onClick(e) {
-        const clickedClass = e.target.getAttribute('class');
-
-        const clickActions = Object.keys(this.clickActions);
-
-        clickActions.forEach((clickAction) => {
-            // if the clicked element is in the clickActions array
-            if (this.clickActions[clickAction].includes(clickedClass)) {
-                e.preventDefault();
-                e.stopPropagation();
-                this[clickAction].call(this, e);
-            }
-        });
     }
 
     /**
@@ -492,6 +422,55 @@ class KeyboardHelpers {
                 }
             }
         }
+    }
+
+    /**
+     * @function selectNext
+     * @summary Select the next element
+     * @memberof KeyboardHelpers
+     */
+    selectNext() {
+        const nextElement = this.getNext();
+
+        this.selectNonFocussed(nextElement);
+    }
+
+    /**
+     * @function selectNonFocussed
+     * @summary Direct select an element without focussing first
+     * @description Used with previous/next button proxies.
+     * @memberof KeyboardHelpers
+     *
+     * @param {Node} element - DOM Element
+     */
+    selectNonFocussed(element) {
+        if (this.isKeyboardNavigableElement(element)) {
+            const selectedAttrProp = this.selectedAttr[0];
+            const selectedAttrVal = this.selectedAttr[1];
+            const unselectedAttrProp = this.unselectedAttr[0];
+            const unselectedAttrVal = this.unselectedAttr[1];
+
+            this.keyboardNavigableElements.forEach((element2) => {
+                element2.removeAttribute(selectedAttrProp);
+                element2.setAttribute(unselectedAttrProp, unselectedAttrVal);
+            });
+
+            this.updateRovingTabIndex(element);
+
+            // this triggers mutation observer callback in host component
+            element.setAttribute(selectedAttrProp, selectedAttrVal);
+        }
+    }
+
+    /**
+     * @function selectPrevious
+     * @summary Select the previous element
+     * @memberof KeyboardHelpers
+     */
+    selectPrevious() {
+        const previousElement = this.getPrevious();
+
+        this.selectNonFocussed(previousElement);
     }
 
     /**
