@@ -40,6 +40,7 @@ class KeyboardHelpers {
         // private options
 
         this.proxyActionElements = {
+            selectFocussed: '[data-kh-proxy="selectFocussed"]',
             selectNext: '[data-kh-proxy="selectNext"]',
             selectPrevious: '[data-kh-proxy="selectPrevious"]'
         };
@@ -384,11 +385,20 @@ class KeyboardHelpers {
     registerProxyKeyboardActions() {
         const proxyActions = Object.keys(this.proxyActionElements);
 
-        proxyActions.forEach((proxyAction) => {
-            const proxyActionElement = document.querySelector(`#${this.instanceId} ${this.proxyActionElements[proxyAction]}`);
+        if (!this.selectionFollowsFocus) {
+            this.keyboardNavigableElements.forEach((keyboardNavigableElement) => {
+                // select on click
+                keyboardNavigableElement.setAttribute('data-kh-proxy', 'selectFocussed');
+            });
+        }
 
-            if (proxyActionElement !== null) {
-                proxyActionElement.addEventListener('click', this[proxyAction].bind(this));
+        proxyActions.forEach((proxyAction) => {
+            const proxyActionElements = document.querySelectorAll(`#${this.instanceId} ${this.proxyActionElements[proxyAction]}`);
+
+            if (proxyActionElements.length) {
+                proxyActionElements.forEach((proxyActionElement) => {
+                    proxyActionElement.addEventListener('click', this[proxyAction].bind(this));
+                });
             }
         });
     }
@@ -415,6 +425,11 @@ class KeyboardHelpers {
             });
 
             focussed.setAttribute(selectedAttrProp, selectedAttrVal);
+
+            // if focus was result of a click action
+            if (!this.selectionFollowsFocus) {
+                this.updateRovingTabIndex(focussed);
+            }
 
             if (typeof e === 'object') {
                 if (this.toggleAfterSelected) {
