@@ -33,10 +33,19 @@
     "compile": "npm run compile --prefix $npm_package_config_wpdtrt_npm_scripts",
     "docs": "npm run docs --prefix $npm_package_config_wpdtrt_npm_scripts",
     "lint": "npm run lint --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "merge:js": "./build-scripts/merge-js.sh",
     "release": "npm run release --prefix $npm_package_config_wpdtrt_npm_scripts",
     "server": "http-server ./",
     "test": "npm run test --prefix $npm_package_config_wpdtrt_npm_scripts && npx cypress run",
     "version": "npm run version --prefix $npm_package_config_wpdtrt_npm_scripts",
     "watch": "nodemon"
+  },
+  "eslintConfig": {
+    "globals": {
+      "KeyboardHelpers": true,
+      "Label": true,
+      "SingleSelectListbox": true,
+      "TabbedCarousel": true
+    }
   }
 }

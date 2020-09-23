@@ -32,6 +32,5 @@ Design Pattern: [Listbox](https://www.w3.org/TR/wai-aria-practices/#Listbox)
 ## Cross-platform testing
 
 ```shell
-cd ~
-ngrok http http://127.0.0.1:8080/
+cd ~ && ./ngrok http http://127.0.0.1:8080/
 ```

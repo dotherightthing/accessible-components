@@ -1,7 +1,9 @@
 /* eslint-disable max-classes-per-file */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-console */
+/* eslint-disable no-redeclare */
+/* eslint-disable max-classes-per-file */
+/* eslint-disable no-redeclare */
 /* eslint-disable class-methods-use-this */
+/* eslint-disable no-unused-vars */
 
 // keyboardNavigableElements - direction selection - directSelectElements
 // relativeXX - relative selection (previous/next) - relativeSelectElements
@@ -541,6 +543,8 @@ class KeyboardHelpers {
         this.registerProxyKeyboardActions();
     }
 }
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-unused-vars */
 
 /**
  * @class Label
@@ -578,6 +582,9 @@ class Label {
         this.instanceElement.addEventListener('click', this.onClickLabel.bind(this));
     }
 }
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-unused-vars */
+/* globals KeyboardHelpers */
 
 /**
  * @class SingleSelectListbox
@@ -731,7 +738,7 @@ class SingleSelectListbox {
             subtree: true
         };
 
-        const _self = this;
+        const self = this;
         const selectedAttrProp = this.attributes.selected[0];
         const selectedAttrVal = this.attributes.selected[1];
 
@@ -743,14 +750,14 @@ class SingleSelectListbox {
                         // if an option was just selected
                         if (mutation.target.getAttribute(selectedAttrProp) === selectedAttrVal) {
                             let option = mutation.target;
-                            let listbox = _self.getListbox(option);
+                            let listbox = self.getListbox(option);
 
                             if (listbox !== null) {
                                 if (listbox.parentElement) {
                                     let wrapper = listbox.parentElement;
-                                    let button = wrapper.querySelector(_self.selectors.button);
+                                    let button = wrapper.querySelector(self.selectors.button);
 
-                                    _self.setButtonText(button, option.innerHTML);
+                                    self.setButtonText(button, option.innerHTML);
                                 }
                             }
                         }
@@ -865,6 +872,9 @@ class SingleSelectListbox {
         }
     }
 }
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-unused-vars */
+/* globals KeyboardHelpers */
 
 /**
  * @class TabbedCarousel
@@ -1053,6 +1063,9 @@ class TabbedCarousel {
         }
     }
 }
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-console */
+/* globals Label, SingleSelectListbox, TabbedCarousel */
 
 document.onreadystatechange = () => {
     // The document has finished loading and the document has been parsed
