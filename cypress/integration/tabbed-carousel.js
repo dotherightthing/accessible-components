@@ -15,6 +15,7 @@
 /* eslint-disable func-names */
 
 const componentClass = 'tabbed-carousel';
+const initialSelectionAttr = 'data-initial-selection';
 const selectionFollowsFocusAttr = 'data-selection-follows-focus';
 
 // https://github.com/Bkucera/cypress-plugin-retries
@@ -160,6 +161,22 @@ describe('Tabbed Carousel', function () {
                             });
                         });
 
+                        context('+ Default selection', function () {
+                            it('On init, the initial selection is selected', function () {
+                                cy.get('body').then((body) => {
+                                    const initialSelectionSelector = `#${testId} .${componentClass}[${initialSelectionAttr}]`;
+
+                                    if (body.find(initialSelectionSelector).length > 0) {
+                                        const initialSelectionStr = body.find(initialSelectionSelector).attr(initialSelectionAttr);
+                                        const initialSelectionNum = parseInt(initialSelectionStr, 10);
+
+                                        cy.get('@tabs').eq(initialSelectionNum - 1)
+                                            .should('have.attr', 'aria-selected', 'true');
+                                    }
+                                });
+                            });
+                        });
+
                         context('Keyboard Interaction', function () {
                             context('For the tab list', function () {
                                 context('Tab', function () {
@@ -219,12 +236,20 @@ describe('Tabbed Carousel', function () {
                                                 if (body.find(`#${testId} .${componentClass}[${selectionFollowsFocusAttr}]`).length > 0) {
                                                     cy.get('@tabs').last()
                                                         .should('have.attr', 'aria-selected', 'true');
+                                                } else {
+                                                    const initialSelectionSelector = `#${testId} .${componentClass}[${initialSelectionAttr}]`;
+
+                                                    if (body.find(initialSelectionSelector).length > 0) {
+                                                        const initialSelectionStr = body.find(initialSelectionSelector).attr(initialSelectionAttr);
+                                                        const initialSelectionNum = parseInt(initialSelectionStr, 10);
+
+                                                        cy.get('@tabs').eq(initialSelectionNum - 1)
+                                                            .should('have.attr', 'aria-selected', 'true');
+                                                    } else {
+                                                        cy.get('@tabs').last()
+                                                            .should('have.attr', 'aria-selected', 'false');
+                                                    }
                                                 }
-                                                // first is selected by default
-                                                // else {
-                                                //     cy.get('@tabs').last()
-                                                //         .should('have.attr', 'aria-selected', 'false');
-                                                // }
                                             });
                                         });
 
@@ -241,8 +266,18 @@ describe('Tabbed Carousel', function () {
                                                     cy.get('@tabs').first()
                                                         .should('have.attr', 'aria-selected', 'true');
                                                 } else {
-                                                    cy.get('@tabs').first()
-                                                        .should('have.attr', 'aria-selected', 'false');
+                                                    const initialSelectionSelector = `#${testId} .${componentClass}[${initialSelectionAttr}]`;
+
+                                                    if (body.find(initialSelectionSelector).length > 0) {
+                                                        const initialSelectionStr = body.find(initialSelectionSelector).attr(initialSelectionAttr);
+                                                        const initialSelectionNum = parseInt(initialSelectionStr, 10);
+
+                                                        cy.get('@tabs').eq(initialSelectionNum - 1)
+                                                            .should('have.attr', 'aria-selected', 'true');
+                                                    } else {
+                                                        cy.get('@tabs').first()
+                                                            .should('have.attr', 'aria-selected', 'false');
+                                                    }
                                                 }
                                             });
                                         });

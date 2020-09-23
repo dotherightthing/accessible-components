@@ -7,14 +7,14 @@
  * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
  * @param {object} options                              - Module options
- * @param {null|number} options.defaultTab                   - Tab to select on init
+ * @param {null|number} options.initialSelection        - Tab to select on init
  * @param {null|Node} options.instanceElement           - The outermost DOM element
  * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
  */
 class TabbedCarousel {
     constructor(options = {}) {
         // public options
-        this.defaultTab = options.defaultTab || null;
+        this.initialSelection = options.initialSelection || null;
         this.instanceElement = options.instanceElement || null;
         this.selectionFollowsFocus = options.selectionFollowsFocus || false;
 
@@ -106,15 +106,15 @@ class TabbedCarousel {
     }
 
     /**
-     * @function selectDefaultTab
+     * @function selectInitialSelection
      * @summary Select the tab which should be active on init
      * @memberof TabbedCarousel
      *
      * @param {Node} tab - Tab elements
      */
-    selectDefaultTab(tab) {
-        if (this.defaultTab) {
-            const n = parseInt(this.defaultTab, 10);
+    selectInitialSelection(tab) {
+        if (this.initialSelection) {
+            const n = parseInt(this.initialSelection, 10);
             const defaultEl = tab[n - 1]; // zero index
             defaultEl.focus();
             defaultEl.click();
@@ -204,7 +204,7 @@ class TabbedCarousel {
 
             this.propagateSelection(tablist, tabpanels);
 
-            this.selectDefaultTab(tab);
+            this.selectInitialSelection(tab);
         }
     }
 }
