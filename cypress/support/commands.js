@@ -10,7 +10,28 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
+Cypress.Commands.add('getAttr', (selector, attr, format = 'string') => {
+    let value = null;
+
+    cy.get('body').then((body) => {
+        let el = body.find(`${selector}[${attr}]`);
+
+        if (el.length) {
+            value = el.attr(attr);
+        }
+
+        if (format === 'number') {
+            value = parseInt(value, 10);
+        } else if (format === 'index') {
+            value = parseInt(value, 10) - 1;
+        }
+
+        cy.log(`${selector}[${attr}] = ${value} (${typeof value})`);
+
+        return cy.wrap(value);
+    });
+});
+
 //
 //
 // -- This is a child command --
