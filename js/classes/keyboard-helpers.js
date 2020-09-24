@@ -345,10 +345,12 @@ class KeyboardHelpers {
      * @summary React when a keyboardNavigableElement is focussed
      * @description Note: additional callbacks are implemented in the host component using Mutation Observers
      * @memberof KeyboardHelpers
+     *
+     * @param {object|undefined} e - Keydown event
      */
-    onKeyboardNavigableElementFocus() {
+    onKeyboardNavigableElementFocus(e) {
         if (this.selectionFollowsFocus) {
-            this.selectFocussed();
+            this.selectFocussed(e);
         }
     }
 
