@@ -218,6 +218,8 @@ describe('Tabbed Carousel', function () {
                                         context('Left Arrow: moves focus to the previous tab. If focus is on the first tab, moves focus to the last tab. Optionally, activates the newly focused tab. If the tabs in a tab list are arranged vertically: Up Arrow performs as Left Arrow is described above.', function () {
                                             [ '{leftarrow}', '{uparrow}' ].forEach(($key) => {
                                                 it($key, function () {
+                                                    cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
+
                                                     cy.get('@tabs').first()
                                                         .click() // focus and select - but isn't truly selecting..
                                                         .type($key);
@@ -241,6 +243,8 @@ describe('Tabbed Carousel', function () {
                                         context('Right Arrow: Moves focus to the next tab. If focus is on the last tab element, moves focus to the first tab. Optionally, activates the newly focused tab. If the tabs in a tab list are arranged vertically: Down Arrow performs as Right Arrow is described above.', function () {
                                             [ '{rightarrow}', '{downarrow}' ].forEach(($key) => {
                                                 it($key, function () {
+                                                    cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
+
                                                     cy.get('@tabs').last()
                                                         .focus().click() // focus and select
                                                         .type($key);
