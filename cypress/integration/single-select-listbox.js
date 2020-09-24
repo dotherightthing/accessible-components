@@ -26,22 +26,14 @@ describe('Single Select', function () {
 
     describe('Configuration', function () {
         it('Classes exist', function () {
-            // check that the class is available
-            cy.window()
-                .should('have.property', 'SingleSelectListbox');
+            [ 'SingleSelectListbox', 'KeyboardHelpers' ].forEach(($class) => {
+                cy.window().then((win) => {
+                    cy.wrap(win)
+                        .should('have.property', $class);
 
-            // check that it's a function
-            cy.window().then((win) => {
-                expect(win.SingleSelectListbox).to.be.a('function');
-            });
-
-            // check that the class is available
-            cy.window()
-                .should('have.property', 'KeyboardHelpers');
-
-            // check that it's a function
-            cy.window().then((win) => {
-                expect(win.KeyboardHelpers).to.be.a('function');
+                    cy.wrap(win[$class])
+                        .should('be.a', 'function');
+                });
             });
         });
     });

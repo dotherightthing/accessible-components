@@ -1,7 +1,11 @@
 /**
- * @file cypress/integration/listbox.js
+ * @file cypress/integration/tabbed-carousel.js
  * @summary Cypress spec for End-to-End UI testing.
  * @requires accessible-components
+ *
+ * @todo Add injection of JS-dependent elements, test noscript state.
+ * @todo Add and test progressive enhancement of link to aria button, to allow fallback of direct link to image
+ * @todo Add and test swipe support
  */
 
 /* eslint-disable prefer-arrow-callback */
@@ -28,22 +32,14 @@ describe('Tabbed Carousel', function () {
 
     describe('Configuration', function () {
         it('Classes exist', function () {
-            // check that the class is available
-            cy.window()
-                .should('have.property', 'SingleSelectListbox');
+            [ 'TabbedCarousel', 'KeyboardHelpers' ].forEach(($class) => {
+                cy.window().then((win) => {
+                    cy.wrap(win)
+                        .should('have.property', $class);
 
-            // check that it's a function
-            cy.window().then((win) => {
-                expect(win.SingleSelectListbox).to.be.a('function');
-            });
-
-            // check that the class is available
-            cy.window()
-                .should('have.property', 'KeyboardHelpers');
-
-            // check that it's a function
-            cy.window().then((win) => {
-                expect(win.KeyboardHelpers).to.be.a('function');
+                    cy.wrap(win[$class])
+                        .should('be.a', 'function');
+                });
             });
         });
     });
@@ -181,16 +177,30 @@ describe('Tabbed Carousel', function () {
                                         cy.get('@testAnchor')
                                             .tab();
 
-                                        cy.get('@tabs').eq(0)
-                                            .should('have.focus');
+                                        if (cy.getAttr(`#${testId} .${componentClass}`, initialSelectionAttr)) {
+                                            cy.getAttr(`#${testId} .${componentClass}`, initialSelectionAttr, 'index').then(($index) => {
+                                                cy.get('@tabs').eq($index)
+                                                    .should('have.focus');
+                                            });
+                                        } else {
+                                            cy.get('@tabs').eq(0)
+                                                .should('have.focus');
+                                        }
                                     });
 
                                     it('When the tab list contains the focus, moves focus to the next element in the page tab sequence outside the tablist, which is typically either the first focusable element inside the tab panel or the tab panel itself.', function () {
                                         cy.get('@testAnchor')
                                             .tab().tab();
 
-                                        cy.get('@tabpanels').eq(0)
-                                            .should('have.focus');
+                                        if (cy.getAttr(`#${testId} .${componentClass}`, initialSelectionAttr)) {
+                                            cy.getAttr(`#${testId} .${componentClass}`, initialSelectionAttr, 'index').then(($index) => {
+                                                cy.get('@tabpanels').eq($index)
+                                                    .should('have.focus');
+                                            });
+                                        } else {
+                                            cy.get('@tabpanels').eq(0)
+                                                .should('have.focus');
+                                        }
                                     });
 
                                     it('+ When the tab panel has the focus, moves focus to the first tab panel navigation button', function () {
@@ -221,7 +231,7 @@ describe('Tabbed Carousel', function () {
                                                     cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
 
                                                     cy.get('@tabs').first()
-                                                        .click() // focus and select - but isn't truly selecting..
+                                                        .click() // focus and select
                                                         .type($key);
 
                                                     cy.get('@tabs').last()
@@ -246,7 +256,7 @@ describe('Tabbed Carousel', function () {
                                                     cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
 
                                                     cy.get('@tabs').last()
-                                                        .focus().click() // focus and select
+                                                        .click() // focus and select
                                                         .type($key);
 
                                                     cy.get('@tabs').first()
@@ -268,7 +278,7 @@ describe('Tabbed Carousel', function () {
 
                                     context('When focus is on a tab in a tablist with either horizontal or vertical orientation:', function () {
                                         context('Space or Enter: Activates the tab if it was not activated automatically on focus.', function () {
-                                            [ '{enter}', ' ' ].forEach(($key) => {
+                                            [ ' ', '{enter}' ].forEach(($key) => {
                                                 it($key, function () {
                                                     cy.getAttr(`#${testId} .${componentClass}`, selectionFollowsFocusAttr).then(($value) => {
                                                         if ($value !== 'true') {
@@ -290,7 +300,7 @@ describe('Tabbed Carousel', function () {
 
                                         it('Home (Optional): Moves focus to the first tab. Optionally, activates the newly focused tab.', function () {
                                             cy.get('@tabs').last()
-                                                .focus().click() // focus and select
+                                                .click() // focus and select
                                                 .type('{home}');
 
                                             cy.get('@tabs').first()
@@ -309,7 +319,7 @@ describe('Tabbed Carousel', function () {
 
                                         it('End (Optional): Moves focus to the last tab. Optionally, activates the newly focused tab.', function () {
                                             cy.get('@tabs').first()
-                                                .focus().click() // focus and select
+                                                .click() // focus and select
                                                 .type('{end}');
 
                                             cy.get('@tabs').last()
@@ -451,8 +461,6 @@ describe('Tabbed Carousel', function () {
                         });
                     });
                 });
-
-                it.skip('Removing JS hook shows pre-JS state', function () {});
             });
         });
     });
