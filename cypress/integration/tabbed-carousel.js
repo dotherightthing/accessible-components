@@ -197,7 +197,7 @@ describe('Tabbed Carousel', function () {
                                     });
 
                                     it('+ When the tab panel has the focus, moves focus to the first tab panel navigation button', function () {
-                                        cy.log('Nav moved after slide in order to have the active slide adjacent to the active tab in the tab sequence. This is in contrast with the WAI - ARIA Carousel example, which doesn\'t have tab navigation');
+                                        cy.log('Nav moved after slide in order to have the active slide adjacent to the active tab in the tab sequence. This is in contrast with the WAI-ARIA Carousel example, which doesn\'t have tab navigation');
 
                                         cy.get('@testAnchor')
                                             .tab().tab().tab();
@@ -207,7 +207,7 @@ describe('Tabbed Carousel', function () {
                                     });
 
                                     it('+ When the first tab panel navigation button has the focus, moves focus to the next tab panel navigation button', function () {
-                                        cy.log('Nav moved after slide in order to have the active slide adjacent to the active tab in the tab sequence. This is in contrast with the WAI - ARIA Carousel example, which doesn\'t have tab navigation');
+                                        cy.log('Nav moved after slide in order to have the active slide adjacent to the active tab in the tab sequence. This is in contrast with the WAI-ARIA Carousel example, which doesn\'t have tab navigation');
 
                                         cy.get('@testAnchor')
                                             .tab().tab().tab()

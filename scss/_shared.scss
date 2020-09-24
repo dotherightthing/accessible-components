@@ -30,6 +30,10 @@ h2 {
     margin: 0;
 }
 
+[id^='test-'] {
+    margin-bottom: 48px;
+}
+
 .test-focus-start {
     background-color: $color-component-bg;
     padding: 4px;
