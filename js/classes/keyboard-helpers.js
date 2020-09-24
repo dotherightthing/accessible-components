@@ -428,10 +428,10 @@ class KeyboardHelpers {
 
             focussed.setAttribute(selectedAttrProp, selectedAttrVal);
 
-            // if focus was result of a click action
-            if (!this.selectionFollowsFocus) {
-                this.updateRovingTabIndex(focussed);
-            }
+            // this is required if focus was result of a click action
+            // or if element was programmatically focussed
+            // otherwise it's redundant
+            this.updateRovingTabIndex(focussed);
 
             if (typeof e === 'object') {
                 if (this.toggleAfterSelected) {
