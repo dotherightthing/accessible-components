@@ -13,6 +13,10 @@
   "devDependencies": {
     "cypress": "^5.2.0",
     "cypress-plugin-tab": "^1.0.5",
+    "fs-extra": "^9.0.1",
+    "mochawesome": "^6.1.1",
+    "mochawesome-merge": "^4.2.0",
+    "mochawesome-report-generator": "^5.1.0",
     "wpdtrt-npm-scripts": "github:dotherightthing/wpdtrt-npm-scripts#semver:0.3.*"
   },
   "repository": {
@@ -38,7 +42,7 @@
     "release": "npm run release --prefix $npm_package_config_wpdtrt_npm_scripts",
     "server": "http-server ./",
     "test": "npm run test --prefix $npm_package_config_wpdtrt_npm_scripts && npx cypress run",
-    "test:js": "npx cypress run",
+    "test:js": "node build-scripts/cypress.js",
     "test:jsui": "npx cypress open",
     "version": "npm run version --prefix $npm_package_config_wpdtrt_npm_scripts",
     "watch": "nodemon"
