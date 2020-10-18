@@ -337,6 +337,9 @@ describe('Single Select', function () {
                                         if ($value === 'true') {
                                             cy.get('@button').click();
 
+                                            // eslint-disable-next-line
+                                            cy.wait(1000); // fix visibility fail, only on CI, only for this test
+
                                             cy.get('@listbox')
                                                 .should('be.visible');
 
