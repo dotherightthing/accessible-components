@@ -24,7 +24,7 @@ document.onreadystatechange = () => {
         document.querySelectorAll('.select').forEach((singleSelectListbox) => {
             const singleSelectListboxInstance = new SingleSelectListbox({
                 instanceElement: singleSelectListbox,
-                selectionFollowsFocus: false
+                selectionFollowsFocus: singleSelectListbox.getAttribute('data-selection-follows-focus')
             });
 
             singleSelectListboxInstance.init();

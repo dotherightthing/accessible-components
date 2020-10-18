@@ -58,8 +58,8 @@ jobs:
     - name: Copy additional file to release folder
       uses: canastro/copy-file-action@master
       with:
-        source: "single-select-listbox.html"
-        target: "release/single-select-listbox.html"
+        source: "listbox.html"
+        target: "release/listbox.html"
 
     # This repo only
     - name: Copy additional file to release folder

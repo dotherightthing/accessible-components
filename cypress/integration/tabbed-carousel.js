@@ -87,6 +87,16 @@ describe('Tabbed Carousel', function () {
                         cy.get(`.${componentClass} .tabpanels__nav-next`)
                             .as('tabpanelNavNext');
                     });
+
+                    it('Elements exist', function () {
+                        cy.get('@tabbedCarousel').should('exist');
+                        cy.get('@tabs').should('exist');
+                        cy.get('@tabImages').should('exist');
+                        cy.get('@tablist').should('exist');
+                        cy.get('@tabpanels').should('exist');
+                        cy.get('@tabpanelNavPrevious').should('exist');
+                        cy.get('@tabpanelNavNext').should('exist');
+                    });
                 });
 
                 // structure follows https://www.w3.org/TR/wai-aria-practices
@@ -554,9 +564,7 @@ describe('Tabbed Carousel', function () {
                             });
 
                             context('Keyboard Interaction', function () {
-                                context('When the button has focus:', function () {
-
-                                });
+                                context.skip('TODO - When the button has focus:');
                             });
                         });
                     });
