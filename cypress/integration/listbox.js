@@ -134,7 +134,6 @@ describe('Single Select', function () {
 
                             context('Keyboard Interaction', function () {
                                 context('For a vertically oriented listbox:', function () {
-
                                     // Single Select
 
                                     context('When a single-select listbox receives focus', function () {
@@ -315,7 +314,6 @@ describe('Single Select', function () {
 
                                 it('Each option in the listbox has role option and is a DOM descendant of the element with role listbox or is referenced by an aria-owns property on the listbox element.', function () {
                                     cy.get('@options').each(($option) => {
-
                                         // Each option in the listbox has role option
                                         cy.wrap($option)
                                             .should('have.attr', 'role', 'option');
@@ -331,7 +329,6 @@ describe('Single Select', function () {
 
                                         cy.get(`#${testId} #${labelId}`)
                                             .should('be.visible');
-
                                     });
                                 });
 
