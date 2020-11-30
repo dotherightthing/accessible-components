@@ -81,6 +81,9 @@ describe('Tabbed Carousel', function () {
                         cy.get(`.${componentClass} .tabpanel`)
                             .as('tabpanels');
 
+                        cy.get(`.${componentClass} .tabpanel > .tabpanel__img-wrap`)
+                            .as('tabpanelImageWrappers');
+
                         cy.get(`.${componentClass} .tabpanels__nav-previous`)
                             .as('tabpanelNavPrevious');
 

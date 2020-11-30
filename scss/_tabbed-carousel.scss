@@ -26,12 +26,22 @@
         }
     }
 
-    [role='tabpanel'] {
-        > h2 {
+    .tabpanel {
+        &__title {
             position: absolute;
             top: 1rem;
             left: 1rem;
             margin: 0;
+        }
+
+        &__img-wrap {
+            width: 400px;
+            height: 300px;
+
+            &--collapsed {
+                height: 160px;
+                overflow: hidden;
+            }
         }
     }
 
