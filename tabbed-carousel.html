@@ -12,6 +12,7 @@
         <p>This is a Cypress test page. For specifications, please see the <a href="/mochawesome-report/mochawesome.html">Cypress test report</a>.</p>
         <div id="test-1">
             <h2>Test 1: Tabs with Manual Activation</h2>
+            <p>This configuration is appropriate for image carousels where images within hidden tabs are not preloaded.</p>
             <button class="test-focus-start" id="test-1-start">Start test</button>
             <div class="tabbed-carousel" data-initial-selection="1">
                 <div role="tablist" aria-label="Choose photo to display">
@@ -66,6 +67,7 @@
         </div>
         <div id="test-2">
             <h2>Test 2: Tabs with Automatic Activation</h2>
+            <p>This configuration is appropriate for image carousels where images within hidden tabs are preloaded.</p>
             <button class="test-focus-start" id="test-2-start">Start test</button>
             <div class="tabbed-carousel" data-selection-follows-focus="true" data-initial-selection="1">
                 <div role="tablist" aria-label="Choose photo to display">
