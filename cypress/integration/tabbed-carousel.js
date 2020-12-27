@@ -254,7 +254,8 @@ describe('Tabbed Carousel', function () {
                                                     cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
 
                                                     cy.get('@tabs').first()
-                                                        .click() // focus and select
+                                                        .focus()
+                                                        .click()
                                                         .type($key);
 
                                                     cy.get('@tabs').last()
@@ -279,7 +280,8 @@ describe('Tabbed Carousel', function () {
                                                     cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
 
                                                     cy.get('@tabs').last()
-                                                        .click() // focus and select
+                                                        .focus()
+                                                        .click()
                                                         .type($key);
 
                                                     cy.get('@tabs').first()
