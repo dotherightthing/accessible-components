@@ -15,52 +15,52 @@
             <p>This configuration is appropriate for image carousels where images within hidden tabs are not preloaded.</p>
             <button class="test-focus-start" id="test-1-start">Start test</button>
             <div class="tabbed-carousel" data-initial-selection="1">
-                <div role="tablist" aria-label="Choose photo to display">
-                    <button role="tab" aria-controls="test-1-tabpanel-1" aria-selected="true" id="test-1-tab-1" tabindex="0" disabled>
+                <div role="tablist" class="tabbed-carousel__tablist" aria-label="Choose photo to display">
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-1-tabpanel-1" aria-selected="true" id="test-1-tab-1" tabindex="0" disabled>
                         <img src="http://placehold.it/44x44?text=1" alt="Photo 1">
                     </button>
-                    <button role="tab" aria-controls="test-1-tabpanel-2" aria-selected="false" id="test-1-tab-2" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-1-tabpanel-2" aria-selected="false" id="test-1-tab-2" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=2" alt="Photo 2">
                     </button>
-                    <button role="tab" aria-controls="test-1-tabpanel-3" aria-selected="false" id="test-1-tab-3" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-1-tabpanel-3" aria-selected="false" id="test-1-tab-3" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=3" alt="Photo 3">
                     </button>
-                    <button role="tab" aria-controls="test-1-tabpanel-4" aria-selected="false" id="test-1-tab-4" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-1-tabpanel-4" aria-selected="false" id="test-1-tab-4" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=4" alt="Photo 4">
                     </button>
-                    <button role="tab" aria-controls="test-1-tabpanel-5" aria-selected="false" id="test-1-tab-5" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-1-tabpanel-5" aria-selected="false" id="test-1-tab-5" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=5" alt="Photo 5">
                     </button>
                 </div>
-                <div class="tabpanels">
+                <div class="tabbed-carousel__tabpanels">
                     <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
-                    <div class="tabpanel" role="tabpanel" id="test-1-tabpanel-1" aria-labelledby="test-1-tab-1" tabindex="0">
-                        <h2 class="tabpanel__title">Image 1</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-1-tabpanel-1" aria-labelledby="test-1-tab-1" tabindex="0">
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 1</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-1-tab-1-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 1">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-1-tabpanel-2" aria-labelledby="test-1-tab-2" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 2</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-1-tabpanel-2" aria-labelledby="test-1-tab-2" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 2</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-1-tab-2-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 2">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-1-tabpanel-3" aria-labelledby="test-1-tab-3" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 3</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-1-tabpanel-3" aria-labelledby="test-1-tab-3" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 3</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-1-tab-3-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 3">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-1-tabpanel-4" aria-labelledby="test-1-tab-4" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 4</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-1-tabpanel-4" aria-labelledby="test-1-tab-4" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 4</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-1-tab-4-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 4">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-1-tabpanel-5" aria-labelledby="test-1-tab-5" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 5</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-1-tabpanel-5" aria-labelledby="test-1-tab-5" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 5</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-1-tab-5-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 5">
                         </div>
                     </div>
@@ -68,9 +68,10 @@
                          nav is after slides in order to have the active slide adjacent to the active tab in the tab sequence
                          this is in contrast with the WAI-ARIA Carousel example, which doesn't have tab navigation
                     -->
-                    <div class="tabpanels__nav">
-                        <button class="tabpanels__nav-previous" data-kh-proxy="selectPrevious">Previous</button>
-                        <button class="tabpanels__nav-next" data-kh-proxy="selectNext">Next</button>
+                    <div class="tabbed-carousel__tabpanels-nav">
+                        <button type="button" class="tabbed-carousel__tabpanels-nav-expand nojs-disabled" aria-expanded="false" aria-controls="test-1-tab-1-img-wrap test-1-tab-2-img-wrap test-1-tab-3-img-wrap test-1-tab-4-img-wrap test-1-tab-5-img-wrap" disabled>Expand</button>
+                        <button type="button" class="tabbed-carousel__tabpanels-nav-previous nojs-disabled" data-kh-proxy="selectPrevious" disabled>Previous</button>
+                        <button type="button" class="tabbed-carousel__tabpanels-nav-next nojs-disabled" data-kh-proxy="selectNext" disabled>Next</button>
                     </div>
                 </div>
             </div>
@@ -80,52 +81,52 @@
             <p>This configuration is appropriate for image carousels where images within hidden tabs are preloaded.</p>
             <button class="test-focus-start" id="test-2-start">Start test</button>
             <div class="tabbed-carousel" data-selection-follows-focus="true" data-initial-selection="1">
-                <div role="tablist" aria-label="Choose photo to display">
-                    <button role="tab" aria-controls="test-2-tabpanel-1" aria-selected="true" id="test-2-tab-1" tabindex="0" disabled>
+                <div role="tablist" class="tabbed-carousel__tablist" aria-label="Choose photo to display">
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-2-tabpanel-1" aria-selected="true" id="test-2-tab-1" tabindex="0" disabled>
                         <img src="http://placehold.it/44x44?text=1" alt="Photo 1">
                     </button>
-                    <button role="tab" aria-controls="test-2-tabpanel-2" aria-selected="false" id="test-2-tab-2" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-2-tabpanel-2" aria-selected="false" id="test-2-tab-2" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=2" alt="Photo 2">
                     </button>
-                    <button role="tab" aria-controls="test-2-tabpanel-3" aria-selected="false" id="test-2-tab-3" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-2-tabpanel-3" aria-selected="false" id="test-2-tab-3" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=3" alt="Photo 3">
                     </button>
-                    <button role="tab" aria-controls="test-2-tabpanel-4" aria-selected="false" id="test-2-tab-4" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-2-tabpanel-4" aria-selected="false" id="test-2-tab-4" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=4" alt="Photo 4">
                     </button>
-                    <button role="tab" aria-controls="test-2-tabpanel-5" aria-selected="false" id="test-2-tab-5" tabindex="-1" disabled>
+                    <button role="tab" class="tabbed-carousel__tab nojs-disabled" aria-controls="test-2-tabpanel-5" aria-selected="false" id="test-2-tab-5" tabindex="-1" disabled>
                         <img src="http://placehold.it/44x44?text=5" alt="Photo 5">
                     </button>
                 </div>
-                <div class="tabpanels">
+                <div class="tabbed-carousel__tabpanels">
                     <!-- Next element in the page tab is typically either the first focusable element inside the tab panel or the tab panel itself. -->
-                    <div class="tabpanel" role="tabpanel" id="test-2-tabpanel-1" aria-labelledby="test-2-tab-1" tabindex="0">
-                        <h2 class="tabpanel__title">Image 1</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-2-tabpanel-1" aria-labelledby="test-2-tab-1" tabindex="0">
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 1</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-2-tab-1-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 1">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-2-tabpanel-2" aria-labelledby="test-2-tab-2" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 2</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-2-tabpanel-2" aria-labelledby="test-2-tab-2" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 2</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-2-tab-2-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 2">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-2-tabpanel-3" aria-labelledby="test-2-tab-3" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 3</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-2-tabpanel-3" aria-labelledby="test-2-tab-3" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 3</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-2-tab-3-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 3">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-2-tabpanel-4" aria-labelledby="test-2-tab-4" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 4</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-2-tabpanel-4" aria-labelledby="test-2-tab-4" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 4</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-2-tab-4-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 4">
                         </div>
                     </div>
-                    <div class="tabpanel" role="tabpanel" id="test-2-tabpanel-5" aria-labelledby="test-2-tab-5" tabindex="0" hidden>
-                        <h2 class="tabpanel__title">Image 5</h2>
-                        <div class="tabpanel__img-wrap">
+                    <div class="tabbed-carousel__tabpanel" role="tabpanel" id="test-2-tabpanel-5" aria-labelledby="test-2-tab-5" tabindex="0" hidden>
+                        <h2 class="tabbed-carousel__tabpanel-title">Image 5</h2>
+                        <div class="tabbed-carousel__tabpanel-img-wrap tabbed-carousel__tabpanel-img-wrap--collapsed" id="test-2-tab-5-img-wrap">
                             <img src="http://placehold.it/400x300" alt="Description of photo 5">
                         </div>
                     </div>
@@ -133,9 +134,10 @@
                          nav is after slides in order to have the active slide adjacent to the active tab in the tab sequence
                          this is in contrast with the WAI-ARIA Carousel example, which doesn't have tab navigation
                     -->
-                    <div class="tabpanels__nav">
-                        <button class="tabpanels__nav-previous" data-kh-proxy="selectPrevious">Previous</button>
-                        <button class="tabpanels__nav-next" data-kh-proxy="selectNext">Next</button>
+                    <div class="tabbed-carousel__tabpanels-nav">
+                        <button type="button" class="tabbed-carousel__tabpanels-nav-expand nojs-disabled" aria-expanded="false" aria-controls="test-2-tab-1-img-wrap test-2-tab-2-img-wrap test-2-tab-3-img-wrap test-2-tab-4-img-wrap test-2-tab-5-img-wrap" disabled>Expand</button>
+                        <button type="button" class="tabbed-carousel__tabpanels-nav-previous nojs-disabled" data-kh-proxy="selectPrevious" disabled>Previous</button>
+                        <button type="button" class="tabbed-carousel__tabpanels-nav-next nojs-disabled" data-kh-proxy="selectNext" disabled>Next</button>
                     </div>
                 </div>
             </div>

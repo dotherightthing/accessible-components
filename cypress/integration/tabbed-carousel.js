@@ -69,25 +69,28 @@ describe('Tabbed Carousel', function () {
                         cy.get(`.${componentClass}`)
                             .as('tabbedCarousel');
 
-                        cy.get(`.${componentClass} [role="tab"]`)
+                        cy.get(`.${componentClass}__tab`)
                             .as('tabs');
 
-                        cy.get(`.${componentClass} [role="tab"] > img`)
+                        cy.get(`.${componentClass}__tab > img`)
                             .as('tabImages');
 
-                        cy.get(`.${componentClass} [role="tablist"]`)
+                        cy.get(`.${componentClass}__tablist`)
                             .as('tablist');
 
-                        cy.get(`.${componentClass} .tabpanel`)
+                        cy.get(`.${componentClass}__tabpanel`)
                             .as('tabpanels');
 
-                        cy.get(`.${componentClass} .tabpanel > .tabpanel__img-wrap`)
+                        cy.get(`.${componentClass}__tabpanels-nav-expand`)
+                            .as('tabpanelExpandButton');
+
+                        cy.get(`.${componentClass}__tabpanel-img-wrap`)
                             .as('tabpanelImageWrappers');
 
-                        cy.get(`.${componentClass} .tabpanels__nav-previous`)
+                        cy.get(`.${componentClass}__tabpanels-nav-previous`)
                             .as('tabpanelNavPrevious');
 
-                        cy.get(`.${componentClass} .tabpanels__nav-next`)
+                        cy.get(`.${componentClass}__tabpanels-nav-next`)
                             .as('tabpanelNavNext');
                     });
 
@@ -97,6 +100,7 @@ describe('Tabbed Carousel', function () {
                         cy.get('@tabImages').should('exist');
                         cy.get('@tablist').should('exist');
                         cy.get('@tabpanels').should('exist');
+                        cy.get('@tabpanelExpandButton').should('exist');
                         cy.get('@tabpanelNavPrevious').should('exist');
                         cy.get('@tabpanelNavNext').should('exist');
                     });
@@ -229,7 +233,8 @@ describe('Tabbed Carousel', function () {
                                             cy.log('Nav moved after slide in order to have the active slide adjacent to the active tab in the tab sequence. This is in contrast with the WAI-ARIA Carousel example, which doesn\'t have tab navigation');
 
                                             cy.get('@testAnchor')
-                                                .tab().tab().tab();
+                                                .tab().tab().tab()
+                                                .tab();
 
                                             cy.get('@tabpanelNavPrevious')
                                                 .should('have.focus');
@@ -240,6 +245,7 @@ describe('Tabbed Carousel', function () {
 
                                             cy.get('@testAnchor')
                                                 .tab().tab().tab()
+                                                .tab()
                                                 .tab();
 
                                             cy.get('@tabpanelNavNext')
@@ -536,7 +542,7 @@ describe('Tabbed Carousel', function () {
 
                                         context('It has slide picker controls implemented using the tabs pattern where', function () {
                                             it('Each control is a tab element, so activating a tab displays the slide associated with that tab.', function () {
-                                                //
+                                                cy.log('see: "When focus is on a tab element in a horizontal tab list: Left Arrow, Right Arrow');
                                             });
 
                                             it('The accessible name of each tab indicates which slide it will display by including the name or number of the slide, e.g., "Slide 3". Slide names are preferable if each slide has a unique name.', function () {
@@ -550,6 +556,40 @@ describe('Tabbed Carousel', function () {
                                             it('The tab, tablist, and tabpanel implement the properties specified in the tabs pattern.', function () {
                                                 //
                                             });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+
+                        context('Disclosure', function () {
+                            it('Terms', function () {
+                                cy.log('A disclosure is a button that controls visibility of a section of content. When the controlled content is hidden, it is often styled as a typical push button with a right-pointing arrow or triangle to hint that activating the button will display additional content. When the content is visible, the arrow or triangle typically points down.');
+                                cy.log('https://www.w3.org/TR/wai-aria-practices/#disclosure');
+                            });
+
+                            context('Examples', function () {
+                                it('Disclosure (Show/Hide) of Image Description', function () {
+                                    cy.log('https://www.w3.org/TR/wai-aria-practices/examples/disclosure/disclosure-img-long-description.html');
+                                });
+                            });
+
+                            context('Keyboard Interaction', function () {
+                                context('Space or Enter: Activates the disclosure control and toggles the visibility of the disclosure content.', function () {
+                                    [ ' ', '{enter}' ].forEach(($key) => {
+                                        it($key, function () {
+                                            cy.get('@tabpanelExpandButton')
+                                                .should('have.attr', 'aria-expanded', 'false');
+
+                                            cy.get('@tabpanelImageWrappers')
+                                                .should('have.class', 'tabbed-carousel__tabpanel-img-wrap--collapsed');
+
+                                            cy.get('@tabpanelExpandButton')
+                                                .type($key)
+                                                .should('have.attr', 'aria-expanded', 'true');
+
+                                            cy.get('@tabpanelImageWrappers')
+                                                .should('not.have.class', 'tabbed-carousel__tabpanel-img-wrap--collapsed');
                                         });
                                     });
                                 });

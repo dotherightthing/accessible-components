@@ -7,7 +7,16 @@
         display: none;
     }
 
-    [role='tablist'] {
+    button {
+        cursor: pointer;
+
+        &[disabled] {
+            opacity: .7;
+            cursor: not-allowed;
+        }
+    }
+
+    &__tablist {
         display: flex;
         float: left;
         width: 156px; // 44*3, 8*3
@@ -16,7 +25,7 @@
         flex-wrap: wrap;
     }
 
-    [role='tab'] {
+    &__tab {
         padding: 0;
         border: 3px solid transparent;
         margin: 0 .5rem .5rem 0;
@@ -26,47 +35,55 @@
         }
     }
 
-    .tabpanel {
-        &__title {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            margin: 0;
-        }
+    &__tabpanel-title {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        margin: 0;
+    }
 
-        &__img-wrap {
-            width: 400px;
-            height: 300px;
+    &__tabpanel-img-wrap {
+        width: 400px;
+        height: 300px;
 
-            &--collapsed {
-                height: 160px;
-                overflow: hidden;
-            }
+        &--collapsed {
+            height: 160px;
+            overflow: hidden;
         }
     }
 
-    .tabpanels {
+    &__tabpanels {
         position: relative;
         width: 400px;
         margin-left: 156px;
+    }
 
-        &__nav {
-            display: flex;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: space-between;
+    &__tabpanels-nav {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
 
-            button {
-                opacity: .5;
-                width: 25%;
-                height: 100%;
-                border: 0;
-            }
-        }
+    &__tabpanels-nav-expand {
+        position: absolute;
+        top: 1rem;
+        left: 33.333%;
+        z-index: 1;
+        width: 33.333%;
+        margin: 0;
+    }
+
+    &__tabpanels-nav-next,
+    &__tabpanels-nav-previous {
+        opacity: .5;
+        width: 25%;
+        height: 100%;
+        border: 0;
     }
 }

@@ -31,9 +31,13 @@ class TabbedCarousel {
         this.selectors = {
             selected: '[aria-selected="true"]',
             unselected: '[aria-selected="false"]',
-            tab: '[role="tab"]',
-            tablist: '[role="tablist"]',
-            tabpanel: '[role="tabpanel"]'
+            jsEnabled: '.nojs-disabled',
+            tab: '.tabbed-carousel__tab',
+            tablist: '.tabbed-carousel__tablist',
+            tabpanel: '.tabbed-carousel__tabpanel',
+            tabpanelExpandButton: '.tabbed-carousel__tabpanels-nav-expand',
+            tabpanelsNavNext: '.tabbed-carousel__tabpanels-nav-next',
+            tabpanelsNavPrevious: '.tabbed-carousel__tabpanels-nav-previous'
         };
     }
 
@@ -54,6 +58,29 @@ class TabbedCarousel {
         }
 
         this.instanceId = this.instanceElement.getAttribute('id');
+    }
+
+    /**
+     * @function onClickExpand
+     * @memberof TabbedCarousel
+     *
+     * @param {*} e - target of click event
+     */
+    onClickExpand(e) {
+        const expandButton = e.target;
+        const targetIds = expandButton.getAttribute('aria-controls').split(' ');
+
+        if (expandButton.getAttribute('aria-expanded') === 'false') {
+            expandButton.setAttribute('aria-expanded', 'true');
+            targetIds.forEach((targetId) => {
+                document.getElementById(targetId).classList.remove('tabbed-carousel__tabpanel-img-wrap--collapsed');
+            });
+        } else {
+            expandButton.setAttribute('aria-expanded', 'false');
+            targetIds.forEach((targetId) => {
+                document.getElementById(targetId).classList.add('tabbed-carousel__tabpanel-img-wrap--collapsed');
+            });
+        }
     }
 
     /**
@@ -131,11 +158,17 @@ class TabbedCarousel {
     init() {
         this.assignInstanceId();
 
-        const tab = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tab}`);
+        const jsEnabled = document.querySelectorAll(`#${this.instanceId} ${this.selectors.jsEnabled}`);
+        const tabs = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tab}`);
         const tablist = document.querySelector(`#${this.instanceId} ${this.selectors.tablist}`);
         const tabpanels = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanel}`);
+        const tabpanelExpandButtons = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanelExpandButton}`);
 
-        if (tab.length) {
+        jsEnabled.forEach((jsEnable) => {
+            jsEnable.disabled = false;
+        });
+
+        if (tabs.length) {
             const KeyboardHelpersConfig = {
                 instanceElement: this.instanceElement,
 
@@ -177,7 +210,7 @@ class TabbedCarousel {
                 // this is then used to populate the button or select the associated panel
                 // so they are value setters
                 // an option is a value referenced by a name
-                keyboardNavigableElements: tab,
+                keyboardNavigableElements: tabs,
 
                 selectedAttr: this.attributes.selected,
 
@@ -202,9 +235,13 @@ class TabbedCarousel {
 
             TabbedCarouselKeys.init();
 
+            tabpanelExpandButtons.forEach((tabpanelExpandButton) => {
+                tabpanelExpandButton.addEventListener('click', this.onClickExpand.bind(this));
+            });
+
             this.propagateSelection(tablist, tabpanels);
 
-            this.selectInitialSelection(tab);
+            this.selectInitialSelection(tabs);
         }
     }
 }

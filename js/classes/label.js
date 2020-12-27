@@ -16,7 +16,7 @@ class Label {
      * @function onClickLabel
      * @memberof Label
      *
-     * @param {*} e - target of focus event
+     * @param {*} e - target of click event
      */
     onClickLabel(e) {
         const label = e.target;
