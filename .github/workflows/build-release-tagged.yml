@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [13.x]
+        node: [ '13.x' ]
 
     steps:
     # check out the repository, so the workflow can access it
@@ -26,12 +26,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '7.2.15'
-        node-version: ${{ matrix.node-version }}
-
-    # This repo only
-    - name: Generate frontend.js
-      run: |
-        npm run merge:js --if-present
+        node-version: ${{ matrix.node }}
     
     - name: Run build
       run: |
@@ -53,20 +48,6 @@ jobs:
 
     - name: Copy built files to release folder
       run: npm run release --if-present
-
-    # This repo only
-    - name: Copy additional file to release folder
-      uses: canastro/copy-file-action@master
-      with:
-        source: "listbox.html"
-        target: "release/listbox.html"
-
-    # This repo only
-    - name: Copy additional file to release folder
-      uses: canastro/copy-file-action@master
-      with:
-        source: "tabbed-carousel.html"
-        target: "release/tabbed-carousel.html"
 
     # https://help.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts
     - name: Archive release folder
