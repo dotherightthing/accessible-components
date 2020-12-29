@@ -32,12 +32,12 @@ class TabbedCarousel {
             selected: '[aria-selected="true"]',
             unselected: '[aria-selected="false"]',
             jsEnabled: '.nojs-disabled',
-            tab: '.tabbed-carousel__tab',
-            tablist: '.tabbed-carousel__tablist',
-            tabpanel: '.tabbed-carousel__tabpanel',
-            tabpanelExpandButton: '.tabbed-carousel__tabpanels-nav-expand',
-            tabpanelsNavNext: '.tabbed-carousel__tabpanels-nav-next',
-            tabpanelsNavPrevious: '.tabbed-carousel__tabpanels-nav-previous'
+            tab: '[role="tab"]',
+            tablist: '[role="tablist"]',
+            tabpanel: '[role="tabpanel"]',
+            tabpanelExpandButton: '[data-tabbed-content-nav-expand]',
+            tabpanelsNavNext: '[data-tabbed-content-nav-next]',
+            tabpanelsNavPrevious: '[data-tabbed-content-nav-previous]'
         };
     }
 
