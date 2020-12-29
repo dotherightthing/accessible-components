@@ -31,7 +31,6 @@ class TabbedCarousel {
         this.selectors = {
             selected: '[aria-selected="true"]',
             unselected: '[aria-selected="false"]',
-            jsEnabled: '.nojs-disabled',
             tab: '[role="tab"]',
             tablist: '[role="tablist"]',
             tabpanel: '[role="tabpanel"]',
@@ -158,14 +157,14 @@ class TabbedCarousel {
     init() {
         this.assignInstanceId();
 
-        const jsEnabled = document.querySelectorAll(`#${this.instanceId} ${this.selectors.jsEnabled}`);
+        const disabledButtons = document.querySelectorAll(`#${this.instanceId} button[disabled]`);
         const tabs = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tab}`);
         const tablist = document.querySelector(`#${this.instanceId} ${this.selectors.tablist}`);
         const tabpanels = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanel}`);
         const tabpanelExpandButtons = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanelExpandButton}`);
 
-        jsEnabled.forEach((jsEnable) => {
-            jsEnable.disabled = false;
+        disabledButtons.forEach((disabledButton) => {
+            disabledButton.disabled = false;
         });
 
         if (tabs.length) {
