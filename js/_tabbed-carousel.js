@@ -9,14 +9,24 @@
  * @param {object} options                              - Module options
  * @param {null|number} options.initialSelection        - Tab to select on init
  * @param {null|Node} options.instanceElement           - The outermost DOM element
+ * @param {null|Function} options.onTabSelect           - Callback with an argument of selectedTabPanel, called after a tab is selected
  * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
  */
 class TabbedCarousel {
-    constructor(options = {}) {
+    constructor(options = {
+        initialSelection: null,
+        instanceElement: null,
+        selectionFollowsFocus: false,
+        onTabSelect: () => { }
+    }) {
         // public options
-        this.initialSelection = options.initialSelection || null;
-        this.instanceElement = options.instanceElement || null;
-        this.selectionFollowsFocus = options.selectionFollowsFocus || false;
+        this.initialSelection = options.initialSelection;
+        this.instanceElement = options.instanceElement;
+        this.selectionFollowsFocus = options.selectionFollowsFocus;
+
+        if (options.onTabSelect instanceof Function) {
+            this.onTabSelect = options.onTabSelect;
+        }
 
         // private options
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
@@ -83,55 +93,6 @@ class TabbedCarousel {
     }
 
     /**
-     * @function propagateSelection
-     * @summary When KeyboardHelpers makes a selection, update the UI to match
-     * @memberof TabbedCarousel
-     *
-     * @param {Node} target - Target to watch for changes
-     * @param {Node} tabPanels - Affected tab panels
-     */
-    propagateSelection(target, tabPanels) {
-        // Options for the observer (which mutations to observe)
-        const observerConfig = {
-            attributes: true,
-            childList: false,
-            subtree: true
-        };
-
-        // const _self = this;
-        const selectedAttrProp = this.attributes.selected[0];
-        const selectedAttrVal = this.attributes.selected[1];
-
-        // Callback function to execute when mutations are observed
-        const callback = function (mutationsList) {
-            mutationsList.forEach(function (mutation) { // eslint-disable-line func-names
-                if (mutation.type === 'attributes') {
-                    if (mutation.attributeName === selectedAttrProp) {
-                        // if a tab was just selected
-                        if (mutation.target.getAttribute(selectedAttrProp) === selectedAttrVal) {
-                            const tab = mutation.target;
-                            const tabPanelId = tab.getAttribute('aria-controls');
-                            const selectedTabPanel = document.getElementById(tabPanelId);
-
-                            tabPanels.forEach((tabPanel) => {
-                                tabPanel.setAttribute('hidden', true);
-                            });
-
-                            selectedTabPanel.removeAttribute('hidden');
-                        }
-                    }
-                }
-            });
-        };
-
-        // Create an observer instance linked to the callback function
-        const observer = new MutationObserver(callback);
-
-        // Start observing the target node for configured mutations
-        observer.observe(target, observerConfig);
-    }
-
-    /**
      * @function selectInitialSelection
      * @summary Select the tab which should be active on init
      * @memberof TabbedCarousel
@@ -162,6 +123,7 @@ class TabbedCarousel {
         const tablist = document.querySelector(`#${this.instanceId} ${this.selectors.tablist}`);
         const tabpanels = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanel}`);
         const tabpanelExpandButtons = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanelExpandButton}`);
+        const self = this;
 
         disabledButtons.forEach((disabledButton) => {
             disabledButton.disabled = false;
@@ -211,6 +173,20 @@ class TabbedCarousel {
                 // an option is a value referenced by a name
                 keyboardNavigableElements: tabs,
 
+                onSelect: (element) => {
+                    const tab = element;
+                    const tabPanelId = tab.getAttribute('aria-controls');
+                    const selectedTabPanel = document.getElementById(tabPanelId);
+
+                    tabpanels.forEach((tabpanel) => {
+                        tabpanel.setAttribute('hidden', true);
+                    });
+
+                    selectedTabPanel.removeAttribute('hidden');
+
+                    self.onTabSelect.call(self, selectedTabPanel);
+                },
+
                 selectedAttr: this.attributes.selected,
 
                 // It is recommended that tabs activate automatically when they receive focus
@@ -237,8 +213,6 @@ class TabbedCarousel {
             tabpanelExpandButtons.forEach((tabpanelExpandButton) => {
                 tabpanelExpandButton.addEventListener('click', this.onClickExpand.bind(this));
             });
-
-            this.propagateSelection(tablist, tabpanels);
 
             this.selectInitialSelection(tabs);
         }

@@ -12,6 +12,7 @@
  * @param {boolean}         options.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
  * @param {object}          options.keyboardActions             - The key(s) which trigger actions
  * @param {null|NodeList}   options.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
+ * @param {null|Function}   options.onSelect                    - Callback with an argument of selectedElement, called after an element is selected
  * @param {Array}           options.selectedAttr                - Property and Value applied to the selected keyboardNavigableElement
  * @param {boolean}         options.selectionFollowsFocus       - Automatically select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
  * @param {object}          options.toggleActions               - The key(s) which toggle the parent state
@@ -23,19 +24,36 @@
  * @todo Make this a module, as it doesn't need to manage state
  */
 class KeyboardHelpers {
-    constructor(options = {}) {
+    constructor(options = {
+        instanceElement: null,
+        infiniteNavigation: false,
+        keyboardActions: {},
+        keyboardNavigableElements: null,
+        onSelect: () => { },
+        selectedAttr: [],
+        selectionFollowsFocus: false,
+        toggleActions: {},
+        toggleElement: null,
+        toggleAfterSelected: false,
+        unselectedAttr: [],
+        useRovingTabIndex: false
+    }) {
         // public options
-        this.instanceElement = options.instanceElement || null;
-        this.infiniteNavigation = options.infiniteNavigation || false;
-        this.keyboardActions = options.keyboardActions || {};
-        this.keyboardNavigableElements = options.keyboardNavigableElements || null;
-        this.selectedAttr = options.selectedAttr || [];
-        this.selectionFollowsFocus = options.selectionFollowsFocus || false;
-        this.toggleActions = options.toggleActions || {};
-        this.toggleElement = options.toggleElement || null;
-        this.toggleAfterSelected = options.toggleAfterSelected || false;
-        this.unselectedAttr = options.unselectedAttr || [];
-        this.useRovingTabIndex = options.useRovingTabIndex || false;
+        this.instanceElement = options.instanceElement;
+        this.infiniteNavigation = options.infiniteNavigation;
+        this.keyboardActions = options.keyboardActions;
+        this.keyboardNavigableElements = options.keyboardNavigableElements;
+        this.selectedAttr = options.selectedAttr;
+        this.selectionFollowsFocus = options.selectionFollowsFocus;
+        this.toggleActions = options.toggleActions;
+        this.toggleElement = options.toggleElement;
+        this.toggleAfterSelected = options.toggleAfterSelected;
+        this.unselectedAttr = options.unselectedAttr;
+        this.useRovingTabIndex = options.useRovingTabIndex;
+
+        if (options.onSelect instanceof Function) {
+            this.onSelect = options.onSelect;
+        }
 
         // private options
 
@@ -414,6 +432,7 @@ class KeyboardHelpers {
      */
     selectFocussed(e) {
         const focussed = document.activeElement;
+        const self = this;
 
         if (this.isKeyboardNavigableElement(focussed)) {
             const selectedAttrProp = this.selectedAttr[0];
@@ -438,6 +457,8 @@ class KeyboardHelpers {
                     this.toggleClosed();
                 }
             }
+
+            self.onSelect.call(self, focussed);
         }
     }
 
@@ -461,6 +482,8 @@ class KeyboardHelpers {
      * @param {Node} element - DOM Element
      */
     selectNonFocussed(element) {
+        const self = this;
+
         if (this.isKeyboardNavigableElement(element)) {
             const selectedAttrProp = this.selectedAttr[0];
             const selectedAttrVal = this.selectedAttr[1];
@@ -476,6 +499,8 @@ class KeyboardHelpers {
 
             // this triggers mutation observer callback in host component
             element.setAttribute(selectedAttrProp, selectedAttrVal);
+
+            self.onSelect.call(self, element);
         }
     }
 
