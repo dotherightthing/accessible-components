@@ -9,14 +9,21 @@
  * @param {object} options                              - Module options
  * @param {null|number} options.initialSelection        - Tab to select on init
  * @param {null|Node} options.instanceElement           - The outermost DOM element
+ * @param {null|Function} options.onTabSelect           - Callback with an argument of selectedTabPanel, called after a tab is selected
  * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
  */
 class TabbedCarousel {
-    constructor(options = {}) {
+    constructor(options = {
+        initialSelection: null,
+        instanceElement: null,
+        selectionFollowsFocus: false,
+        onTabSelect: () => { }
+    }) {
         // public options
-        this.initialSelection = options.initialSelection || null;
-        this.instanceElement = options.instanceElement || null;
-        this.selectionFollowsFocus = options.selectionFollowsFocus || false;
+        this.initialSelection = options.initialSelection;
+        this.instanceElement = options.instanceElement;
+        this.onTabSelect = options.onTabSelect;
+        this.selectionFollowsFocus = options.selectionFollowsFocus;
 
         // private options
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
@@ -101,6 +108,7 @@ class TabbedCarousel {
         // const _self = this;
         const selectedAttrProp = this.attributes.selected[0];
         const selectedAttrVal = this.attributes.selected[1];
+        const self = this;
 
         // Callback function to execute when mutations are observed
         const callback = function (mutationsList) {
@@ -118,6 +126,10 @@ class TabbedCarousel {
                             });
 
                             selectedTabPanel.removeAttribute('hidden');
+
+                            if (self.onTabSelect instanceof Function) {
+                                self.onTabSelect.call(self, selectedTabPanel);
+                            }
                         }
                     }
                 }
