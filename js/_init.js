@@ -24,7 +24,7 @@ document.onreadystatechange = () => {
         document.querySelectorAll('.select').forEach((singleSelectListbox) => {
             const singleSelectListboxInstance = new SingleSelectListbox({
                 instanceElement: singleSelectListbox,
-                selectionFollowsFocus: singleSelectListbox.getAttribute('data-selection-follows-focus')
+                selectionFollowsFocus: singleSelectListbox.getAttribute('data-selection-follows-focus') === 'true' || false
             });
 
             singleSelectListboxInstance.init();
@@ -34,7 +34,7 @@ document.onreadystatechange = () => {
             const tabbedCarouselInstance = new TabbedCarousel({
                 initialSelection: tabbedCarousel.getAttribute('data-initial-selection'),
                 instanceElement: tabbedCarousel,
-                selectionFollowsFocus: tabbedCarousel.getAttribute('data-selection-follows-focus')
+                selectionFollowsFocus: tabbedCarousel.getAttribute('data-selection-follows-focus') === 'true' || false
             });
 
             tabbedCarouselInstance.init();
