@@ -15,13 +15,19 @@
  * @todo {boolean} options.typeaheadMultiCharacter  - Focus moves to the next item with a name that starts with the string of characters typed
  */
 class SingleSelectListbox {
-    constructor(options = {}) {
+    constructor(options = {
+        // autoSelectFirstOption: false,
+        instanceElement: null,
+        selectionFollowsFocus: false
+        // typeaheadMultiCharacter: false,
+        // typeaheadSingleCharacter: false,
+    }) {
         // public options
-        this.instanceElement = options.instanceElement || null;
-        this.selectionFollowsFocus = options.selectionFollowsFocus || false;
-        // this.autoSelectFirstOption = options.autoSelectFirstOption || false;
-        // this.typeaheadSingleCharacter = options.typeaheadSingleCharacter || false;
-        // this.typeaheadMultiCharacter = options.typeaheadMultiCharacter || false;
+        // this.autoSelectFirstOption = options.autoSelectFirstOption;
+        this.instanceElement = options.instanceElement;
+        this.selectionFollowsFocus = options.selectionFollowsFocus;
+        // this.typeaheadMultiCharacter = options.typeaheadMultiCharacter;
+        // this.typeaheadSingleCharacter = options.typeaheadSingleCharacter;
 
         // private options
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
