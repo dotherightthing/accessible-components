@@ -6,30 +6,37 @@
  * @class TabbedCarousel
  * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
- * @param {object} options                              - Module options
- * @param {null|number} options.initialSelection        - Tab to select on init
- * @param {null|Node} options.instanceElement           - The outermost DOM element
- * @param {null|Function} options.onTabSelect           - Callback with an argument of selectedTabPanel, called after a tab is selected
- * @param {boolean} options.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
+ * @param {object} config                              - Module configuration
+ * @param {null|number} config.initialSelection        - Tab to select on init
+ * @param {null|Node} config.instanceElement           - The outermost DOM element
+ * @param {null|Function} config.onTabSelect           - Callback with an argument of selectedTabPanel, called after a tab is selected
+ * @param {boolean} config.selectionFollowsFocus       - Select the focussed tab, see <https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>
  */
 class TabbedCarousel {
-    constructor(options = {
-        initialSelection: null,
-        instanceElement: null,
-        selectionFollowsFocus: false,
-        onTabSelect: () => { }
-    }) {
-        // public options
-        this.initialSelection = options.initialSelection;
-        this.instanceElement = options.instanceElement;
-        this.selectionFollowsFocus = options.selectionFollowsFocus;
+    constructor(config = {}) {
+        const options = {
+            initialSelection: null,
+            instanceElement: null,
+            selectionFollowsFocus: false,
+            onTabSelect: () => { }
+        };
 
-        if (options.onTabSelect instanceof Function) {
-            this.onTabSelect = options.onTabSelect;
+        // merge objects
+        const settings = { ...options, ...config };
+
+        // public settings
+
+        this.initialSelection = settings.initialSelection;
+        this.instanceElement = settings.instanceElement;
+        this.selectionFollowsFocus = settings.selectionFollowsFocus;
+
+        if (settings.onTabSelect instanceof Function) {
+            this.onTabSelect = settings.onTabSelect;
         }
 
-        // private options
+        // private settings
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
+
         this.attributes = {
             selected: [ 'aria-selected', 'true' ],
             unselected: [ 'aria-selected', 'false' ],

@@ -6,37 +6,45 @@
  * @class SingleSelectListbox
  * @summary Class used to store local state and make DOM calls relative to a particular element.
  *
- * @param {object} options                          - Module options
- * @param {null|Node} options.instanceElement       - The outermost DOM element
- * @param {boolean} options.selectionFollowsFocus   - Select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
+ * @param {object} config                          - Module configuration
+ * @param {null|Node} config.instanceElement       - The outermost DOM element
+ * @param {boolean} config.selectionFollowsFocus   - Select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
  *
- * @todo {boolean} options.autoSelectFirstOption    - Select the first option in the listbox
- * @todo {boolean} options.typeaheadSingleCharacter - Focus moves to the next item with a name that starts with the typed character
- * @todo {boolean} options.typeaheadMultiCharacter  - Focus moves to the next item with a name that starts with the string of characters typed
+ * @todo {boolean} config.autoSelectFirstOption    - Select the first option in the listbox
+ * @todo {boolean} config.typeaheadSingleCharacter - Focus moves to the next item with a name that starts with the typed character
+ * @todo {boolean} config.typeaheadMultiCharacter  - Focus moves to the next item with a name that starts with the string of characters typed
  */
 class SingleSelectListbox {
-    constructor(options = {
-        // autoSelectFirstOption: false,
-        instanceElement: null,
-        selectionFollowsFocus: false
-        // typeaheadMultiCharacter: false,
-        // typeaheadSingleCharacter: false,
-    }) {
-        // public options
-        // this.autoSelectFirstOption = options.autoSelectFirstOption;
-        this.instanceElement = options.instanceElement;
-        this.selectionFollowsFocus = options.selectionFollowsFocus;
-        // this.typeaheadMultiCharacter = options.typeaheadMultiCharacter;
-        // this.typeaheadSingleCharacter = options.typeaheadSingleCharacter;
+    constructor(config = {}) {
+        const options = {
+            // autoSelectFirstOption: false,
+            instanceElement: null,
+            selectionFollowsFocus: false
+            // typeaheadMultiCharacter: false,
+            // typeaheadSingleCharacter: false,
+        };
 
-        // private options
+        // merge objects
+        const settings = { ...options, ...config };
+
+        // public settings
+
+        // this.autoSelectFirstOption = settings.autoSelectFirstOption;
+        this.instanceElement = settings.instanceElement;
+        this.selectionFollowsFocus = settings.selectionFollowsFocus;
+        // this.typeaheadMultiCharacter = settings.typeaheadMultiCharacter;
+        // this.typeaheadSingleCharacter = settings.typeaheadSingleCharacter;
+
+        // private settings
         // Note: when using setAttribute, any non-string value specified is automatically converted into a string.
+
         this.attributes = {
             button: [ 'aria-haspopup', 'listbox' ],
             hidden: [ 'hidden', true ],
             listbox: [ 'role', 'listbox' ],
             option: [ 'role', 'option' ],
-            selected: [ 'aria-selected', 'true' ]
+            selected: [ 'aria-selected', 'true' ],
+            unselected: [ 'aria-selected', 'false' ]
         };
 
         this.selectors = {
@@ -44,7 +52,8 @@ class SingleSelectListbox {
             hidden: '[hidden]',
             listbox: '[role="listbox"]',
             option: '[role="option"]',
-            selected: '[aria-selected="true"]'
+            selected: '[aria-selected="true"]',
+            unselected: '[aria-selected="false"]'
         };
     }
 
@@ -146,56 +155,6 @@ class SingleSelectListbox {
     }
 
     /**
-     * @function propagateSelection
-     * @summary When KeyboardHelpers makes a selection, update the UI to match
-     * @memberof SingleSelectListbox
-     *
-     * @param {Node} target - Target to watch for changes
-     */
-    propagateSelection(target) {
-        // Options for the observer (which mutations to observe)
-        const observerConfig = {
-            attributes: true,
-            childList: false,
-            subtree: true
-        };
-
-        const self = this;
-        const selectedAttrProp = this.attributes.selected[0];
-        const selectedAttrVal = this.attributes.selected[1];
-
-        // Callback function to execute when mutations are observed
-        const callback = function (mutationsList) {
-            mutationsList.forEach(function (mutation) { // eslint-disable-line func-names
-                if (mutation.type === 'attributes') {
-                    if (mutation.attributeName === selectedAttrProp) {
-                        // if an option was just selected
-                        if (mutation.target.getAttribute(selectedAttrProp) === selectedAttrVal) {
-                            let option = mutation.target;
-                            let listbox = self.getListbox(option);
-
-                            if (listbox !== null) {
-                                if (listbox.parentElement) {
-                                    let wrapper = listbox.parentElement;
-                                    let button = wrapper.querySelector(self.selectors.button);
-
-                                    self.setButtonText(button, option.innerHTML);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        };
-
-        // Create an observer instance linked to the callback function
-        const observer = new MutationObserver(callback);
-
-        // Start observing the target node for configured mutations
-        observer.observe(target, observerConfig);
-    }
-
-    /**
      * @function setButtonText
      * @summary Change the text within the button which triggers the listbox.
      * @memberof SingleSelectListbox
@@ -248,6 +207,7 @@ class SingleSelectListbox {
 
         const button = document.querySelector(`#${this.instanceId} ${this.selectors.button}`);
         const listbox = document.querySelector(`#${this.instanceId} ${this.selectors.listbox}:not([aria-multiselectable="true"])`);
+        const self = this;
 
         if (listbox) {
             const options = document.querySelectorAll(`#${this.instanceId} ${this.selectors.option}`);
@@ -266,6 +226,20 @@ class SingleSelectListbox {
                     selectFocussed: [ 'Enter', ' ' ]
                 },
                 keyboardNavigableElements: options,
+                onSelect: (element) => {
+                    const option = element;
+
+                    let elementlistbox = self.getListbox(option);
+
+                    if (elementlistbox !== null) {
+                        if (elementlistbox.parentElement) {
+                            let wrapper = elementlistbox.parentElement;
+                            let elementlistboxbutton = wrapper.querySelector(self.selectors.button);
+
+                            self.setButtonText(elementlistboxbutton, option.innerHTML);
+                        }
+                    }
+                },
                 selectedAttr: this.attributes.selected,
                 selectionFollowsFocus: this.selectionFollowsFocus,
                 toggleActions: {
@@ -273,7 +247,8 @@ class SingleSelectListbox {
                     toggleClosed: [ 'Enter', ' ', 'Escape' ]
                 },
                 toggleElement: button,
-                toggleAfterSelected: true
+                toggleAfterSelected: true,
+                unselectedAttr: this.attributes.unselected
             };
 
             const singleSelectListboxKeys = new KeyboardHelpers(KeyboardHelpersConfig);
@@ -289,8 +264,6 @@ class SingleSelectListbox {
             // use .bind() to force the desired value of this
             // .bind() returns a new stub function that internally uses .apply() to set the this pointer as it was passed to .bind()
             listbox.addEventListener('focus', this.focusOption.bind(this));
-
-            this.propagateSelection(listbox);
         }
     }
 }

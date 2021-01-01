@@ -7,55 +7,61 @@
 /**
  * @class KeyboardHelpers
  *
- * @param {object}          options                             - Module options
- * @param {null|Node}       options.instanceElement             - The outermost DOM element
- * @param {boolean}         options.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
- * @param {object}          options.keyboardActions             - The key(s) which trigger actions
- * @param {null|NodeList}   options.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
- * @param {null|Function}   options.onSelect                    - Callback with an argument of selectedElement, called after an element is selected
- * @param {Array}           options.selectedAttr                - Property and Value applied to the selected keyboardNavigableElement
- * @param {boolean}         options.selectionFollowsFocus       - Automatically select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
- * @param {object}          options.toggleActions               - The key(s) which toggle the parent state
- * @param {null|Node}       options.toggleElement               - The DOM element which toggles the parent state
- * @param {boolean}         options.toggleAfterSelected         - Whether to trigger the toggle action after a keyboardNavigableElement is selected
- * @param {Array}           options.unselectedAttr              - Property and Value applied to the unselected keyboardNavigableElement
- * @param {boolean}         options.useRovingTabIndex           - Whether to apply a tabindex of 0 (tabstop) rather than -1 (programmatic focus) to the focussed item
+ * @param {object}          config                             - Module configuration
+ * @param {null|Node}       config.instanceElement             - The outermost DOM element
+ * @param {boolean}         config.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
+ * @param {object}          config.keyboardActions             - The key(s) which trigger actions
+ * @param {null|NodeList}   config.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
+ * @param {null|Function}   config.onSelect                    - Callback with an argument of selectedElement, called after an element is selected
+ * @param {Array}           config.selectedAttr                - Property and Value applied to the selected keyboardNavigableElement
+ * @param {boolean}         config.selectionFollowsFocus       - Automatically select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
+ * @param {object}          config.toggleActions               - The key(s) which toggle the parent state
+ * @param {null|Node}       config.toggleElement               - The DOM element which toggles the parent state
+ * @param {boolean}         config.toggleAfterSelected         - Whether to trigger the toggle action after a keyboardNavigableElement is selected
+ * @param {Array}           config.unselectedAttr              - Property and Value applied to the unselected keyboardNavigableElement
+ * @param {boolean}         config.useRovingTabIndex           - Whether to apply a tabindex of 0 (tabstop) rather than -1 (programmatic focus) to the focussed item
  *
  * @todo Make this a module, as it doesn't need to manage state
  */
 class KeyboardHelpers {
-    constructor(options = {
-        instanceElement: null,
-        infiniteNavigation: false,
-        keyboardActions: {},
-        keyboardNavigableElements: null,
-        onSelect: () => { },
-        selectedAttr: [],
-        selectionFollowsFocus: false,
-        toggleActions: {},
-        toggleElement: null,
-        toggleAfterSelected: false,
-        unselectedAttr: [],
-        useRovingTabIndex: false
-    }) {
-        // public options
-        this.instanceElement = options.instanceElement;
-        this.infiniteNavigation = options.infiniteNavigation;
-        this.keyboardActions = options.keyboardActions;
-        this.keyboardNavigableElements = options.keyboardNavigableElements;
-        this.selectedAttr = options.selectedAttr;
-        this.selectionFollowsFocus = options.selectionFollowsFocus;
-        this.toggleActions = options.toggleActions;
-        this.toggleElement = options.toggleElement;
-        this.toggleAfterSelected = options.toggleAfterSelected;
-        this.unselectedAttr = options.unselectedAttr;
-        this.useRovingTabIndex = options.useRovingTabIndex;
+    constructor(config = {}) {
+        const options = {
+            instanceElement: null,
+            infiniteNavigation: false,
+            keyboardActions: {},
+            keyboardNavigableElements: null,
+            onSelect: () => { },
+            selectedAttr: [],
+            selectionFollowsFocus: false,
+            toggleActions: {},
+            toggleElement: null,
+            toggleAfterSelected: false,
+            unselectedAttr: [],
+            useRovingTabIndex: false
+        };
 
-        if (options.onSelect instanceof Function) {
-            this.onSelect = options.onSelect;
+        // merge objects
+        const settings = { ...options, ...config };
+
+        // public settings
+
+        this.instanceElement = settings.instanceElement;
+        this.infiniteNavigation = settings.infiniteNavigation;
+        this.keyboardActions = settings.keyboardActions;
+        this.keyboardNavigableElements = settings.keyboardNavigableElements;
+        this.selectedAttr = settings.selectedAttr;
+        this.selectionFollowsFocus = settings.selectionFollowsFocus;
+        this.toggleActions = settings.toggleActions;
+        this.toggleElement = settings.toggleElement;
+        this.toggleAfterSelected = settings.toggleAfterSelected;
+        this.unselectedAttr = settings.unselectedAttr;
+        this.useRovingTabIndex = settings.useRovingTabIndex;
+
+        if (settings.onSelect instanceof Function) {
+            this.onSelect = settings.onSelect;
         }
 
-        // private options
+        // private settings
 
         this.proxyActionElements = {
             selectFocussed: '[data-kh-proxy="selectFocussed"]',
@@ -332,7 +338,7 @@ class KeyboardHelpers {
 
         // separate action objects allow keys to have different functions in different contexts
         const keyboardActions = Object.keys(this.keyboardActions);
-        const toggleActions = this.toggleActions ? Object.keys(this.toggleActions) : {};
+        const toggleActions = Object.keys(this.toggleActions);
 
         if (this.isKeyboardNavigableElement(e.target)) {
             keyboardActions.forEach((keyboardAction) => {
