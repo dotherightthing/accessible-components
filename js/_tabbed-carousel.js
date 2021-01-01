@@ -157,12 +157,12 @@ class TabbedCarousel {
                     // Right Arrow: Moves focus to the next tab.
                     // See also infiniteNavigation
                     // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                    focusNext: [ 'ArrowRight', 'ArrowDown' ],
+                    focusNext: [ 'ArrowRight' ],
 
                     // Left Arrow: moves focus to the previous tab.
                     // See also infiniteNavigation
                     // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
-                    focusPrevious: [ 'ArrowLeft', 'ArrowUp' ],
+                    focusPrevious: [ 'ArrowLeft' ],
 
                     // Space or Enter: Activates the tab if it was not activated automatically on focus.
                     // See: https://www.w3.org/TR/wai-aria-practices/#tabpanel
