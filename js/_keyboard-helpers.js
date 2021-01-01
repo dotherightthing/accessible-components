@@ -332,7 +332,7 @@ class KeyboardHelpers {
 
         // separate action objects allow keys to have different functions in different contexts
         const keyboardActions = Object.keys(this.keyboardActions);
-        const toggleActions = Object.keys(this.toggleActions);
+        const toggleActions = this.toggleActions ? Object.keys(this.toggleActions) : {};
 
         if (this.isKeyboardNavigableElement(e.target)) {
             keyboardActions.forEach((keyboardAction) => {
