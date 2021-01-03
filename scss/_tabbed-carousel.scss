@@ -33,6 +33,10 @@
         &[aria-selected='true'] {
             border-color: $color-selected;
         }
+
+        > img {
+            pointer-events: none;
+        }
     }
 
     &__tabpanel-title {
