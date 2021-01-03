@@ -127,7 +127,6 @@ class TabbedCarousel {
 
         const disabledButtons = document.querySelectorAll(`#${this.instanceId} button[disabled]`);
         const tabs = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tab}`);
-        const tablist = document.querySelector(`#${this.instanceId} ${this.selectors.tablist}`);
         const tabpanels = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanel}`);
         const tabpanelExpandButtons = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tabpanelExpandButton}`);
         const self = this;
