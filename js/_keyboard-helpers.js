@@ -411,12 +411,14 @@ class KeyboardHelpers {
     registerProxyKeyboardActions() {
         const proxyActions = Object.keys(this.proxyActionElements);
 
-        if (!this.selectionFollowsFocus) {
-            this.keyboardNavigableElements.forEach((keyboardNavigableElement) => {
-                // select on click
-                keyboardNavigableElement.setAttribute('data-kh-proxy', 'selectFocussed');
-            });
-        }
+        // This is usually only required if !this.selectionFollowsFocus
+        // except in Safari
+        // which doesn't allow a button tab to gain focus
+        // see https://bugs.webkit.org/show_bug.cgi?id=22261
+        this.keyboardNavigableElements.forEach((keyboardNavigableElement) => {
+            // select on click
+            keyboardNavigableElement.setAttribute('data-kh-proxy', 'selectFocussed');
+        });
 
         proxyActions.forEach((proxyAction) => {
             const proxyActionElements = document.querySelectorAll(`#${this.instanceId} ${this.proxyActionElements[proxyAction]}`);
@@ -437,8 +439,16 @@ class KeyboardHelpers {
      * @param {object|undefined} e - Keydown event
      */
     selectFocussed(e) {
-        const focussed = document.activeElement;
+        let focussed = document.activeElement;
         const self = this;
+
+        // Fix for Safari
+        // which doesn't allow a button tab to gain focus
+        // see https://bugs.webkit.org/show_bug.cgi?id=22261
+        if (e.target !== focussed) {
+            e.target.focus();
+            focussed = document.activeElement;
+        }
 
         if (this.isKeyboardNavigableElement(focussed)) {
             const selectedAttrProp = this.selectedAttr[0];
