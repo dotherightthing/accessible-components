@@ -245,6 +245,37 @@ class KeyboardHelpers {
     }
 
     /**
+     * @function initPolyfills
+     * @memberof KeyboardHelpers
+     */
+    initPolyfills() {
+        // Polyfill for forEach
+        if (window.NodeList && !NodeList.prototype.forEach) {
+            NodeList.prototype.forEach = Array.prototype.forEach;
+        }
+
+        // Polyfill for forEach
+        if (window.HTMLCollection && !HTMLCollection.prototype.forEach) {
+            HTMLCollection.prototype.forEach = Array.prototype.forEach;
+        }
+
+        // Polyfill for includes
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes#polyfill
+        if (!String.prototype.includes) {
+            // eslint-disable-next-line no-extend-native
+            String.prototype.includes = function (search, start) { // eslint-disable-line func-names
+                if (search instanceof RegExp) {
+                    throw TypeError('first argument must not be a RegExp');
+                }
+                if (start === undefined) {
+                    start = 0; // eslint-disable-line no-param-reassign
+                }
+                return this.indexOf(search, start) !== -1;
+            };
+        }
+    }
+
+    /**
      * @function isComponentElement
      * @summary Determine whether the element is the instanceElement
      * @memberof KeyboardHelpers
@@ -578,6 +609,8 @@ class KeyboardHelpers {
      * @memberof KeyboardHelpers
      */
     init() {
+        this.initPolyfills();
+
         this.instanceId = this.instanceElement.getAttribute('id');
 
         this.registerKeyboardActions();
