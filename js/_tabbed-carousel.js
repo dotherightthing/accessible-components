@@ -100,6 +100,25 @@ class TabbedCarousel {
     }
 
     /**
+     * @function resetFocus
+     * @summary Remove the stolen focus after initialisation
+     * @memberof TabbedCarousel
+     *
+     * @todo This will happen once per carousel, it could be better after all carousels have initialised.
+     */
+    resetFocus() {
+        const focussed = document.activeElement;
+        const tabs = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tab}`);
+
+        tabs.forEach((tab, index) => {
+            if (tab === focussed) {
+                focussed.blur();
+                window.scrollTo(0, 0);
+            }
+        });
+    }
+
+    /**
      * @function selectInitialSelection
      * @summary Select the tab which should be active on init
      * @memberof TabbedCarousel
@@ -221,6 +240,8 @@ class TabbedCarousel {
             });
 
             this.selectInitialSelection(tabs);
+
+            this.resetFocus();
         }
     }
 }
