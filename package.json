@@ -11,7 +11,7 @@
     "http-server": "^0.12.3"
   },
   "devDependencies": {
-    "cypress": "^5.4.0",
+    "cypress": "^6.2.1",
     "cypress-plugin-tab": "^1.0.5",
     "fs-extra": "^9.0.1",
     "mochawesome": "^6.1.1",
