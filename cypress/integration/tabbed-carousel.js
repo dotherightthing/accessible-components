@@ -254,8 +254,8 @@ describe('Tabbed Carousel', function () {
                                     });
 
                                     context('When focus is on a tab element in a horizontal tab list:', function () {
-                                        context('Left Arrow: moves focus to the previous tab. If focus is on the first tab, moves focus to the last tab. Optionally, activates the newly focused tab. If the tabs in a tab list are arranged vertically: Up Arrow performs as Left Arrow is described above.', function () {
-                                            [ '{leftarrow}', '{uparrow}' ].forEach(($key) => {
+                                        context('Left Arrow: moves focus to the previous tab. If focus is on the first tab, moves focus to the last tab. Optionally, activates the newly focused tab. If the tabs in a tab list are arranged vertically: Up Arrow performs as Left Arrow is described above (in this instance the down arrow is reserved for page scrolling).', function () {
+                                            [ '{leftarrow}' ].forEach(($key) => {
                                                 it($key, function () {
                                                     cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
 
@@ -280,8 +280,8 @@ describe('Tabbed Carousel', function () {
                                             });
                                         });
 
-                                        context('Right Arrow: Moves focus to the next tab. If focus is on the last tab element, moves focus to the first tab. Optionally, activates the newly focused tab. If the tabs in a tab list are arranged vertically: Down Arrow performs as Right Arrow is described above.', function () {
-                                            [ '{rightarrow}', '{downarrow}' ].forEach(($key) => {
+                                        context('Right Arrow: Moves focus to the next tab. If focus is on the last tab element, moves focus to the first tab. Optionally, activates the newly focused tab. If the tabs in a tab list are arranged vertically: Down Arrow performs as Right Arrow is described above (in this instance the down arrow is reserved for page scrolling).', function () {
+                                            [ '{rightarrow}' ].forEach(($key) => {
                                                 it($key, function () {
                                                     cy.log('Tabs are not oriented exclusively horizonally or vertically, therefore both keys are supported');
 
