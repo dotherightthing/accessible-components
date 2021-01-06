@@ -103,19 +103,30 @@ class TabbedCarousel {
      * @function resetFocus
      * @summary Remove the stolen focus after initialisation
      * @memberof TabbedCarousel
-     *
-     * @todo This will happen once per carousel, it could be better after all carousels have initialised.
      */
     resetFocus() {
         const focussed = document.activeElement;
-        const tabs = document.querySelectorAll(`#${this.instanceId} ${this.selectors.tab}`);
+        const allTabs = document.querySelectorAll(this.selectors.tab);
+        const selectedTabs = [];
+        let lastSelectedTab;
 
-        tabs.forEach((tab, index) => {
-            if (tab === focussed) {
-                focussed.blur();
-                window.scrollTo(0, 0);
+        // build array of selected tabs
+        // one tab in each tablist is always selected in the noscript HTML
+        allTabs.forEach((tab, index) => {
+            if (tab.getAttribute(this.attributes.selected[0]) === this.attributes.selected[1]) {
+                selectedTabs.push(tab);
             }
         });
+
+        // the last selected tab
+        // this might come from another tabbed carousel rather than this instance
+        lastSelectedTab = selectedTabs[selectedTabs.length - 1];
+
+        // when the last selected tab is focussed
+        if (lastSelectedTab === focussed) {
+            focussed.blur();
+            window.scrollTo(0, 0);
+        }
     }
 
     /**
