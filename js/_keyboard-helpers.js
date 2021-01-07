@@ -249,6 +249,8 @@ class KeyboardHelpers {
      * @memberof KeyboardHelpers
      */
     initPolyfills() {
+        /* eslint-disable */
+
         // Polyfill for forEach
         if (window.NodeList && !NodeList.prototype.forEach) {
             NodeList.prototype.forEach = Array.prototype.forEach;
@@ -311,6 +313,8 @@ class KeyboardHelpers {
                 }
             });
         }
+
+        /* eslint-enable */
     }
 
     /**
@@ -369,7 +373,7 @@ class KeyboardHelpers {
      * @see https://keycode.info/
      * @see https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key
      */
-    normaliseKey(keyPressed) {
+    normaliseKey(keyPressed) { // eslint-disable-line class-methods-use-this
         let key = keyPressed;
 
         // Home - macOS is Fn + ArrowLeft
