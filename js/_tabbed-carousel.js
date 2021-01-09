@@ -209,6 +209,8 @@ class TabbedCarousel {
                 // an option is a value referenced by a name
                 keyboardNavigableElements: tabs,
 
+                keyboardNavigationClass: 'is-keyboard-navigation',
+
                 onSelect: (element) => {
                     const tab = element;
                     const tabPanelId = tab.getAttribute('aria-controls');

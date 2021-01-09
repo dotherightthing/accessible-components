@@ -12,6 +12,8 @@
  * @param {boolean}         config.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
  * @param {object}          config.keyboardActions             - The key(s) which trigger actions
  * @param {null|NodeList}   config.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
+ * @param {boolean}         config.keyboardNavigation          - Whether the keyboard is being used to navigate the page
+ * @param {string}          config.keyboardNavigationClass     - Class applied to the instanceElement when the keyboard is being used to navigate the page
  * @param {null|Function}   config.onSelect                    - Callback with an argument of selectedElement, called after an element is selected
  * @param {Array}           config.selectedAttr                - Property and Value applied to the selected keyboardNavigableElement
  * @param {boolean}         config.selectionFollowsFocus       - Automatically select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
@@ -30,6 +32,8 @@ class KeyboardHelpers {
             infiniteNavigation: false,
             keyboardActions: {},
             keyboardNavigableElements: null,
+            keyboardNavigation: false,
+            keyboardNavigationClass: '',
             onSelect: () => { },
             selectedAttr: [],
             selectionFollowsFocus: false,
@@ -49,6 +53,8 @@ class KeyboardHelpers {
         this.infiniteNavigation = settings.infiniteNavigation;
         this.keyboardActions = settings.keyboardActions;
         this.keyboardNavigableElements = settings.keyboardNavigableElements;
+        this.keyboardNavigation = settings.keyboardNavigation;
+        this.keyboardNavigationClass = settings.keyboardNavigationClass;
         this.selectedAttr = settings.selectedAttr;
         this.selectionFollowsFocus = settings.selectionFollowsFocus;
         this.toggleActions = settings.toggleActions;
@@ -413,6 +419,10 @@ class KeyboardHelpers {
         const keyboardActions = Object.keys(this.keyboardActions);
         const toggleActions = Object.keys(this.toggleActions);
 
+        if ((keyPressed === 'Spacebar') || (keyPressed === 'Tab')) {
+            this.toggleUiHelper(true);
+        }
+
         if (this.isKeyboardNavigableElement(e.target)) {
             keyboardActions.forEach((keyboardAction) => {
                 // if the pressed key is in the keyboardActions array
@@ -474,6 +484,17 @@ class KeyboardHelpers {
         if (this.instanceElement !== null) {
             this.instanceElement.addEventListener('keydown', this.onKeyDown.bind(this));
         }
+    }
+
+    /**
+     * @function registerMouseActions
+     * @summary Toggle a flag when the mouse is used.
+     * @memberof KeyboardHelpers
+     */
+    registerMouseActions() {
+        this.instanceElement.addEventListener('mousedown', () => {
+            this.toggleUiHelper(false);
+        });
     }
 
     /**
@@ -627,6 +648,21 @@ class KeyboardHelpers {
     }
 
     /**
+     * @function toggleUiHelper
+     * @summary Toggle the keyboardNavigationClass on the instanceElement
+     * @memberof KeyboardHelpers
+     *
+     * @param {boolean} toggleOn - Whether to add the keyboardNavigationClass (or remove it)
+     */
+    toggleUiHelper(toggleOn) {
+        if (toggleOn) {
+            this.instanceElement.classList.add(this.keyboardNavigationClass);
+        } else {
+            this.instanceElement.classList.remove(this.keyboardNavigationClass);
+        }
+    }
+
+    /**
      * @function updateRovingTabIndex
      * @summary Remove all but active tab from the tab sequence.
      * @memberof TabbedCarousel
@@ -656,6 +692,7 @@ class KeyboardHelpers {
         this.instanceId = this.instanceElement.getAttribute('id');
 
         this.registerKeyboardActions();
+        this.registerMouseActions();
         this.registerProxyKeyboardActions();
     }
 }
