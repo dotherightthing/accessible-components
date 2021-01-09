@@ -3,6 +3,16 @@
 /* globals Label, SingleSelectListbox, TabbedCarousel */
 
 document.onreadystatechange = () => {
+    // Polyfill for forEach
+    if (window.NodeList && !NodeList.prototype.forEach) {
+        NodeList.prototype.forEach = Array.prototype.forEach;
+    }
+
+    // Polyfill for forEach
+    if (window.HTMLCollection && !HTMLCollection.prototype.forEach) {
+        HTMLCollection.prototype.forEach = Array.prototype.forEach;
+    }
+
     // The document has finished loading and the document has been parsed
     // but sub-resources such as images, stylesheets and frames are still loading.
     if (document.readyState === 'interactive') {
