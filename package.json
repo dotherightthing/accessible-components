@@ -2,6 +2,11 @@
   "name": "accessible-components",
   "version": "1.0.0",
   "description": "",
+  "keywords": [
+    "WAI-ARIA",
+    "accessibility",
+    "keyboard"
+  ],
   "main": "postcss.config.js",
   "directories": {
     "doc": "docs"
