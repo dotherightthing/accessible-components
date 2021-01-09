@@ -226,6 +226,7 @@ class SingleSelectListbox {
                     selectFocussed: [ 'Enter', ' ' ]
                 },
                 keyboardNavigableElements: options,
+                keyboardNavigationClass: 'is-keyboard-navigation',
                 onSelect: (element) => {
                     const option = element;
 
