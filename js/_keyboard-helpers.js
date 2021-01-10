@@ -30,7 +30,7 @@ class KeyboardHelpers {
         const options = {
             instanceElement: null,
             infiniteNavigation: false,
-            interactionModalityAttr: 'accessible-components-modality',
+            interactionModalityAttr: 'data-accessible-components-modality',
             keyboardActions: {},
             keyboardNavigableElements: null,
             keyboardNavigation: false,
