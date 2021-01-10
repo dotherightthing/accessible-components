@@ -10,10 +10,10 @@
  * @param {object}          config                             - Module configuration
  * @param {null|Node}       config.instanceElement             - The outermost DOM element
  * @param {boolean}         config.infiniteNavigation          - Whether to loop the focus to the first/last keyboardNavigableElement when the focus is out of range
+ * @param {string}          config.interactionModalityAttr     - data- attribute applied to the body element, reflecting the interaction modality
  * @param {object}          config.keyboardActions             - The key(s) which trigger actions
  * @param {null|NodeList}   config.keyboardNavigableElements   - The DOM element(s) which will become keyboard navigable
  * @param {boolean}         config.keyboardNavigation          - Whether the keyboard is being used to navigate the page
- * @param {string}          config.keyboardNavigationClass     - Class applied to the instanceElement when the keyboard is being used to navigate the page
  * @param {null|Function}   config.onSelect                    - Callback with an argument of selectedElement, called after an element is selected
  * @param {Array}           config.selectedAttr                - Property and Value applied to the selected keyboardNavigableElement
  * @param {boolean}         config.selectionFollowsFocus       - Automatically select the focussed option (<https://www.w3.org/TR/wai-aria-practices/#kbd_selection_follows_focus>)
@@ -30,10 +30,10 @@ class KeyboardHelpers {
         const options = {
             instanceElement: null,
             infiniteNavigation: false,
+            interactionModalityAttr: 'accessible-components-modality',
             keyboardActions: {},
             keyboardNavigableElements: null,
             keyboardNavigation: false,
-            keyboardNavigationClass: '',
             onSelect: () => { },
             selectedAttr: [],
             selectionFollowsFocus: false,
@@ -54,7 +54,7 @@ class KeyboardHelpers {
         this.keyboardActions = settings.keyboardActions;
         this.keyboardNavigableElements = settings.keyboardNavigableElements;
         this.keyboardNavigation = settings.keyboardNavigation;
-        this.keyboardNavigationClass = settings.keyboardNavigationClass;
+        this.interactionModalityAttr = settings.interactionModalityAttr;
         this.selectedAttr = settings.selectedAttr;
         this.selectionFollowsFocus = settings.selectionFollowsFocus;
         this.toggleActions = settings.toggleActions;
@@ -419,8 +419,8 @@ class KeyboardHelpers {
         const keyboardActions = Object.keys(this.keyboardActions);
         const toggleActions = Object.keys(this.toggleActions);
 
-        if ((keyPressed === 'Spacebar') || (keyPressed === 'Tab')) {
-            this.toggleUiHelper(true);
+        if ([ 'ArrowLeft', 'ArrowRight', ' ', 'Tab' ].includes(keyPressed)) {
+            this.setInteractionModality('keyboard');
         }
 
         if (this.isKeyboardNavigableElement(e.target)) {
@@ -470,6 +470,8 @@ class KeyboardHelpers {
      * @see [When you pass 'this' as an argument](https://stackoverflow.com/questions/28016664/when-you-pass-this-as-an-argument/28016676#28016676)
      */
     registerKeyboardActions() {
+        document.body.addEventListener('keydown', this.onKeyDown.bind(this)); // onKeyDown calls setInteractionModality
+
         if (this.keyboardNavigableElements.length) {
             // TODO event delegation
             this.keyboardNavigableElements.forEach((keyboardNavigableElement) => {
@@ -492,8 +494,8 @@ class KeyboardHelpers {
      * @memberof KeyboardHelpers
      */
     registerMouseActions() {
-        this.instanceElement.addEventListener('mousedown', () => {
-            this.toggleUiHelper(false);
+        document.body.addEventListener('mousedown', () => {
+            this.setInteractionModality('mouse');
         });
     }
 
@@ -626,6 +628,17 @@ class KeyboardHelpers {
     }
 
     /**
+     * @function setInteractionModality
+     * @summary Update the value the interactionModalityAttr on the instanceElement
+     * @memberof KeyboardHelpers
+     *
+     * @param {string} modality - The current interaction modality (mouse|keyboard)
+     */
+    setInteractionModality(modality) {
+        document.body.setAttribute(this.interactionModalityAttr, modality);
+    }
+
+    /**
      * @function toggle
      * @summary Toggle something by triggering a click on the toggleElement
      * @memberof KeyboardHelpers
@@ -645,21 +658,6 @@ class KeyboardHelpers {
     toggleClosed() {
         this.toggleElement.focus();
         this.toggleElement.click();
-    }
-
-    /**
-     * @function toggleUiHelper
-     * @summary Toggle the keyboardNavigationClass on the instanceElement
-     * @memberof KeyboardHelpers
-     *
-     * @param {boolean} toggleOn - Whether to add the keyboardNavigationClass (or remove it)
-     */
-    toggleUiHelper(toggleOn) {
-        if (toggleOn) {
-            this.instanceElement.classList.add(this.keyboardNavigationClass);
-        } else {
-            this.instanceElement.classList.remove(this.keyboardNavigationClass);
-        }
     }
 
     /**
