@@ -1,12 +1,4 @@
-/* card list */
-
 .block-link-list {
-    &__title {
-        font-size: 3em;
-        font-weight: normal;
-        margin: .25em 0;
-    }
-
     &__items,
     &__item {
         list-style: none;
