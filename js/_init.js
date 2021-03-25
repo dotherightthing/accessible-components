@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
-/* globals Label, SingleSelectListbox, TabbedCarousel */
+/* globals BlockLink, Label, SingleSelectListbox, TabbedCarousel */
 
 document.onreadystatechange = () => {
     // Polyfill for forEach
@@ -22,6 +22,14 @@ document.onreadystatechange = () => {
             });
 
             labelInstance.init();
+        });
+
+        document.querySelectorAll('.block-link').forEach((blocklink) => {
+            const blocklinkInstance = new BlockLink({
+                instanceElement: blocklink
+            });
+
+            blocklinkInstance.init();
         });
 
         document.querySelectorAll('.select').forEach((singleSelectListbox) => {
