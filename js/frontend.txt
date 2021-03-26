@@ -1,6 +1,6 @@
 ./js/_eslint.js
 ./js/_keyboard-helpers.js
-./js/_block-link.js
+./js/_link-proxy.js
 ./js/_label.js
 ./js/_listbox.js
 ./js/_tabbed-carousel.js

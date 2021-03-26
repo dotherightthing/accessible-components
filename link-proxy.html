@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Link Proxy</title>
+        <script src="js/frontend-es5.js"></script>
+        <link rel="stylesheet" href="css/frontend.css" />
+    </head>
+    <body>
+        <h1>Link Proxy</h1>
+        <p>An unlinked element that triggers a linked element. This allows for HTML5-style block links without incurring verbosity (see <a href="https://dotherightthing.co.nz/blog/reducing-screen-reader-verbosity-in-linked-cards/">blog post</a>).</p>
+
+        <div class="card-list">
+            <ul class="card-list__items">
+                <li class="card-list__item" id="test-1">
+                    <!-- start card -->
+                    <div class="card">
+                        <h2 class="card__title">
+                            <!-- start inline link -->
+                            <a href="page-1.html" class="card__link" id="test-1-link">
+                                <span class="card__link-inner">
+                                    JS Link Proxy 1
+                                </span>
+                            </a>
+                            <!-- end inline link -->
+                        </h2>
+                        <img class="card__img" src="http://via.placeholder.com/400x300/333333/ffffff" alt="Placeholder image which reads 400x300." data-link-proxy-for="test-1-link">
+                        <p class="card__date" data-link-proxy-for="test-1-link">
+                            <abbr title="Saturday">Sat</abbr> DD.MM.YYYY
+                        </p>
+                        <p class="card__description" data-link-proxy-for="test-1-link">An inline link wraps the heading's contents. Several elements act as proxies for the link, triggering the hover state and click event. Text proxies become selectable when the mouse button is held down.</p>
+                        <h3 class="visually-hidden">Tagged as</h3>
+                        <ul class="card__tags">
+                            <li class="card__tag">Tag 1</li>
+                            <li class="card__tag">Tag 2</li>
+                            <li class="card__tag">Tag 3</li>
+                        </ul>
+                    </div>
+                    <!-- end card -->
+                </li>
+
+                <li class="card-list__item" id="test-2">
+                    <!-- start card -->
+                    <div class="card">
+                        <h2 class="card__title">
+                            <!-- start inline link -->
+                            <a href="page-2.html" class="card__link" id="test-2-link">
+                                <span class="card__link-inner">
+                                    JS Link Proxy 2
+                                </span>
+                            </a>
+                            <!-- end inline link -->
+                        </h2>
+                        <img class="card__img" src="http://via.placeholder.com/400x300/333333/ffffff" alt="Placeholder image which reads 400x300." data-link-proxy-for="test-2-link">
+                        <p class="card__date" data-link-proxy-for="test-2-link">
+                            <abbr title="Saturday">Sat</abbr> DD.MM.YYYY
+                        </p>
+                        <p class="card__description" data-link-proxy-for="test-2-link">An inline link wraps the heading's contents. Several elements act as proxies for the link, triggering the hover state and click event. Text proxies become selectable when the mouse button is held down.</p>
+                        <h3 class="visually-hidden">Tagged as</h3>
+                        <ul class="card__tags">
+                            <li class="card__tag">Tag 1</li>
+                            <li class="card__tag">Tag 2</li>
+                            <li class="card__tag">Tag 3</li>
+                        </ul>
+                    </div>
+                    <!-- end card -->
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>
