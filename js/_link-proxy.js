@@ -67,7 +67,7 @@ class LinkProxy {
         const eventTarget = e.target; // element on which the event occurred
         const proxiedLinkId = linkProxy.getAttribute(this.getSelectorAsAttribute(this.selectors.linkProxy));
 
-        if (eventTarget.tagName === 'IMG' || (this.upTime - this.downTime < this.clickTimeout)) {
+        if (eventTarget.tagName === 'FIGURE' || eventTarget.tagName === 'IMG' || (this.upTime - this.downTime < this.clickTimeout)) {
             // if the clicked element was an image, fire the click
             // else only fire the click if the user did not hold the mouse down to select it
             document.getElementById(proxiedLinkId).click();
@@ -104,7 +104,7 @@ class LinkProxy {
 
         linkProxy.classList.remove(this.selectors.classSelectableProxy); // don't show the text as selectable.
 
-        if (eventTarget.tagName !== 'IMG') {
+        if (eventTarget.tagName !== 'FIGURE' && eventTarget.tagName !== 'IMG') {
             this.clickTimer = setTimeout(() => {
                 linkProxy.classList.add(this.selectors.classSelectableProxy); // show the text as selectable.
             }, this.clickTimeout);
