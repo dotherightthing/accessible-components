@@ -1,1 +1,1 @@
-* [b9914d0] Support a single proxy link on the link container
+* [855886f] Treat figure the same as img
