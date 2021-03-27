@@ -14,21 +14,21 @@
             <ul class="card-list__items">
                 <li class="card-list__item" id="test-1">
                     <!-- start card -->
-                    <div class="card">
+                    <div class="card" data-link-proxy-for="test-1-link">
                         <h2 class="card__title">
                             <!-- start inline link -->
                             <a href="page-1.html" class="card__link" id="test-1-link">
                                 <span class="card__link-inner">
-                                    JS Link Proxy 1
+                                    Container Proxy
                                 </span>
                             </a>
                             <!-- end inline link -->
                         </h2>
-                        <img class="card__img" src="http://via.placeholder.com/400x300/333333/ffffff" alt="Placeholder image which reads 400x300." data-link-proxy-for="test-1-link">
-                        <p class="card__date" data-link-proxy-for="test-1-link">
+                        <img class="card__img" src="http://via.placeholder.com/400x300/333333/ffffff" alt="Placeholder image which reads 400x300.">
+                        <p class="card__date">
                             <abbr title="Saturday">Sat</abbr> DD.MM.YYYY
                         </p>
-                        <p class="card__description" data-link-proxy-for="test-1-link">An inline link wraps the heading's contents. Several elements act as proxies for the link, triggering the hover state and click event. Text proxies become selectable when the mouse button is held down.</p>
+                        <p class="card__description">An inline link wraps the heading's contents. The entire card acts as a proxy for the link, triggering the hover state and click event. Text proxies become selectable when the mouse button is held down.</p>
                         <h3 class="visually-hidden">Tagged as</h3>
                         <ul class="card__tags">
                             <li class="card__tag">Tag 1</li>
@@ -46,7 +46,7 @@
                             <!-- start inline link -->
                             <a href="page-2.html" class="card__link" id="test-2-link">
                                 <span class="card__link-inner">
-                                    JS Link Proxy 2
+                                    Sibling Proxies
                                 </span>
                             </a>
                             <!-- end inline link -->

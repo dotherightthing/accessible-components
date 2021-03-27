@@ -63,15 +63,11 @@ class LinkProxy {
      * @param {*} e - target of hover event
      */
     onClick(e) {
-        const linkProxy = e.target;
+        const linkProxy = e.currentTarget; // element on which the event handler was attached
+        const eventTarget = e.target; // element on which the event occurred
         const proxiedLinkId = linkProxy.getAttribute(this.getSelectorAsAttribute(this.selectors.linkProxy));
 
-        // if some other element was interacted with
-        if (!this.selectorMatches(linkProxy, this.selectors.linkProxy)) {
-            return;
-        }
-
-        if (linkProxy.tagName === 'IMG' || (this.upTime - this.downTime < this.clickTimeout)) {
+        if (eventTarget.tagName === 'IMG' || (this.upTime - this.downTime < this.clickTimeout)) {
             // if the clicked element was an image, fire the click
             // else only fire the click if the user did not hold the mouse down to select it
             document.getElementById(proxiedLinkId).click();
@@ -86,13 +82,8 @@ class LinkProxy {
      * @param {*} e - target of hover event
      */
     onHover(e) {
-        const linkProxy = e.target;
+        const linkProxy = e.currentTarget; // element on which the event handler was attached
         const proxiedLinkId = linkProxy.getAttribute(this.getSelectorAsAttribute(this.selectors.linkProxy));
-
-        // if some other element was interacted with
-        if (!this.selectorMatches(linkProxy, this.selectors.linkProxy)) {
-            return;
-        }
 
         linkProxy.classList.remove(this.selectors.classSelectableProxy);
         document.getElementById(proxiedLinkId).classList.toggle(this.selectors.classTriggeredHover);
@@ -106,18 +97,14 @@ class LinkProxy {
      * @param {*} e - target of hover event
      */
     onMousedown(e) {
-        const linkProxy = e.target;
-
-        // if some other element was interacted with
-        if (!this.selectorMatches(linkProxy, this.selectors.linkProxy)) {
-            return;
-        }
+        const linkProxy = e.currentTarget; // element on which the event handler was attached
+        const eventTarget = e.target; // element on which the event occurred
 
         this.downTime = +new Date();
 
         linkProxy.classList.remove(this.selectors.classSelectableProxy); // don't show the text as selectable.
 
-        if (linkProxy.tagName !== 'IMG') {
+        if (eventTarget.tagName !== 'IMG') {
             this.clickTimer = setTimeout(() => {
                 linkProxy.classList.add(this.selectors.classSelectableProxy); // show the text as selectable.
             }, this.clickTimeout);
@@ -132,36 +119,12 @@ class LinkProxy {
      * @param {*} e - target of hover event
      */
     onMouseup(e) {
-        const linkProxy = e.target;
-
-        // if some other element was interacted with
-        if (!this.selectorMatches(linkProxy, this.selectors.linkProxy)) {
-            return;
-        }
+        const linkProxy = e.currentTarget; // element on which the event handler was attached
 
         this.upTime = +new Date();
 
         clearTimeout(this.clickTimer); // restart the timer.
         linkProxy.classList.remove(this.selectors.classSelectableProxy); // don't show the text as selectable.
-    }
-
-    /**
-     * @function selectorMatches
-     * @memberof LinkProxy
-     * @summary Element.matches polyfill
-     * @see {@link https://davidwalsh.name/element-matches-selector}
-     *
-     * @param {*} el - Element
-     * @param {string} selector - Selector
-     * @returns {boolean} matches
-     */
-    selectorMatches(el, selector) {
-        var p = Element.prototype;
-        var f = p.matches || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || ((s) => {
-            return [].indexOf.call(document.querySelectorAll(s), this) !== -1;
-        });
-
-        return f.call(el, selector);
     }
 
     /**
