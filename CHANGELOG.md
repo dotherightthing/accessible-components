@@ -1,1 +1,1 @@
-* [4415c09] Separate out core link proxy styling
+* [b9914d0] Support a single proxy link on the link container
