@@ -1,6 +1,7 @@
 # Files used by merged wpdtrt-npm-scripts
 css
 release*
+!scripts/release*
 !.github/workflows/release*
 js/backend*.js
 js/frontend*.js
