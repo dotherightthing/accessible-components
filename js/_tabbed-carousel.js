@@ -24,7 +24,7 @@ class TabbedCarousel {
         // merge objects
         const settings = { ...options, ...config };
 
-        // public settings
+        // public settings (no underscore) - should be getters
 
         this.initialSelection = settings.initialSelection;
         this.instanceElement = settings.instanceElement;
