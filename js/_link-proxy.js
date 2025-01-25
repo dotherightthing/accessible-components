@@ -63,14 +63,16 @@ class LinkProxy {
      * @param {*} e - target of hover event
      */
     onClick(e) {
-        const linkProxy = e.currentTarget; // element on which the event handler was attached
-        const eventTarget = e.target; // element on which the event occurred
-        const proxiedLinkId = linkProxy.getAttribute(this.getSelectorAsAttribute(this.selectors.linkProxy));
+        if (e.isTrusted) { // prevent feedback loop in iOS Safari
+            const linkProxy = e.currentTarget; // element on which the event handler was attached
+            const eventTarget = e.target; // element on which the event occurred
+            const proxiedLinkId = linkProxy.getAttribute(this.getSelectorAsAttribute(this.selectors.linkProxy));
 
-        if (eventTarget.tagName === 'FIGURE' || eventTarget.tagName === 'IMG' || (this.upTime - this.downTime < this.clickTimeout)) {
-            // if the clicked element was an image, fire the click
-            // else only fire the click if the user did not hold the mouse down to select it
-            document.getElementById(proxiedLinkId).click();
+            if (eventTarget.tagName === 'FIGURE' || eventTarget.tagName === 'IMG' || (this.upTime - this.downTime < this.clickTimeout)) {
+                // if the clicked element was an image, fire the click
+                // else only fire the click if the user did not hold the mouse down to select it
+                document.getElementById(proxiedLinkId).click();
+            }
         }
     }
 
