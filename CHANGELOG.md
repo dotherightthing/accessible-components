@@ -1,1 +1,1 @@
-* [3621c85] Update changelog
+* [73792d0] Bump version
