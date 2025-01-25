@@ -1,1 +1,1 @@
-* [8d6e4f0] Fix versioning
+* [3621c85] Update changelog
