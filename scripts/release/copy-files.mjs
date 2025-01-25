@@ -24,7 +24,7 @@ const Bar = require('progress-barjs');
 import cpy from 'cpy';
 import decorateLog from '../helpers/decorate-log.mjs';
 const numeral = require('numeral');
-const packageJson = require(`${path.resolve('../../')}/package.json`);
+const packageJson = require(`${path.resolve()}/package.json`);
 const folderName = 'release';
 
 decorateLog([
