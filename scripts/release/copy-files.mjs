@@ -22,12 +22,12 @@ if (!fs.existsSync(`${path.resolve()}/package.json`)) {
 
 const Bar = require('progress-barjs');
 import cpy from 'cpy';
-import formatLog from '../helpers/format-log.mjs';
+import decorateLog from '../helpers/decorate-log.mjs';
 const numeral = require('numeral');
 const packageJson = require(`${path.resolve('../../')}/package.json`);
 const folderName = 'release';
 
-formatLog([
+decorateLog([
     'release',
     'copy files',
     `to /${folderName}`

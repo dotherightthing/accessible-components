@@ -8,13 +8,13 @@
 import axios from 'axios';
 import * as fs from 'node:fs';
 
-import formatLog from '../helpers/decorate-log.mjs';
+import decorateLog from '../helpers/decorate-log.mjs';
 
 const baseURL = process.argv[2]; // note: no trailing slash
 const sourceUrl = 'maintenance-template';
 const targetPageTemplate = 'maintenance.php';
 
-formatLog([
+decorateLog([
     'scrape',
     `wordpress ${sourceUrl}`,
     `to /${targetPageTemplate}`

@@ -8,7 +8,7 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-import formatLog from '../helpers/decorate-log.mjs';
+import decorateLog from '../helpers/decorate-log.mjs';
 
 const ghRateLimit = require('gh-rate-limit');
 
@@ -20,7 +20,7 @@ if (token !== '') {
         token: token
     }).then(status => {
         msg = `${status.core.remaining}/${status.core.limit} API calls remaining`;
-        formatLog([
+        decorateLog([
             'postinstall',
             'Github API rate limit check',
             msg
@@ -28,7 +28,7 @@ if (token !== '') {
     });
 } else {
     msg = 'skipping - GH_TOKEN not found)';
-    formatLog([
+    decorateLog([
         'postinstall',
         'Github API rate limit check',
         msg

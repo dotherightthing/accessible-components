@@ -10,7 +10,7 @@ const require = createRequire(import.meta.url);
 
 import * as fs from 'node:fs';
 import * as path from 'path';
-import formatLog from '../helpers/decorate-log.mjs';
+import decorateLog from '../helpers/decorate-log.mjs';
 
 // if not loaded as a dependency
 if (!fs.existsSync(`${path.resolve()}/package.json`)) {
@@ -46,13 +46,13 @@ const customiseConfig = async function () {
 
         const suffix = changedFiles.length > 1 ? 's' : '';
 
-        formatLog([
+        decorateLog([
             'postinstall',
             'customise config',
             `${changedFiles.length} string${suffix} replaced`
         ]);
     } catch (error) {
-        formatLog([
+        decorateLog([
             'postinstall',
             'customise config',
             `${error}`

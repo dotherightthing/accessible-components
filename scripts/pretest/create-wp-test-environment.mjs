@@ -4,10 +4,10 @@
  */
 
 import { execaCommandSync } from 'execa';
-import formatLog from '../helpers/decorate-log.mjs';
+import decorateLog from '../helpers/decorate-log.mjs';
 import { tmpdir as osTmpdir } from 'os';
 
-formatLog([
+decorateLog([
     'test',
     'create wp test environment',
     'install wp test suite and create database'

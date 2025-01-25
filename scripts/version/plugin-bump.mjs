@@ -9,7 +9,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 import { execaCommandSync } from 'execa';
-import formatLog from '../helpers/decorate-log.mjs';
+import decorateLog from '../helpers/decorate-log.mjs';
 const replace = require('replace-in-file');
 
 let packageJson;
@@ -464,7 +464,7 @@ function versionBoilerplateTestSrc(packageVersionBoilerplateNamespaced) {
  *   so that the correct version information is available
  */
 async function updateDependencies() {
-    formatLog([
+    decorateLog([
         'version',
         'updateDependencies',
         'Update Composer dependencies'
@@ -489,7 +489,7 @@ async function updateDependencies() {
  * @summary Replace version strings, using the version set in package.json.
  */
 function replaceVersions() {
-    formatLog([
+    decorateLog([
         'version',
         'replaceVersions',
         'Replace version strings'
@@ -562,7 +562,7 @@ function replaceVersions() {
  * @summary Regenerate the list of PHP classes to be autoloaded.
  */
 async function autoloadUpdatedDependencies() {
-    formatLog([
+    decorateLog([
         'version',
         'autoloadUpdatedDependencies',
         'Regenerate the list of PHP classes to be autoloaded'
