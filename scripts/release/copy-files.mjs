@@ -119,7 +119,7 @@ let bar = Bar({
 
 (async () => {
     await cpy(releaseFiles, folderName, {
-        cwd: '../../',
+        cwd: './',
         parents: true
     }).on('progress', progress => {
         const completedSize = numeral(progress.completedSize).format('0.0 b');
