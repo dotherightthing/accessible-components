@@ -48,6 +48,7 @@
         }],
         "no-unused-vars": "warn",
         "no-unused-expressions": 0,
-        "chai-friendly/no-unused-expressions": 2
+        "chai-friendly/no-unused-expressions": 2,
+        "jsdoc/tag-lines": 0
     }
 }
