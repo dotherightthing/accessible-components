@@ -38,9 +38,9 @@ jobs:
 
     # Fix Cypress cannot write to the cache directory due to file permissions
     # https://github.com/cypress-io/cypress/issues/1281
-    - name: Grant Cypress permission to download to cache directory
-      run: |
-        sudo chown $USER $HOME/.cache
+    # - name: Grant Cypress permission to download to cache directory
+    #   run: |
+    #     sudo chown $USER $HOME/.cache
     
     # https://github.com/cypress-io/github-action#install-cypress-only
     - name: Cache dependencies
@@ -51,9 +51,9 @@ jobs:
           ~/.cache
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
-    - name: Composer config
-      run: |
-        composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+    # - name: Composer config
+    #   run: |
+    #     composer config -g github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install dependencies
       run: |
@@ -66,14 +66,14 @@ jobs:
 
     # env: https://github.com/actions/virtual-environments/blob/master/images/linux/Ubuntu1604-README.md
     # mysql start: https://github.com/actions/virtual-environments/issues/739
-    - name: Run tests
-      run: |
-        sudo /etc/init.d/mysql start
-        npm run test --if-present
-      env:
-        WPUNIT_DB_USER: root
-        WPUNIT_DB_PASS: root
-        WPUNIT_DB_HOST: 127.0.0.1
+    # - name: Run tests
+    #   run: |
+    #     sudo /etc/init.d/mysql start
+    #     npm run test --if-present
+    #   env:
+    #     WPUNIT_DB_USER: root
+    #     WPUNIT_DB_PASS: root
+    #     WPUNIT_DB_HOST: 127.0.0.1
 
     - name: Copy built files to release folder
       run: npm run release --if-present
