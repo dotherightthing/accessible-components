@@ -87,7 +87,7 @@
     "server": "http-server ./ -c-1 -o",
     "test:js": "npm run test:js --prefix $npm_package_config_wpdtrt_npm_scripts",
     "test:jsui": "npx cypress open",
-    "version": "npm version ${npm_config_v} && ./scripts/changelog/changelog.sh && node ./scripts/version/plugin-bump.mjs && git tag -a ${npm_config_v} -m \"Bump version\"",
+    "version": "npm version ${npm_config_v} && ./scripts/changelog/changelog.sh && git tag -a ${npm_config_v} -m \"Bump version\"",
     "watch": "nodemon"
   },
   "eslintConfig": {
