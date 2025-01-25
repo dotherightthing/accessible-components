@@ -44,7 +44,7 @@ function decorateLog(color, log, {
     const iconStr = `${emojis[state]} ${textstring}`;
 
     return (
-        color(iconStr, `${colors[state]}`)
+        iconStr // color(iconStr, `${colors[state]}`)
     );
 }
 
