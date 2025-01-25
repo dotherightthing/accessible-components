@@ -1,0 +1,5 @@
+# Supported browsers for Autoprefixer
+# Run 'npx browserslist' to see which browsers this includes
+
+last 2 versions
+ie >= 11

@@ -1,0 +1,8 @@
+{
+    "ext": "js,scss",
+    "exec": "npm run compile",
+    "watch": [
+      "scss/**/*.scss",
+      "js/_*.js"
+    ]
+  }
