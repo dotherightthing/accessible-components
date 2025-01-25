@@ -1,6 +1,6 @@
 {
   "name": "accessible-components",
-  "version": "1.0.7",
+  "version": "1.0.11",
   "description": "",
   "keywords": [
     "WAI-ARIA",
@@ -87,7 +87,7 @@
     "server": "http-server ./ -c-1 -o",
     "test:js": "npm run test:js",
     "test:jsui": "npx cypress open",
-    "version": "npm version && ./scripts/changelog/changelog.sh && git tag -a ${npm_package_version} -m \"Bump version\"",
+    "version": "./scripts/changelog/changelog.sh && git add ./CHANGELOG.md ./package.json && git commit -m \"Bump version\"  && git tag -a ${npm_package_version} -m \"Bump version\"",
     "watch": "nodemon"
   },
   "eslintConfig": {
