@@ -13,28 +13,29 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node: [ '13.x' ]
-
     steps:
     # check out the repository, so the workflow can access it
     - name: Checkout repo
       uses: actions/checkout@v2
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+    - name: Install Node
+      uses: actions/setup-node@v2
       with:
-        php-version: '7.2.15'
-        node-version: ${{ matrix.node }}
+        node-version: '18.7.0'
+    
+    # MAMP Pro uses 7.2.20
+    # - name: Install PHP
+    #   uses: shivammathur/setup-php@v2
+    #   with:
+    #     php-version: '7.2.15'
 
     # Downgrade from Composer 2 in ubuntu-latest, to Composer 1, as v2 causes issues
     # https://github.com/actions/virtual-environments/issues/1816
     # Fix: https://github.com/actions/virtual-environments/issues/1924
-    - name: Make sure we are using composer v1
-      run: |
-        sudo composer self-update --1
-        sudo chown $USER $HOME/.composer
+    # - name: Make sure we are using composer v1
+    #   run: |
+    #     sudo composer self-update --1
+    #     sudo chown $USER $HOME/.composer
 
     # Fix Cypress cannot write to the cache directory due to file permissions
     # https://github.com/cypress-io/cypress/issues/1281

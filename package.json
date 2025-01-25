@@ -18,11 +18,7 @@
   "devDependencies": {
     "cypress": "^6.2.1",
     "cypress-plugin-tab": "^1.0.5",
-    "fs-extra": "^9.0.1",
-    "mochawesome": "^6.1.1",
-    "mochawesome-merge": "^4.2.0",
-    "mochawesome-report-generator": "^5.1.0",
-    "wpdtrt-npm-scripts": "github:dotherightthing/wpdtrt-npm-scripts#semver:0.3.*"
+    "fs-extra": "^9.0.1"
   },
   "repository": {
     "type": "git",
@@ -39,16 +35,16 @@
     "wpdtrt_npm_scripts": "./node_modules/wpdtrt-npm-scripts"
   },
   "scripts": {
-    "changelog": "npm run changelog --prefix $npm_package_config_wpdtrt_npm_scripts",
-    "compile": "npm run compile --prefix $npm_package_config_wpdtrt_npm_scripts",
-    "docs": "npm run docs --prefix $npm_package_config_wpdtrt_npm_scripts",
-    "lint": "npm run lint --prefix $npm_package_config_wpdtrt_npm_scripts",
-    "release": "npm run release --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "preinstall": "chmod a+x scripts/**/*.sh && chmod a+x scripts/**/*.mjs",
+    "changelog": "./scripts/changelog/changelog.sh",
+    "compile": "./scripts/compile/css.sh && ./scripts/compile/js.sh",
+    "lint": "./scripts/lint/css.sh && ./scripts/lint/js.sh && ./scripts/lint/php.sh",
+    "prerelease": "./scripts/lint/css.sh && ./scripts/lint/js.sh && ./scripts/compile/css.sh && ./scripts/compile/js.sh",
+    "release": "node ./scripts/release/copy-files.mjs",
     "server": "http-server ./ -c-1 -o",
-    "test": "npm run test --prefix $npm_package_config_wpdtrt_npm_scripts && npx cypress run",
-    "test:js": "node build-scripts/cypress.js",
+    "test:js": "npm run test:js --prefix $npm_package_config_wpdtrt_npm_scripts",
     "test:jsui": "npx cypress open",
-    "version": "npm run version --prefix $npm_package_config_wpdtrt_npm_scripts",
+    "version": "npm version ${npm_config_v} && ./scripts/changelog/changelog.sh && node ./scripts/version/plugin-bump.mjs && git tag -a ${npm_config_v} -m \"Bump version\"",
     "watch": "nodemon"
   },
   "eslintConfig": {
