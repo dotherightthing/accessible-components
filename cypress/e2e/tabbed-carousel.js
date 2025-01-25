@@ -1,5 +1,5 @@
 /**
- * @file cypress/integration/tabbed-carousel.js
+ * @file cypress/e2e/tabbed-carousel.js
  * @summary Cypress spec for End-to-End UI testing.
  * @requires accessible-components
  *
@@ -10,6 +10,7 @@
 
 /* eslint-disable prefer-arrow-callback */
 /* eslint-disable max-len */
+/* eslint-disable cypress/unsafe-to-chain-command */
 
 // Test principles:
 // ARRANGE: SET UP APP STATE > ACT: INTERACT WITH IT > ASSERT: MAKE ASSERTIONS
