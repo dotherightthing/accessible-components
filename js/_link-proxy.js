@@ -42,6 +42,33 @@ class LinkProxy {
     }
 
     /**
+     * @function getAllChildren
+     * @memberof LinkProxy
+     * @summary Get all child elements.
+     *
+     * @param {HTMLElement} htmlElement - Parent HTML element
+     * @returns {HTMLCollection} All child elements
+     */
+    getAllChildren(htmlElement) {
+        if (htmlElement.children.length === 0) {
+            return [ htmlElement ];
+        }
+
+        let allChildElements = [];
+
+        for (let i = 0; i < htmlElement.children.length; i += 1) {
+            let children = this.getAllChildren(htmlElement.children[i]);
+            if (children) {
+                allChildElements.push(...children);
+            }
+        }
+
+        allChildElements.push(htmlElement);
+
+        return allChildElements;
+    }
+
+    /**
      * @function getSelectorAsAttribute
      * @memberof LinkProxy
      *
@@ -67,10 +94,9 @@ class LinkProxy {
             const linkProxy = e.currentTarget; // element on which the event handler was attached
             const eventTarget = e.target; // element on which the event occurred
             const proxiedLinkId = linkProxy.getAttribute(this.getSelectorAsAttribute(this.selectors.linkProxy));
+            const userNotSelectingText = this.upTime - this.downTime < this.clickTimeout;
 
-            if (eventTarget.tagName === 'FIGURE' || eventTarget.tagName === 'IMG' || (this.upTime - this.downTime < this.clickTimeout)) {
-                // if the clicked element was an image, fire the click
-                // else only fire the click if the user did not hold the mouse down to select it
+            if ((eventTarget === linkProxy) && userNotSelectingText) {
                 document.getElementById(proxiedLinkId).click();
             }
         }
@@ -139,16 +165,32 @@ class LinkProxy {
     init() {
         const linkProxy = this.instanceElement;
         const proxiedLinkId = linkProxy.getAttribute(this.getSelectorAsAttribute(this.selectors.linkProxy));
+        const linkProxyTargetEl = document.getElementById(proxiedLinkId);
 
         if (!proxiedLinkId || !document.getElementById(proxiedLinkId) || !document.getElementById(proxiedLinkId).getAttribute('href')) {
             return;
         }
 
-        linkProxy.addEventListener('mousedown', this.onMousedown.bind(this));
-        linkProxy.addEventListener('mouseenter', this.onHover.bind(this));
-        linkProxy.addEventListener('mouseleave', this.onHover.bind(this));
-        linkProxy.addEventListener('mouseup', this.onMouseup.bind(this));
-        linkProxy.addEventListener('click', this.onClick.bind(this));
-        linkProxy.classList.add(this.selectors.classActiveProxy);
+        if (!linkProxy.dataset.initialised) {
+            linkProxy.addEventListener('mousedown', this.onMousedown.bind(this));
+            linkProxy.addEventListener('mouseenter', this.onHover.bind(this));
+            linkProxy.addEventListener('mouseleave', this.onHover.bind(this));
+            linkProxy.addEventListener('mouseup', this.onMouseup.bind(this));
+            linkProxy.addEventListener('click', this.onClick.bind(this));
+            linkProxy.classList.add(this.selectors.classActiveProxy);
+
+            const childElements = this.getAllChildren(this.instanceElement);
+
+            const filteredChildElements = childElements.filter(el => {
+                return ((el !== this.instanceElement) && (el !== linkProxyTargetEl));
+            });
+
+            // prevent child elements from capturing click event in macOS/iOS Safari
+            filteredChildElements.forEach(el => {
+                el.style.pointerEvents = 'none';
+            });
+
+            linkProxy.dataset.initialised = true;
+        }
     }
 }
